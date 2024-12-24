@@ -1,0 +1,12 @@
+Local net 
+
+usdt spl token mint : HQFVDya8fnhmE7FNEwMU4m2hEGt4dxSd65QTe1zuLc4E
+
+usdt owner : 12VKkD7Rs9CxCkC3EJ8uwiuXBAKmRM4ANHjJoEKLFehu
+usdt ata : 5PbV3JAkmE8gKLST6FrCqfjHRyNJhdQHbXyhqpyZ3dt7
+
+
+
+sale token mint : CWiA6Zq6jFsB4XP7AKxgyeqw3r24NbDDsL56ctCjdDuD
+sale token owner : 12VKkD7Rs9CxCkC3EJ8uwiuXBAKmRM4ANHjJoEKLFehu
+sale token ata holder : 5ZWKMLk5PLKvJBcpyMCciwjLkeFCRBX9YWpEoQBn5Et8
