@@ -29,7 +29,7 @@ impl AppState {
     pub const BUMP: &'static u8 = &255;
     //appstate pda
     pub const PDA: &'static str = "3YGG6YyGiyZnWEZeoxYbeNzXt2eVq3qeABbgBvLopaBn";
-    pub const OWNER: &'static str = "GprFrh9PRS25kri3cHVJXGyFik29HM8jtUhKKMnqs3b7";
+    pub const OWNER: &'static str = "12VKkD7Rs9CxCkC3EJ8uwiuXBAKmRM4ANHjJoEKLFehu";
 
     pub fn realloc_and_save(&self, accounts: &[&AccountInfo]) -> ProgramResult {
         let payer_account = accounts[0];
