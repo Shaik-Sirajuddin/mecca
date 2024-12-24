@@ -2,7 +2,8 @@ import express from "express";
 import { createServer } from "http";
 import cors from "cors";
 import bodyParser from "body-parser";
-import userRouter from "../router/userRouter";
+import publicRouter from "../router/publicRouter";
+import adminRouter from "../router/adminRouter";
 const app = express();
 
 app.use(bodyParser.json());
@@ -18,7 +19,8 @@ const corsOptions = {
 };
 app.use(cors(corsOptions));
 
-app.use("/user", cors(corsOptions), userRouter);
+app.use("/public", cors(corsOptions), publicRouter);
+app.use("/admin", cors(corsOptions), adminRouter);
 
 const server = createServer(app);
 export { app };

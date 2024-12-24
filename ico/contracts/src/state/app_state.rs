@@ -15,6 +15,7 @@ pub struct Sale {
     pub user: Pubkey,
 }
 
+//TODO : split sales to store in another account , speeding up required data fetch
 #[derive(BorshSerialize, BorshDeserialize)]
 pub struct AppState {
     pub tokens_sold: u64,

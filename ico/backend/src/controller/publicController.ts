@@ -14,12 +14,12 @@ import {
 import Model from "sequelize/types/model";
 import Decimal from "decimal.js";
 import { token, usdt } from "../constants";
-import { amountToUiAmount } from "@solana/spl-token";
 
 const getCurrentRound = async (curTime: Date) => {
+  //assuming all ids are entered with ascending endTimes
   let rounds = await Round.findAll({
     where: {},
-    order: [["endTime", "ASC"]],
+    order: [["id", "ASC"]],
   });
 
   let validRound = null;
@@ -122,6 +122,32 @@ export const purchase = async (req: Request, res: Response) => {
 
     responseHandler.success(res, "success", {
       data: signedTransaction,
+    });
+  } catch (error) {
+    responseHandler.error(res, error);
+  }
+};
+
+export const fetchICOState = async (req: Request, res: Response) => {
+  try {
+    let ico_config = (await IcoConfig.findOne({ where: {} }))!;
+    let rounds = await Round.findAll({ where: {} });
+
+    let parsedRounds: RoundAttributes[] = [];
+    rounds.forEach((item) => {
+      let parsedItem = item.toJSON();
+      delete parsedItem.createdAt;
+      delete parsedItem.updatedAt;
+      parsedRounds.push(parsedItem);
+    });
+
+    let parsedConfig = ico_config.toJSON();
+    delete parsedConfig.createdAt;
+    delete parsedConfig.updatedAt;
+
+    responseHandler.success(res, "Success", {
+      rounds: parsedRounds,
+      config: parsedConfig,
     });
   } catch (error) {
     responseHandler.error(res, error);
