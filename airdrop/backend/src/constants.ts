@@ -1,11 +1,11 @@
 import { PublicKey } from "@solana/web3.js";
 
 export const tokenMintId = new PublicKey(
-  "CWiA6Zq6jFsB4XP7AKxgyeqw3r24NbDDsL56ctCjdDuD"
+  "tkdZ2grPbhAcZ9W1gXaWhoNf6rJdCgqs9St7DFxdy7A"
 );
-//owner : 12VKkD7Rs9CxCkC3EJ8uwiuXBAKmRM4ANHjJoEKLFehu
+//owner : ahSUozSv5vWRrX79wqGrfQzJwugrbKdMu6PBgEkLhnT
 export const tokenHolderAtaId = new PublicKey(
-  "5ZWKMLk5PLKvJBcpyMCciwjLkeFCRBX9YWpEoQBn5Et8"
+  "FkZKW4cTZvdW7EcDbmsNinLeLhhdBvDCNwf3SA7vHbnK"
 );
 
 export const tokenProgramId = new PublicKey(

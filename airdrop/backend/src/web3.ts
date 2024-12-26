@@ -16,8 +16,8 @@ import {
 import { tokenHolderAtaId, tokenMintId, tokenProgramId } from "./constants";
 import Decimal from "decimal.js";
 import { BN } from "@coral-xyz/anchor";
-import { example, keyPair } from "./key";
-const connection = new Connection("http://localhost:8899");
+import { keyPair } from "./key";
+const connection = new Connection("https://api.devnet.solana.com");
 
 export const transferTokens = async (user: PublicKey, amount: string) => {
   try {
