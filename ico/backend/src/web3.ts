@@ -24,7 +24,7 @@ import {
 } from "./constants";
 import Decimal from "decimal.js";
 import { BN } from "@coral-xyz/anchor";
-import { example, keyPair } from "./key";
+import { keyPair } from "./key";
 import { PurchaseInstructionSchema } from "./schema/purchase_instruction";
 const connection = new Connection("https://api.devnet.solana.com");
 
