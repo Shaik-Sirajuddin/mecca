@@ -1,0 +1,25 @@
+
+.public-sail-sec {
+    padding: 80px 0px 180px;
+    background-image: url(../images/public_sail_bg.png);
+    background-repeat: no-repeat;
+    background-size: auto;
+    background-position: left;
+    }
+
+    .bototm-space {
+        margin-bottom: 154px;
+    }
+        
+   
+    @media (max-width: 768px) {
+        .bototm-space {
+            margin-bottom: 70px;
+        }
+
+        .public-sail-sec{
+            padding-bottom: 120px !important;
+        }
+    }
+ 
+    

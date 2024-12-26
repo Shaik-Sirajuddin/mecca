@@ -1,0 +1,306 @@
+.airdrop-sec {
+    padding: 80px 0px 100px;
+    background-image: url(../images/airdrop-bg.png);
+    background-repeat: no-repeat;
+    background-size: 600px;
+    background-position: 70% center;
+}
+
+
+.bototm-space {
+    margin-bottom: 94px;
+}
+
+
+.airdrop-wrap {
+    padding-bottom: 88px;
+    border-bottom: 1px solid #7B6793;
+}
+
+.mecca-staking-wrap .text-box h2 {
+    font-size: 36px;
+    letter-spacing: -1px;
+    color: #fff;
+    font-weight: 800;
+    font-family: "pretendard";
+    text-align: center;
+}
+
+.mecca-staking-wrap .text-box h2 span {
+    color: #9807b5;
+}
+
+
+/* mecca-staking-sec */
+
+.mecca-staking-sec .mecca-staking-wrap .text-box {
+    margin-bottom: 90px;
+}
+
+.mecca-staking--box {
+    max-width: 1046px;
+    margin: 0 auto;
+    display: flex;
+    align-items: center;
+    height: 370px;
+    border-radius: 30px;
+    filter: drop-shadow(0px 3px 8px rgba(4, -1, -1, 0.35));
+    background-color: #202020;
+}
+
+.mecca-staking-allow {
+    max-width: 640px;
+    margin: 0 auto;
+}
+
+.mecca-staking-allow h3 {
+    font-size: 39px;
+    letter-spacing: -1px;
+    color: #fff;
+    font-weight: 500;
+    font-family: "Pretendard";
+    text-align: center;
+}
+
+.mecca-staking-allow h3 span {
+    color: #9807b5;
+}
+
+.start-staking-btn {
+    width: 273px;
+    height: 50px;
+    border-radius: 5px;
+    filter: drop-shadow(0px 3px 3px rgba(4, -1, -1, 0.35));
+    background-color: transparent;
+    border: 2px solid #ffffff;
+    color: #ffffff;
+    margin: 0 auto;
+    margin-top: 40px;
+    transition: all 0.2s ease;
+}
+
+.start-staking-btn:hover {
+    background-color: #fff;
+    color: #202020;
+    ;
+
+}
+
+
+/*Coming Soon section  */
+
+.coming-sec {
+    padding-bottom: 100px;
+}
+
+.coming-wrap {
+    padding-bottom: 80px;
+    border-bottom: 1px solid #7B6793;
+}
+
+.coming-sec .coming-heading {
+    margin-top: 48px;
+    margin-bottom: 44px;
+}
+
+
+.coming-sec .coming-heading h2 {
+    font-size: 26px;
+    letter-spacing: -1px;
+    color: #ffffff;
+    font-weight: 500;
+    font-family: "Pretendard";
+    text-align: center;
+}
+
+.coming-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    grid-gap: 16px;
+    max-width: 820px;
+    margin: 0 auto;
+    margin-bottom: 52px;
+}
+
+.coming-col {
+    border-radius: 30px;
+    filter: drop-shadow(0px 3px 3px rgba(4, -1, -1, 0.35));
+    background-color: #242424;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-direction: column;
+    gap: 24px;
+    padding: 20px;
+}
+
+.coming-col p {
+    font-size: 18px;
+    letter-spacing: 0px;
+    color: #ffffff;
+    font-weight: 500;
+    font-family: "Pretendard";
+    text-align: center;
+}
+
+.coming-col .more-text {
+    font-size: 25px;
+    letter-spacing: -1px;
+    color: #ffffff;
+    font-weight: 500;
+    font-family: "Pretendard";
+    text-align: center;
+}
+
+.strengthens-text h4 {
+    font-size: 18px;
+    letter-spacing: 0px;
+    color: #ffffff;
+    font-weight: 500;
+    font-family: "Pretendard";
+    text-align: center;
+}
+
+
+/* faqs section */
+.faqs-sec {
+    padding-bottom: 100px;
+}
+
+.faqs-heading {
+    margin-bottom: 64px;
+}
+
+.faqs-heading h2 {
+    font-size: 36px;
+    letter-spacing: -1px;
+    color: #ffffff;
+    font-weight: 500;
+    font-family: "Pretendard";
+    text-align: center;
+}
+
+
+@media (max-width: 1366px) {
+    .airdrop-sec {
+        background-position: right;
+    }
+}
+
+@media (max-width: 991px) {
+    .airdrop-sec {
+        background-image: none;
+    }
+}
+
+@media (max-width: 767px) {
+    .mecca-staking-allow h3 {
+        font-size: 30px;
+    }
+
+    .mecca-staking--box {
+        border-radius: 20px;
+        padding: 40px;
+        height: auto;
+    }
+
+    .airdrop-sec {
+        padding: 40px 0px 60px;
+    }
+
+    .bototm-space {
+        margin-bottom: 40px;
+    }
+
+    .coming-grid {
+        grid-template-columns: repeat(2, 1fr);
+    }
+
+    .faq-head button {
+        padding: 12px 16px !important;
+        gap: 20px !important;
+    }
+}
+
+
+@media (max-width: 575px) {
+    .faq-head button {
+        padding: 12px 10px !important;
+        gap: 15px !important;
+        font-size: 14px;
+    }
+
+    .accordion-body {
+        padding: 12px 10px !important;
+        font-size: 14px;
+    }
+
+    .faqs-heading {
+        margin-bottom: 40px;
+    }
+
+    .coming-sec {
+        padding-bottom: 60px;
+    }
+
+    .coming-wrap {
+        padding-bottom: 40px;
+    }
+
+    .coming-grid {
+        grid-template-columns: repeat(1, 1fr);
+    }
+
+    .mecca-staking-allow h3 {
+        font-size: 24px;
+    }
+
+    .mecca-staking-sec .mecca-staking-wrap .text-box {
+        margin-bottom: 40px !important;
+    }
+
+    .airdrop-period-box {
+        padding-top: 32px !important;
+        padding-bottom: 24px !important;
+    }
+
+    .airdrop-period-body {
+        padding: 0 !important;
+    }
+
+    .timer-digits {
+        padding: 8px !important;
+        border-radius: 8px !important;
+    }
+
+    .timer-digit {
+        font-size: 18px !important;
+    }
+
+    .timer-day {
+        font-size: 14px !important;
+    }
+
+    .faqs-heading h2 {
+        font-size: 26px !important;
+    }
+
+    .airdrop-form-row {
+        margin-bottom: 10px !important;
+        gap: 11px !important;
+    }
+
+    .input-token-container {
+        padding-left: 12px !important;
+        padding-right: 12px !important;
+        height: 48px !important;
+    }
+
+    .airdrop-wrap {
+        padding-bottom: 40px !important;
+    }
+
+    .input-mecca-container input {
+        padding: 12px !important;
+    }
+}
