@@ -61,6 +61,7 @@ const calculateSendAmount = async (
 
 export const purchase = async (req: Request, res: Response) => {
   try {
+    console.log(req.body);
     let {
       amount: _amount,
       is_usdt,
@@ -73,11 +74,12 @@ export const purchase = async (req: Request, res: Response) => {
     let pubkey = new PublicKey(_pubkey);
 
     let usdtAta = null;
-    if (usdtAta) {
+    if (_usdtAta) {
       usdtAta = new PublicKey(_usdtAta);
     }
 
     let tokenAta = new PublicKey(_tokenAta);
+    console.log("here")
 
     if (amount == null || amount.lte(0)) {
       throw "Invalid Amount";
@@ -101,6 +103,8 @@ export const purchase = async (req: Request, res: Response) => {
     }
     let availableForPurchcase = await getTokensAvailableForSale();
 
+    console.log("hre")
+
     let tokensToSend = await calculateSendAmount(round, amount, is_usdt);
 
     if (tokensToSend.gt(availableForPurchcase)) {
@@ -108,8 +112,9 @@ export const purchase = async (req: Request, res: Response) => {
     }
 
     let amountFromUser = amount
-      .mul(Math.pow(10, is_usdt ? usdt.decimals : token.decimals))
+      .mul(Math.pow(10, is_usdt ? usdt.decimals : 9))
       .toFixed(0);
+
 
     let signedTransaction = await generatePurchaseTransactionSigned(
       amountFromUser,
@@ -124,6 +129,7 @@ export const purchase = async (req: Request, res: Response) => {
       data: signedTransaction,
     });
   } catch (error) {
+    console.log(error)
     responseHandler.error(res, error);
   }
 };

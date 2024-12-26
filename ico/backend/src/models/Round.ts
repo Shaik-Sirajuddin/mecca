@@ -9,7 +9,8 @@ export interface RoundAttributes {
   updatedAt?: Date;
 }
 
-export interface RoundCreationAttributes extends Optional<RoundAttributes, "id"> {}
+export interface RoundCreationAttributes
+  extends Optional<RoundAttributes, "id"> {}
 
 const Round = sequelize.define<Model<RoundAttributes, RoundCreationAttributes>>(
   "Round",

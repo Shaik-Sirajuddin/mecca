@@ -5,6 +5,9 @@ export const icoProgramId = new PublicKey(
 export const appStateId = new PublicKey(
   "3YGG6YyGiyZnWEZeoxYbeNzXt2eVq3qeABbgBvLopaBn"
 );
+export const saleTokenMint = new PublicKey(
+  "CWiA6Zq6jFsB4XP7AKxgyeqw3r24NbDDsL56ctCjdDuD"
+);
 
 //token mint CWiA6Zq6jFsB4XP7AKxgyeqw3r24NbDDsL56ctCjdDuD
 //owner : 12VKkD7Rs9CxCkC3EJ8uwiuXBAKmRM4ANHjJoEKLFehu

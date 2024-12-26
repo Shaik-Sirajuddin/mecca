@@ -1,4 +1,11 @@
-import { getAccount, createTransferInstruction } from "@solana/spl-token";
+import {
+  getAccount,
+  createTransferInstruction,
+  getAssociatedTokenAddressSync,
+  createAssociatedTokenAccountInstruction,
+  getOrCreateAssociatedTokenAccount,
+  getAccountLen,
+} from "@solana/spl-token";
 import {
   Connection,
   PublicKey,
@@ -10,18 +17,23 @@ import {
   appStateId,
   icoProgramId,
   saleTokenHolderAtaId,
+  saleTokenMint,
   tokenProgramId,
   usdtDepositAtaId,
+  usdtTokenProgramId,
 } from "./constants";
 import Decimal from "decimal.js";
 import { BN } from "@coral-xyz/anchor";
-import { keyPair } from "./key";
+import { example, keyPair } from "./key";
 import { PurchaseInstructionSchema } from "./schema/purchase_instruction";
-const conection = new Connection("http://localhost:8899");
+const connection = new Connection("http://localhost:8899");
 
 export const getTokensAvailableForSale = async (): Promise<Decimal> => {
-  let account = await getAccount(conection, saleTokenHolderAtaId);
-  return new Decimal(account.amount.toString());
+  const balance = await connection.getTokenAccountBalance(
+    saleTokenHolderAtaId,
+    "finalized"
+  );
+  return new Decimal(balance.value.amount);
 };
 
 const getPurchaseInstructionForState = async (
@@ -89,8 +101,15 @@ export const generatePurchaseTransactionSigned = async (
   userUsdtAta: PublicKey | null,
   userTokenAta: PublicKey
 ) => {
+  console.log(
+    amount,
+    is_usdt,
+    token_amount,
+    userPubKey,
+    userUsdtAta,
+    userTokenAta
+  );
   let tx = new Transaction();
-
   if (is_usdt) {
     // usdt transfer from user to owner
     tx.add(
@@ -100,7 +119,7 @@ export const generatePurchaseTransactionSigned = async (
         userPubKey,
         BigInt(amount),
         [],
-        tokenProgramId
+        usdtTokenProgramId
       )
     );
   } else {
@@ -114,6 +133,18 @@ export const generatePurchaseTransactionSigned = async (
     );
   }
 
+  let ata_info = await connection.getAccountInfo(userTokenAta, "finalized");
+  if (!ata_info) {
+    tx.add(
+      createAssociatedTokenAccountInstruction(
+        userPubKey,
+        userTokenAta,
+        userPubKey,
+        saleTokenMint,
+        tokenProgramId
+      )
+    );
+  }
   //transfer tokens to user
   tx.add(
     createTransferInstruction(
@@ -136,7 +167,7 @@ export const generatePurchaseTransactionSigned = async (
     )
   );
 
-  let recentBlockhash = await conection.getLatestBlockhash();
+  let recentBlockhash = await connection.getLatestBlockhash();
   tx.recentBlockhash = recentBlockhash.blockhash;
   tx.feePayer = userPubKey;
   tx.partialSign(keyPair);
@@ -145,5 +176,33 @@ export const generatePurchaseTransactionSigned = async (
     // We will need Alice to deserialize and sign the transaction
     requireAllSignatures: false,
   });
+  // let res = await connection.sendEncodedTransaction(
+  //   serializedTransaction.toString("base64")
+  // );
+  // console.log(res);
   return serializedTransaction.toString("base64");
 };
+// let _ata = getAssociatedTokenAddressSync(
+//   new PublicKey("CWiA6Zq6jFsB4XP7AKxgyeqw3r24NbDDsL56ctCjdDuD"),
+//   new PublicKey("HJAh6Hf5VUZtcGXer3obgxQFfs1QNVD542t8FZrmVjaJ"),
+//   true,
+//   tokenProgramId
+// );
+// console.log(_ata.toString());
+// generatePurchaseTransactionSigned(
+//   "10",
+//   false,
+//   "100",
+//   new PublicKey("HJAh6Hf5VUZtcGXer3obgxQFfs1QNVD542t8FZrmVjaJ"),
+//   null,
+//   new PublicKey(
+//     getAssociatedTokenAddressSync(
+//       new PublicKey("CWiA6Zq6jFsB4XP7AKxgyeqw3r24NbDDsL56ctCjdDuD"),
+//       new PublicKey("HJAh6Hf5VUZtcGXer3obgxQFfs1QNVD542t8FZrmVjaJ"),
+//       true,
+//       tokenProgramId
+//     )
+//   )
+// ).then((res) => {
+//   console.log(res);
+// });
