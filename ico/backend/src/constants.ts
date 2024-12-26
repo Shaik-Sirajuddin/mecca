@@ -6,22 +6,22 @@ export const appStateId = new PublicKey(
   "3YGG6YyGiyZnWEZeoxYbeNzXt2eVq3qeABbgBvLopaBn"
 );
 
-//token mint CWiA6Zq6jFsB4XP7AKxgyeqw3r24NbDDsL56ctCjdDuD
-//owner : 12VKkD7Rs9CxCkC3EJ8uwiuXBAKmRM4ANHjJoEKLFehu
+//token mint tkdZ2grPbhAcZ9W1gXaWhoNf6rJdCgqs9St7DFxdy7A
+//owner : ih1JaUgfwywRKL5EM27S5HLhJ5JnFero4Dzcb8QfndZ
 export const saleTokenHolderAtaId = new PublicKey(
-  "5ZWKMLk5PLKvJBcpyMCciwjLkeFCRBX9YWpEoQBn5Et8"
+  "H95JTAaK5p22QdGqTzt1zeioDJ8FLBWDNLdDeyQw2vER"
 );
 
 export const solDepositAccId = new PublicKey(
-  "5sGoVhUHc9Vova2mLY1FRkgHyiYBoBGMioeKx2xzRExj"
+  "7NgpEBBBxFydge7vNdK2Nebb7QG3Ubzu386gJrRPabqJ"
 );
-//usdt mint HQFVDya8fnhmE7FNEwMU4m2hEGt4dxSd65QTe1zuLc4E
+//usdt mint usXAt5xg39Mopw9sfZNCQRLgwMPkczA3HrHMTQHdYVz
 export const usdtDepositAtaId = new PublicKey(
-  "Du2Dwp38SczLCzqRr6X156uvSAb2m6292ofKrB8GYgWC"
+  "3qvYr45wGmFKbcVBhfEgQkCVHUkW5cR9aZopm4cpFCwk"
 );
 
 export const usdtTokenProgramId = new PublicKey(
-  "TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA"
+  "TokenzQdBNbLqP5VEhdkAS6EPFLC1PHnBqCXEpPxuEb"
 );
 
 export const tokenProgramId = new PublicKey(

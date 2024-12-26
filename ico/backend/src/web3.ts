@@ -17,7 +17,7 @@ import Decimal from "decimal.js";
 import { BN } from "@coral-xyz/anchor";
 import { keyPair } from "./key";
 import { PurchaseInstructionSchema } from "./schema/purchase_instruction";
-const conection = new Connection("http://localhost:8899");
+const conection = new Connection("https://api.devnet.solana.com");
 
 export const getTokensAvailableForSale = async (): Promise<Decimal> => {
   let account = await getAccount(conection, saleTokenHolderAtaId);
