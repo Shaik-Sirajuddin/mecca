@@ -28,7 +28,8 @@ import { WalletMultiButton } from "@solana/wallet-adapter-react-ui";
 
 const PresaleBox = () => {
   const { connection } = useConnection();
-  const { connected, publicKey, sendTransaction } = useWallet();
+  const { connected, publicKey, sendTransaction, signTransaction } =
+    useWallet();
   const [usdtAta, setUsdtAta] = useState<PublicKey | null>(null);
   const [tokenAta, setTokenAta] = useState<PublicKey | null>(null);
 
@@ -76,12 +77,11 @@ const PresaleBox = () => {
     } else if (curTime >= startTime && curTime < endTime) {
       return presaleStates.RUNNING;
     } else {
-      console.log(curTime, startTime, endTime);
       return presaleStates.EXPIRED;
     }
   };
 
-  const updateProgressBar = () => {
+  const updateProgressBar = useCallback(() => {
     const currentTime = Math.floor(new Date().getTime() / 1000); // Current time in seconds
     let remainingTime = 0;
     const _saleState = getSaleState();
@@ -95,20 +95,19 @@ const PresaleBox = () => {
     }
     setSaleState(_saleState);
     if (remainingTime <= 0) {
-      //   setTimeText(t("time_expired"));
-    } else {
-      const days = Math.floor(remainingTime / (24 * 60 * 60));
-      const hours = Math.floor((remainingTime % (24 * 60 * 60)) / (60 * 60));
-      const minutes = Math.floor((remainingTime % (60 * 60)) / 60);
-      const seconds = Math.floor(remainingTime % 60);
-      setTimerData({
-        days,
-        minutes,
-        hours,
-        seconds,
-      });
+      remainingTime = 0;
     }
-  };
+    const days = Math.floor(remainingTime / (24 * 60 * 60));
+    const hours = Math.floor((remainingTime % (24 * 60 * 60)) / (60 * 60));
+    const minutes = Math.floor((remainingTime % (60 * 60)) / 60);
+    const seconds = Math.floor(remainingTime % 60);
+    setTimerData({
+      days,
+      minutes,
+      hours,
+      seconds,
+    });
+  }, [curRoundId, icoState]);
 
   const getNextRound = (curId: number) => {
     if (curId == icoState.rounds.length - 1) {
@@ -155,7 +154,7 @@ const PresaleBox = () => {
     try {
       const accountInfo = await connection.getAccountInfo(
         icoStatePDAId,
-        "finalized"
+        "processed"
       );
       const deserializedData = ContractStateSchema.decode(accountInfo?.data);
       setContractState(new ContractState(deserializedData));
@@ -245,9 +244,11 @@ const PresaleBox = () => {
       setTimeout(() => {
         fetchSolBalance();
         syncTokenBalance();
-      }, 2000);
+        syncInitialState();
+      }, 3000);
       fetchSolBalance();
       syncTokenBalance();
+      syncInitialState();
     } catch (error) {
       toast.error("Something went wrong");
       console.log(error);
@@ -298,13 +299,21 @@ const PresaleBox = () => {
       const tx = Transaction.from(Buffer.from(encodedTx, "base64"));
       const response = await sendTransaction(tx, connection);
       console.log(response);
+      // const response = await signTransaction!(tx)
+      // const res = await connection.sendRawTransaction(
+      //   response.serialize()
+      // )
+      // console.log(res)
+      //end
       toast.success(`Purchase success`);
       setTimeout(() => {
         fetchSolBalance();
         syncTokenBalance();
-      }, 2000);
+        syncInitialState();
+      }, 3000);
       fetchSolBalance();
       syncTokenBalance();
+      syncInitialState();
     } catch (error) {
       toast.error("Something went wrong");
       console.log(error);
@@ -410,7 +419,7 @@ const PresaleBox = () => {
     return () => {
       clearInterval(timerRef.current);
     };
-  }, [curRoundId]);
+  }, [curRoundId, updateProgressBar]);
 
   return (
     <div className="sail-container">
@@ -583,7 +592,6 @@ const PresaleBox = () => {
                 </button>
 
                 <div
-                  onClick={handleBuyClick}
                   style={{
                     display: connected ? "none" : "flex",
                     justifyContent: "center",
@@ -608,3 +616,6 @@ const PresaleBox = () => {
 };
 
 export default PresaleBox;
+function useSelector(arg0: () => void, arg1: never[]) {
+  throw new Error("Function not implemented.");
+}

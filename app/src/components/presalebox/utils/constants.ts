@@ -1,21 +1,21 @@
 import { PublicKey } from "@solana/web3.js";
 
-export const baseUrl = `http://localhost:3020`;
+export const baseUrl = `https://staking.meccain.com`;
 
 export const usdtTokenMint = new PublicKey(
-  "HQFVDya8fnhmE7FNEwMU4m2hEGt4dxSd65QTe1zuLc4E"
+  "usXAt5xg39Mopw9sfZNCQRLgwMPkczA3HrHMTQHdYVz"
 );
 export const saleTokenMint = new PublicKey(
-  "CWiA6Zq6jFsB4XP7AKxgyeqw3r24NbDDsL56ctCjdDuD"
+  "tkdZ2grPbhAcZ9W1gXaWhoNf6rJdCgqs9St7DFxdy7A"
 );
 export const saleTokenHoldingAta = new PublicKey(
-  "5ZWKMLk5PLKvJBcpyMCciwjLkeFCRBX9YWpEoQBn5Et8"
+  "H95JTAaK5p22QdGqTzt1zeioDJ8FLBWDNLdDeyQw2vER"
 );
 export const icoStatePDAId = new PublicKey(
-  "3YGG6YyGiyZnWEZeoxYbeNzXt2eVq3qeABbgBvLopaBn"
+  "7GuCHbnukPkiAJkMq9mUUs9JuHUKMzhu2tFvUJfRtQX5"
 );
 export const usdtTokenProgamId = new PublicKey(
-  "TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA"
+  "TokenzQdBNbLqP5VEhdkAS6EPFLC1PHnBqCXEpPxuEb"
 );
 
 export const saleTokenProgramId = new PublicKey(
