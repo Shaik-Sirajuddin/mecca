@@ -49,6 +49,7 @@ const PresaleBox = () => {
 
   const [, setSaleState] = useState(presaleStates.IN_FUTURE);
   const timerRef = useRef<NodeJS.Timeout | undefined>(undefined);
+  const [txInProgress, setTxInProgress] = useState(false);
 
   // const [currentRound, setCurrentRound] = useState<Round>({
   //   endTime: new Date(),
@@ -342,12 +343,14 @@ const PresaleBox = () => {
     }
   }, [curRoundId, icoState.rounds, isUsdt, solPrice, usdtAmount, solAmount]);
 
-  const handleBuyClick = () => {
+  const handleBuyClick = async () => {
+    setTxInProgress(true);
     if (isUsdt) {
-      purchaseWithUSDT();
+      await purchaseWithUSDT();
     } else {
-      purchaseWithSol();
+      await purchaseWithSol();
     }
+    setTxInProgress(false);
   };
 
   useEffect(() => {
@@ -583,9 +586,21 @@ const PresaleBox = () => {
                   type="button"
                   className="submit-btn"
                   style={{
-                    display: connected ? "block" : "none",
+                    display: connected ? "flex" : "none",
+                    justifyContent: "center",
+                    alignItems: "center",
+                    gap: "4px",
                   }}
                 >
+                  <div
+                    style={{
+                      display: txInProgress ? "inline-block" : "none",
+                      width: "24px",
+                      height: "24px",
+                    }}
+                    id="loader"
+                    className="btn-sky text-xl"
+                  />
                   Buy Now
                 </button>
 
@@ -614,4 +629,3 @@ const PresaleBox = () => {
 };
 
 export default PresaleBox;
-

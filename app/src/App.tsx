@@ -4,7 +4,7 @@ import { HelmetProvider } from "react-helmet-async";
 import Airdrop from "./pages/airdrop/Airdrop";
 import Community from "./pages/community/Community";
 import Presale from "./pages/presale/Presale";
-
+import "./App.css";
 const App: React.FC = () => {
   return (
     <>
