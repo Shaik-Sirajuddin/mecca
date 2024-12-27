@@ -1,4 +1,4 @@
-import { getAccount, getAssociatedTokenAddressSync } from "@solana/spl-token";
+import { getAssociatedTokenAddressSync } from "@solana/spl-token";
 import {
   saleTokenHoldingAta,
   saleTokenMint,

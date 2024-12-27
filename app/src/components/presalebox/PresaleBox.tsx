@@ -28,8 +28,7 @@ import { WalletMultiButton } from "@solana/wallet-adapter-react-ui";
 
 const PresaleBox = () => {
   const { connection } = useConnection();
-  const { connected, publicKey, sendTransaction, signTransaction } =
-    useWallet();
+  const { connected, publicKey, sendTransaction } = useWallet();
   const [usdtAta, setUsdtAta] = useState<PublicKey | null>(null);
   const [tokenAta, setTokenAta] = useState<PublicKey | null>(null);
 
@@ -48,8 +47,7 @@ const PresaleBox = () => {
 
   const [isUsdt, setIsUsdt] = useState(false);
 
-  const [saleState, setSaleState] = useState(presaleStates.IN_FUTURE);
-  const [saleStateText, setSaleStateText] = useState("");
+  const [, setSaleState] = useState(presaleStates.IN_FUTURE);
   const timerRef = useRef<NodeJS.Timeout | undefined>(undefined);
 
   // const [currentRound, setCurrentRound] = useState<Round>({
@@ -616,6 +614,4 @@ const PresaleBox = () => {
 };
 
 export default PresaleBox;
-function useSelector(arg0: () => void, arg1: never[]) {
-  throw new Error("Function not implemented.");
-}
+
