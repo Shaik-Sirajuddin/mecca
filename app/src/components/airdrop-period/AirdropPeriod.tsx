@@ -10,6 +10,7 @@ const AirdropPeriod = () => {
 
   const timerRef = useRef<NodeJS.Timeout | undefined>(undefined);
 
+  const [reqInProgress, setReqInProgress] = useState(false);
   const [timerData, setTimerData] = useState({
     days: 0,
     hours: 0,
@@ -63,6 +64,7 @@ const AirdropPeriod = () => {
 
   const requestAirdrop = async () => {
     try {
+      setReqInProgress(true);
       const pubkey = getParsedPublicKey(address);
       if (pubkey == null) {
         toast.error("Enter valid address");
@@ -79,8 +81,8 @@ const AirdropPeriod = () => {
         },
       });
       const data = await response.json();
-      if(!data.success){
-        toast.error(data.message ?? "Something went wrong")
+      if (!data.success) {
+        toast.error(data.message ?? "Something went wrong");
         return;
       }
 
@@ -88,6 +90,8 @@ const AirdropPeriod = () => {
     } catch (error) {
       console.log(error);
       toast.error("Something went wrong");
+    } finally {
+      setReqInProgress(false);
     }
   };
   useEffect(() => {
@@ -176,7 +180,27 @@ const AirdropPeriod = () => {
                 </div>
               </div>
               <div className="airdrop-form-btn">
-                <button type="button" onClick={requestAirdrop}>
+                <button
+                  type="button"
+                  style={{
+                    display: "flex",
+                    alignItems: "center",
+                    justifyContent: "center",
+                    gap: "4px",
+                  }}
+                  onClick={requestAirdrop}
+                >
+                  <div
+                    style={{
+                      display: reqInProgress ? "inline-block" : "none",
+                      width: "24px",
+                      height: "24px",
+                      border: "2px solid #8909a5",
+                      borderTop: "2px solid white",
+                    }}
+                    id="loader"
+                    className="btn-sky text-xl"
+                  />
                   Receive
                 </button>
               </div>
