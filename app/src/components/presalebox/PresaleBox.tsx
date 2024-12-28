@@ -510,6 +510,9 @@ const PresaleBox = () => {
                       name="sol-buy"
                       value="sol-buy"
                       defaultChecked
+                      style={{
+                        cursor: "pointer",
+                      }}
                       onClick={() => {
                         setIsUsdt(false);
                       }}
@@ -523,6 +526,9 @@ const PresaleBox = () => {
                       className="buy-input-radio"
                       name="sol-buy"
                       value="sol-buy"
+                      style={{
+                        cursor: "pointer",
+                      }}
                       defaultChecked
                       onClick={() => {
                         setIsUsdt(true);

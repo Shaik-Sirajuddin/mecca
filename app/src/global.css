@@ -1,179 +1,178 @@
 @font-face {
-font-family: "NanumSquare Neo";
-src: url("../fonts/NanumSquareNeoTTF-dEb.woff2") format("woff2"),
-url("../fonts/NanumSquareNeoTTF-dEb.woff") format("woff");
-font-weight: bold;
-font-style: normal;
-font-display: swap;
+  font-family: "NanumSquare Neo";
+  src: url("../fonts/NanumSquareNeoTTF-dEb.woff2") format("woff2"),
+    url("../fonts/NanumSquareNeoTTF-dEb.woff") format("woff");
+  font-weight: bold;
+  font-style: normal;
+  font-display: swap;
 }
 
 @font-face {
-font-family: "NanumSquare Neo";
-src: url("../fonts/NanumSquareNeoTTF-cBd.woff2") format("woff2"),
-url("../fonts/NanumSquareNeoTTF-cBd.woff") format("woff");
-font-weight: bold;
-font-style: normal;
-font-display: swap;
+  font-family: "NanumSquare Neo";
+  src: url("../fonts/NanumSquareNeoTTF-cBd.woff2") format("woff2"),
+    url("../fonts/NanumSquareNeoTTF-cBd.woff") format("woff");
+  font-weight: bold;
+  font-style: normal;
+  font-display: swap;
 }
 
 @font-face {
-font-family: "NanumSquare Neo";
-src: url("../fonts/NanumSquareNeoTTF-bRg.woff2") format("woff2"),
-url("../fonts/NanumSquareNeoTTF-bRg.woff") format("woff");
-font-weight: normal;
-font-style: normal;
-font-display: swap;
+  font-family: "NanumSquare Neo";
+  src: url("../fonts/NanumSquareNeoTTF-bRg.woff2") format("woff2"),
+    url("../fonts/NanumSquareNeoTTF-bRg.woff") format("woff");
+  font-weight: normal;
+  font-style: normal;
+  font-display: swap;
 }
 
 @font-face {
-font-family: "NanumSquare Neo";
-src: url("../fonts/NanumSquareNeoTTF-eHv.woff2") format("woff2"),
-url("../fonts/NanumSquareNeoTTF-eHv.woff") format("woff");
-font-weight: 900;
-font-style: normal;
-font-display: swap;
+  font-family: "NanumSquare Neo";
+  src: url("../fonts/NanumSquareNeoTTF-eHv.woff2") format("woff2"),
+    url("../fonts/NanumSquareNeoTTF-eHv.woff") format("woff");
+  font-weight: 900;
+  font-style: normal;
+  font-display: swap;
 }
 
 @font-face {
-font-family: "NanumSquare Neo";
-src: url("../fonts/NanumSquareNeoTTF-aLt.woff2") format("woff2"),
-url("../fonts/NanumSquareNeoTTF-aLt.woff") format("woff");
-font-weight: 300;
-font-style: normal;
-font-display: swap;
+  font-family: "NanumSquare Neo";
+  src: url("../fonts/NanumSquareNeoTTF-aLt.woff2") format("woff2"),
+    url("../fonts/NanumSquareNeoTTF-aLt.woff") format("woff");
+  font-weight: 300;
+  font-style: normal;
+  font-display: swap;
 }
 
 @font-face {
-font-family: 'Asimov Print';
-src: url('../fonts/AsimovPrintB.woff2') format('woff2'),
-url('../fonts/AsimovPrintB.woff') format('woff');
-font-weight: normal;
-font-style: normal;
-font-display: swap;
-}
-
-
-@font-face {
-font-family: 'pretendard';
-src: url('../fonts/Pretendard-Medium.woff2') format('woff2'),
-url('../fonts/Pretendard-Medium.woff') format('woff');
-font-weight: 500;
-font-style: normal;
-font-display: swap;
+  font-family: "Asimov Print";
+  src: url("../fonts/AsimovPrintB.woff2") format("woff2"),
+    url("../fonts/AsimovPrintB.woff") format("woff");
+  font-weight: normal;
+  font-style: normal;
+  font-display: swap;
 }
 
 @font-face {
-font-family: 'pretendard';
-src: url('../fonts/Pretendard-Regular.woff2') format('woff2'),
-url('../fonts/Pretendard-Regular.woff') format('woff');
-font-weight: normal;
-font-style: normal;
-font-display: swap;
+  font-family: "pretendard";
+  src: url("../fonts/Pretendard-Medium.woff2") format("woff2"),
+    url("../fonts/Pretendard-Medium.woff") format("woff");
+  font-weight: 500;
+  font-style: normal;
+  font-display: swap;
 }
 
 @font-face {
-font-family: 'pretendard';
-src: url('../fonts/Pretendard-Medium.woff2') format('woff2'),
-url('../fonts/Pretendard-Medium.woff') format('woff');
-font-weight: 500;
-font-style: normal;
-font-display: swap;
+  font-family: "pretendard";
+  src: url("../fonts/Pretendard-Regular.woff2") format("woff2"),
+    url("../fonts/Pretendard-Regular.woff") format("woff");
+  font-weight: normal;
+  font-style: normal;
+  font-display: swap;
 }
 
 @font-face {
-font-family: 'pretendard';
-src: url('../fonts/Pretendard-SemiBold.woff2') format('woff2'),
-url('../fonts/Pretendard-SemiBold.woff') format('woff');
-font-weight: 600;
-font-style: normal;
-font-display: swap;
+  font-family: "pretendard";
+  src: url("../fonts/Pretendard-Medium.woff2") format("woff2"),
+    url("../fonts/Pretendard-Medium.woff") format("woff");
+  font-weight: 500;
+  font-style: normal;
+  font-display: swap;
 }
 
 @font-face {
-font-family: 'pretendard';
-src: url('../fonts/Pretendard-Regular.woff2') format('woff2'),
-url('../fonts/Pretendard-Regular.woff') format('woff');
-font-weight: normal;
-font-style: normal;
-font-display: swap;
+  font-family: "pretendard";
+  src: url("../fonts/Pretendard-SemiBold.woff2") format("woff2"),
+    url("../fonts/Pretendard-SemiBold.woff") format("woff");
+  font-weight: 600;
+  font-style: normal;
+  font-display: swap;
 }
 
 @font-face {
-font-family: 'pretendard';
-src: url('../fonts/Pretendard-Thin.woff2') format('woff2'),
-url('../fonts/Pretendard-Thin.woff') format('woff');
-font-weight: 100;
-font-style: normal;
-font-display: swap;
+  font-family: "pretendard";
+  src: url("../fonts/Pretendard-Regular.woff2") format("woff2"),
+    url("../fonts/Pretendard-Regular.woff") format("woff");
+  font-weight: normal;
+  font-style: normal;
+  font-display: swap;
 }
 
 @font-face {
-font-family: 'pretendard';
-src: url('../fonts/Pretendard-Bold.woff2') format('woff2'),
-url('../fonts/Pretendard-Bold.woff') format('woff');
-font-weight: bold;
-font-style: normal;
-font-display: swap;
+  font-family: "pretendard";
+  src: url("../fonts/Pretendard-Thin.woff2") format("woff2"),
+    url("../fonts/Pretendard-Thin.woff") format("woff");
+  font-weight: 100;
+  font-style: normal;
+  font-display: swap;
 }
 
 @font-face {
-font-family: 'pretendard';
-src: url('../fonts/Pretendard-Black.woff2') format('woff2'),
-url('../fonts/Pretendard-Black.woff') format('woff');
-font-weight: 900;
-font-style: normal;
-font-display: swap;
+  font-family: "pretendard";
+  src: url("../fonts/Pretendard-Bold.woff2") format("woff2"),
+    url("../fonts/Pretendard-Bold.woff") format("woff");
+  font-weight: bold;
+  font-style: normal;
+  font-display: swap;
 }
 
 @font-face {
-font-family: 'pretendard';
-src: url('../fonts/Pretendard-Light.woff2') format('woff2'),
-url('../fonts/Pretendard-Light.woff') format('woff');
-font-weight: 300;
-font-style: normal;
-font-display: swap;
+  font-family: "pretendard";
+  src: url("../fonts/Pretendard-Black.woff2") format("woff2"),
+    url("../fonts/Pretendard-Black.woff") format("woff");
+  font-weight: 900;
+  font-style: normal;
+  font-display: swap;
 }
 
 @font-face {
-font-family: 'pretendard';
-src: url('../fonts/Pretendard-ExtraBold.woff2') format('woff2'),
-url('../fonts/Pretendard-ExtraBold.woff') format('woff');
-font-weight: bold;
-font-style: normal;
-font-display: swap;
+  font-family: "pretendard";
+  src: url("../fonts/Pretendard-Light.woff2") format("woff2"),
+    url("../fonts/Pretendard-Light.woff") format("woff");
+  font-weight: 300;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: "pretendard";
+  src: url("../fonts/Pretendard-ExtraBold.woff2") format("woff2"),
+    url("../fonts/Pretendard-ExtraBold.woff") format("woff");
+  font-weight: bold;
+  font-style: normal;
+  font-display: swap;
 }
 
 * {
-box-sizing: border-box;
+  box-sizing: border-box;
 }
 
 body {
-margin: 0;
-padding: 0;
-font-family: "NanumSquare Neo";
+  margin: 0;
+  padding: 0;
+  font-family: "NanumSquare Neo";
 }
 
 a.active,
 a:focus,
 button:focus,
 button.active {
-outline: none;
+  outline: none;
 }
 
 a {
-text-decoration: none;
+  text-decoration: none;
 }
 
 a:focus,
 a:hover,
 a:active {
-outline: 0;
-box-shadow: none;
+  outline: 0;
+  box-shadow: none;
 }
 
 a:focus,
 a:hover {
-text-decoration: none;
+  text-decoration: none;
 }
 
 h1,
@@ -182,49 +181,47 @@ h3,
 h4,
 h5,
 h6 {
-margin: 0;
-padding: 0;
+  margin: 0;
+  padding: 0;
 }
 
 a {
-text-decoration: none;
-transition: all 0.5s ease-in-out;
+  text-decoration: none;
+  transition: all 0.5s ease-in-out;
 }
 
 a:hover {
-text-decoration: none;
+  text-decoration: none;
 }
 
 ul,
 ol {
-margin: 0;
-padding: 0;
-list-style: none;
+  margin: 0;
+  padding: 0;
+  list-style: none;
 }
 
 ul li {
-list-style: none;
+  list-style: none;
 }
 
 p {
-margin: 0;
-padding: 0;
+  margin: 0;
+  padding: 0;
 }
 
 input:focus,
 select:focus,
 textarea:focus {
-outline: none;
+  outline: none;
 }
 
 img {
-border-style: none;
-display: inline-block;
-max-width: 100%;
-height: auto;
+  border-style: none;
+  display: inline-block;
+  max-width: 100%;
+  height: auto;
 }
-
-
 
 input::-webkit-outer-spin-button,
 input::-webkit-inner-spin-button {
@@ -232,192 +229,179 @@ input::-webkit-inner-spin-button {
   margin: 0;
 }
 
-input[type=number] {
+input[type="number"] {
   -moz-appearance: textfield;
 }
 
 .community-page {
-background-image: url(../images/airdrop-container-bg.png);
-background-repeat: no-repeat;
-background-size: cover;
-background-position: center;
+  background-image: url(../images/airdrop-container-bg.png);
+  background-repeat: no-repeat;
+  background-size: cover;
+  background-position: center;
 }
 
-
 .text-box h1 {
-font-size: 36px;
-letter-spacing: -1px;
-color: #fff;
-font-weight: 800;
-font-family: "pretendard";
-text-align: center;
+  font-size: 36px;
+  letter-spacing: -1px;
+  color: #fff;
+  font-weight: 800;
+  font-family: "pretendard";
+  text-align: center;
 }
 
 .text-box h1 span {
-color: #9807b5;
+  color: #9807b5;
 }
 
-
-
 .text-box h3 {
-font-size: 65px;
-letter-spacing: -2px;
-line-height: 66px;
-color: #ffffff;
-font-weight: 800;
-font-family: "pretendard";
-margin-bottom: 14px;
+  font-size: 65px;
+  letter-spacing: -2px;
+  line-height: 66px;
+  color: #ffffff;
+  font-weight: 800;
+  font-family: "pretendard";
+  margin-bottom: 14px;
 }
 
 .text-box p {
-font-size: 26px;
-letter-spacing: -1px;
-color: #ffffff;
-font-weight: 500;
-font-family: "pretendard";
-
+  font-size: 26px;
+  letter-spacing: -1px;
+  color: #ffffff;
+  font-weight: 500;
+  font-family: "pretendard";
 }
-
-
-
-
-
-
-
-
 
 /* Responsive */
 @media (min-width: 1200px) {
-.container {
-max-width: 1304px;
-margin: 0 auto;
-padding: 0px 20px;
-}
+  .container {
+    max-width: 1304px;
+    margin: 0 auto;
+    padding: 0px 20px;
+  }
 }
 
 @media (max-width: 1365px) {
-.bototm-space {
-margin-bottom: 80px;
-}
+  .bototm-space {
+    margin-bottom: 80px;
+  }
 
-.text-box h3 {
-font-size: 50px;
-line-height: 56px;
-}
+  .text-box h3 {
+    font-size: 50px;
+    line-height: 56px;
+  }
 
-.public-sail-sec {
-padding: 80px 0px 80px;
-}
+  .public-sail-sec {
+    padding: 80px 0px 80px;
+  }
 
-.text-box p {
-font-size: 20px;
-}
+  .text-box p {
+    font-size: 20px;
+  }
 }
 
 @media (max-width: 1199px) {
-.communities-boxes .communitie-box {
-border-radius: 12px;
-padding: 20px 16px;
-}
+  .communities-boxes .communitie-box {
+    border-radius: 12px;
+    padding: 20px 16px;
+  }
 
-.communitie-box h4 {
-padding: 20px 0px 10px;
-font-size: 20px;
-}
+  .communitie-box h4 {
+    padding: 20px 0px 10px;
+    font-size: 20px;
+  }
 
-.text-box h3 {
-font-size: 42px;
-line-height: 48px;
-}
+  .text-box h3 {
+    font-size: 42px;
+    line-height: 48px;
+  }
 }
 
 @media (max-width: 991px) {
-.navbar-toggler {
-width: 24px;
-height: 24px;
-padding: 0;
-}
+  .navbar-toggler {
+    width: 24px;
+    height: 24px;
+    padding: 0;
+  }
 
-.navbar-nav .nav-item .nav-link {
-padding: 10px 30px !important;
-}
+  .navbar-nav .nav-item .nav-link {
+    padding: 10px 30px !important;
+  }
 
-.navbar-nav {
-padding-bottom: 50px;
-}
+  .navbar-nav {
+    padding-bottom: 50px;
+  }
 
-.navbar-collapse {
-position: absolute;
-left: 0;
-width: 100%;
-top: 73px;
-z-index: 999;
-background: rgb(20, 20, 20, 0.60);
-}
+  .navbar-collapse {
+    position: absolute;
+    left: 0;
+    width: 100%;
+    top: 73px;
+    z-index: 999;
+    background: rgb(20, 20, 20, 0.6);
+  }
 
-.communities-boxes {
-margin-top: 48px;
-}
+  .communities-boxes {
+    margin-top: 48px;
+  }
 
-.bototm-space {
-margin-bottom: 60px;
-}
+  .bototm-space {
+    margin-bottom: 60px;
+  }
 
-.footer-lists {
-grid-gap: 16px;
-}
+  .footer-lists {
+    grid-gap: 16px;
+  }
 
-.public-sail-sec {
-padding: 56px 0px 60px;
-}
+  .public-sail-sec {
+    padding: 56px 0px 60px;
+  }
 }
 
 @media (max-width: 767px) {
-.communities-boxes {
-grid-gap: 12px;
-grid-template-columns: 4fr 4fr;
-margin-top: 30px;
-}
+  .communities-boxes {
+    grid-gap: 12px;
+    grid-template-columns: 4fr 4fr;
+    margin-top: 30px;
+  }
 
-.text-box h3 {
-font-size: 36px;
-line-height: 34px;
-}
+  .text-box h3 {
+    font-size: 36px;
+    line-height: 34px;
+  }
 
-.footer-lists {
-grid-template-columns: 2fr 2fr 2fr;
-}
+  .footer-lists {
+    grid-template-columns: 2fr 2fr 2fr;
+  }
 }
 
 @media (max-width: 575px) {
-.text-box h2 {
-font-size: 26px;
-}
+  .text-box h2 {
+    font-size: 26px;
+  }
 
-.public-sail-sec {
-padding: 44px 0px 50px;
-}
+  .public-sail-sec {
+    padding: 44px 0px 50px;
+  }
 
-.text-box h3 {
-font-size: 30px;
-line-height: 30px;
-}
+  .text-box h3 {
+    font-size: 30px;
+    line-height: 30px;
+  }
 
-.bototm-space {
-margin-bottom: 32px;
-}
+  .bototm-space {
+    margin-bottom: 32px;
+  }
 
-.top-footer-inner ul {
-grid-gap: 8px;
-}
+  .top-footer-inner ul {
+    grid-gap: 8px;
+  }
 
-.bottom-footer {
-padding-top: 40px;
-padding-bottom: 40px;
-}
+  .bottom-footer {
+    padding-top: 40px;
+    padding-bottom: 40px;
+  }
 
-.footer-lists {
-grid-template-columns: 2fr;
-}
-
+  .footer-lists {
+    grid-template-columns: 2fr;
+  }
 }

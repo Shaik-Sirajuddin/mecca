@@ -4,17 +4,15 @@ input::-webkit-inner-spin-button {
   margin: 0;
 }
 
-input[type=number] {
+input[type="number"] {
   -moz-appearance: textfield;
 }
-
 
 .sail-container {
   position: relative;
   max-width: 699px;
   margin: 0 auto;
   margin-top: -80px;
-
 }
 
 .sail-top-back {
@@ -50,26 +48,25 @@ input[type=number] {
   transform: translateX(-50%);
 }
 
-.sail-inner-heading h2{
+.sail-inner-heading h2 {
   font-size: 30px;
-letter-spacing: -1px;
-color: #ffffff;
-font-weight: 800;
-font-family: "Pretendard";
-text-align: center;
-margin-top: 20px;
+  letter-spacing: -1px;
+  color: #ffffff;
+  font-weight: 800;
+  font-family: "Pretendard";
+  text-align: center;
+  margin-top: 20px;
 }
 
-.sail-inner-heading p{
+.sail-inner-heading p {
   font-size: 22px;
-letter-spacing: -1px;
-color: #922aaf;
-font-weight: 500;
-font-family: "Pretendard";
-text-align: center;
-margin-top: 6px;
+  letter-spacing: -1px;
+  color: #922aaf;
+  font-weight: 500;
+  font-family: "Pretendard";
+  text-align: center;
+  margin-top: 6px;
 }
-
 
 .sail-box {
   width: 100%;
@@ -81,8 +78,7 @@ margin-top: 6px;
   z-index: 1;
 }
 
-
-.sail-inner-price p{
+.sail-inner-price p {
   font-size: 16px;
   letter-spacing: 0px;
   color: #ffffff;
@@ -126,7 +122,6 @@ margin-top: 6px;
   color: #8109a3;
   line-height: 24px;
   margin-bottom: 6px;
-
 }
 
 .timer-day {
@@ -135,12 +130,10 @@ margin-top: 6px;
   letter-spacing: -1px;
 }
 
-
 .timer-colon {
   color: #fff;
   font-size: 24px;
 }
-
 
 .mecca-calc-wrap {
   max-width: 454px;
@@ -259,7 +252,6 @@ margin-top: 6px;
   gap: 10px;
   align-items: center;
   margin: 16px 0;
-
 }
 
 .form-radio-label {
@@ -293,7 +285,9 @@ margin-top: 6px;
   width: 100%;
   height: 50px;
   position: absolute;
-
+  cursor: pointer; /* Pointer cursor for interactivity */
+  transition: background-color 0.3s ease, border-color 0.3s ease,
+    box-shadow 0.3s ease;
 }
 
 .form-radio-label input:checked {
@@ -303,9 +297,7 @@ margin-top: 6px;
 .input-mecca-container {
   width: 100%;
   position: relative;
-
 }
-
 
 .input-mecca-container input {
   width: 100%;
@@ -314,7 +306,6 @@ margin-top: 6px;
   background-color: #dbdbdb;
   border: transparent;
   padding-left: 24px;
-  padding-right: 130px;
   font-size: 18px;
   letter-spacing: 0px;
   color: #292929;
@@ -337,6 +328,10 @@ margin-top: 6px;
   right: 56px;
   top: 50%;
   transform: translateY(-50%);
+  border: 1px solid #8909a5;
+  cursor: pointer;
+  transition: background-color 0.2s ease, border-color 0.2s ease,
+    transform 0.2s ease, box-shadow 0.3s ease;
 }
 
 .inputs-wrap label {
@@ -348,7 +343,6 @@ margin-top: 6px;
   margin-bottom: 6px;
   margin-top: 14px;
 }
-
 
 .mecca-logo-input {
   position: absolute;
@@ -377,6 +371,8 @@ margin-top: 6px;
   background-color: #8909a5;
   border: transparent;
   margin-top: 20px;
+  cursor: pointer;
+  transition: background-color 0.3s ease, transform 0.2s ease, filter 0.3s ease;
 }
 
 @media (max-width: 991px) {
@@ -461,4 +457,66 @@ margin-top: 6px;
   .mecca-box-hexa p {
     font-size: 15px;
   }
+  .sail-inner{
+    padding-bottom: 20px;
+  }
+}
+.form-radio-label input:hover {
+  background-color: #f8f8f8; /* Slightly darker white */
+  border-color: #8909a5; /* Highlight border with a purple accent */
+  box-shadow: 0px 3px 6px rgba(0, 0, 0, 0.1); /* Add soft shadow */
+}
+
+.form-radio-label input:active {
+  background-color: #ececec; /* Subtle pressed state background */
+  border-color: #761288; /* Darker purple for active state */
+  box-shadow: 0px 2px 4px rgba(0, 0, 0, 0.2); /* Reduce shadow intensity */
+}
+
+.form-radio-label input:checked {
+  background-color: #b58cff; /* Light purple when checked */
+  border-color: #b58cff; /* Match border color to light purple */
+  box-shadow: 0px 3px 6px rgba(0, 0, 0, 0.15);
+}
+
+/* Hover effect when checked */
+.form-radio-label input:checked:hover {
+  background-color: #d0a3ff; /* Slightly lighter purple on hover */
+  border-color: #d0a3ff;
+  box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.2);
+}
+
+/* Active state when checked */
+.form-radio-label input:checked:active {
+  background-color: #9f7bff; /* Darker purple when active */
+  border-color: #9f7bff;
+  box-shadow: 0px 2px 4px rgba(0, 0, 0, 0.2);
+}
+
+.submit-btn:hover {
+  background-color: #a73ac2; /* Lighter shade of purple */
+  filter: drop-shadow(
+    0px 5px 5px rgba(4, -1, -1, 0.45)
+  ); /* Slightly stronger shadow */
+}
+
+.submit-btn:active {
+  background-color: #761288; /* Slightly darker purple for active state */
+  transform: translateY(1px); /* Subtle press-down effect */
+  filter: drop-shadow(
+    0px 2px 2px rgba(4, -1, -1, 0.3)
+  ); /* Reduce shadow for pressed state */
+}
+
+.max-btn:hover {
+  background-color: #a73ac2; /* Lightened purple */
+  border-color: #a73ac2; /* Match border to hover background */
+  box-shadow: 0px 2px 5px rgba(0, 0, 0, 0.2); /* Add subtle shadow */
+}
+
+.max-btn:active {
+  background-color: #761288; /* Darker purple for active state */
+  border-color: #761288; /* Match border to active background */
+  transform: translateY(-50%) scale(0.98); /* Slight shrink effect for press */
+  box-shadow: 0px 1px 3px rgba(0, 0, 0, 0.15); /* Subtle shadow reduction */
 }
