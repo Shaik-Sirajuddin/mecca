@@ -106,6 +106,10 @@ export const claimAirdrop = async (req: Request, res: Response) => {
       underProcess: false,
     });
 
+    if(!transferStatus){
+      throw "Failed to request airdrop"
+    }
+
     responseHandler.success(res, "Success", {});
   } catch (error) {
     console.log(error);

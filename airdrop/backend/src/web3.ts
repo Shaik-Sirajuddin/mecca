@@ -36,7 +36,7 @@ export const transferTokens = async (user: PublicKey, amount: string) => {
       tx.add(
         createAssociatedTokenAccountInstruction(
           keyPair.publicKey,
-          tokenMintId,
+          userAta,
           user,
           tokenMintId,
           tokenProgramId

@@ -1,12 +1,12 @@
 import { PublicKey } from "@solana/web3.js";
 export const icoProgramId = new PublicKey(
-  "GprFrh9PRS25kri3cHVJXGyFik29HM8jtUhKKMnqs3b7"
+  "CBou3eHKHCp1Rc9X3WzFF44y3KWYpCVyLuj7Kz64FpVT"
 );
 export const appStateId = new PublicKey(
-  "3YGG6YyGiyZnWEZeoxYbeNzXt2eVq3qeABbgBvLopaBn"
+  "7GuCHbnukPkiAJkMq9mUUs9JuHUKMzhu2tFvUJfRtQX5"
 );
 export const saleTokenMint = new PublicKey(
-  "CWiA6Zq6jFsB4XP7AKxgyeqw3r24NbDDsL56ctCjdDuD"
+  "tkdZ2grPbhAcZ9W1gXaWhoNf6rJdCgqs9St7DFxdy7A"
 );
 
 //token mint tkdZ2grPbhAcZ9W1gXaWhoNf6rJdCgqs9St7DFxdy7A

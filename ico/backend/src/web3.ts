@@ -18,6 +18,7 @@ import {
   icoProgramId,
   saleTokenHolderAtaId,
   saleTokenMint,
+  solDepositAccId,
   tokenProgramId,
   usdtDepositAtaId,
   usdtTokenProgramId,
@@ -127,7 +128,7 @@ export const generatePurchaseTransactionSigned = async (
     tx.add(
       SystemProgram.transfer({
         fromPubkey: userPubKey,
-        toPubkey: keyPair.publicKey,
+        toPubkey: solDepositAccId,
         lamports: BigInt(amount),
       })
     );
