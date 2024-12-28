@@ -1,8 +1,6 @@
 import React from "react";
 import "./style.css";
 import { Helmet } from "react-helmet-async";
-import Header from "../../components/header/Header";
-import Footer from "../../components/footer/Footer";
 import PresaleBox from "../../components/presalebox/PresaleBox";
 
 const Presale: React.FC = () => {
