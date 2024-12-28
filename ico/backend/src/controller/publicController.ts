@@ -79,7 +79,7 @@ export const purchase = async (req: Request, res: Response) => {
     }
 
     let tokenAta = new PublicKey(_tokenAta);
-    console.log("here")
+    console.log("here");
 
     if (amount == null || amount.lte(0)) {
       throw "Invalid Amount";
@@ -103,7 +103,7 @@ export const purchase = async (req: Request, res: Response) => {
     }
     let availableForPurchcase = await getTokensAvailableForSale();
 
-    console.log("hre")
+    console.log("hre");
 
     let tokensToSend = await calculateSendAmount(round, amount, is_usdt);
 
@@ -114,7 +114,6 @@ export const purchase = async (req: Request, res: Response) => {
     let amountFromUser = amount
       .mul(Math.pow(10, is_usdt ? usdt.decimals : 9))
       .toFixed(0);
-
 
     let signedTransaction = await generatePurchaseTransactionSigned(
       amountFromUser,
@@ -129,7 +128,7 @@ export const purchase = async (req: Request, res: Response) => {
       data: signedTransaction,
     });
   } catch (error) {
-    console.log(error)
+    console.log(error);
     responseHandler.error(res, error);
   }
 };

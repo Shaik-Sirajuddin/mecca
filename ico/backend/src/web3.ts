@@ -27,7 +27,21 @@ import Decimal from "decimal.js";
 import { BN } from "@coral-xyz/anchor";
 import { keyPair } from "./key";
 import { PurchaseInstructionSchema } from "./schema/purchase_instruction";
+import { ContractState, ContractStateSchema } from "./schema/ContractState";
 const connection = new Connection("https://api.devnet.solana.com");
+
+export const getContractState = async () => {
+  try {
+    const accountInfo = await connection.getAccountInfo(
+      appStateId,
+      "processed"
+    );
+    const deserializedData = ContractStateSchema.decode(accountInfo?.data);
+    return new ContractState(deserializedData);
+  } catch (error) {
+    console.log(error);
+  }
+};
 
 export const getTokensAvailableForSale = async (): Promise<Decimal> => {
   const balance = await connection.getTokenAccountBalance(

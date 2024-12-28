@@ -3,6 +3,7 @@ import { responseHandler } from "../utils/helper";
 import Decimal from "decimal.js";
 import Round from "../models/Round";
 import IcoConfig from "../models/IcoConfig";
+import { getContractState } from "../web3";
 
 export const updateRoundDetails = async (req: Request, res: Response) => {
   try {
@@ -45,13 +46,15 @@ export const updateRoundDetails = async (req: Request, res: Response) => {
   }
 };
 
-export const updateSaleStatus = async (req: Request, res: Response) => {
+export const updateConfig = async (req: Request, res: Response) => {
   try {
-    let { paused } = req.body;
+    let { paused, startTime: _startTime } = req.body;
 
+    console.log(_startTime , "this ")
     await IcoConfig.update(
       {
         paused: paused,
+        startTime: new Date(_startTime),
       },
       {
         where: {},
@@ -63,21 +66,10 @@ export const updateSaleStatus = async (req: Request, res: Response) => {
   }
 };
 
-export const updateSaleStartTime = async (req: Request, res: Response) => {
+export const fetchContractState = async (req: Request, res: Response) => {
   try {
-    let { startTime: _startTime } = req.body;
-
-    let startTime = new Date(_startTime);
-
-    await IcoConfig.update(
-      {
-        startTime: startTime,
-      },
-      {
-        where: {},
-      }
-    );
-    responseHandler.success(res, "Updated");
+    let state = await getContractState();
+    responseHandler.success(res, "Fetched", state);
   } catch (error) {
     responseHandler.error(res, error);
   }
