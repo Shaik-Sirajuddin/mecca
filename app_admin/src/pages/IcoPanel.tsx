@@ -5,8 +5,8 @@ import { Container, Row, Col, Button, Form, Card } from "react-bootstrap";
 import "bootstrap/dist/css/bootstrap.min.css";
 import { formatBalance } from "../utils/utils";
 import { ContractState } from "../schema/ContractState";
-import { Config, IcoState, Round } from "../schema/IcoState";
-import { baseUrl } from "../utils/constants";
+import { IcoState, Round } from "../schema/IcoState";
+import { icoBaseUrl } from "../utils/constants";
 import toast from "react-hot-toast";
 
 const AdminICOPage: React.FC = () => {
@@ -18,7 +18,7 @@ const AdminICOPage: React.FC = () => {
 
   const syncData = () => {
     axios
-      .get(`${baseUrl}/admin/contract-state`)
+      .get(`${icoBaseUrl}/admin/contract-state`)
       .then((response) =>
         setContractState(new ContractState(response.data.body))
       )
@@ -26,7 +26,7 @@ const AdminICOPage: React.FC = () => {
 
     // Fetch public state
     axios
-      .get(`${baseUrl}/public/state`)
+      .get(`${icoBaseUrl}/public/state`)
       .then((response) => setPublicState(response.data.body))
       .catch((error) => console.error("Error fetching public state:", error));
   };
@@ -42,7 +42,7 @@ const AdminICOPage: React.FC = () => {
   const handleUpdateRound = () => {
     if (editingRound) {
       axios
-        .post(`${baseUrl}/admin/update-round/`, editingRound)
+        .post(`${icoBaseUrl}/admin/update-round/`, editingRound)
         .then(() => {
           toast.success("Round updated successfully!");
           setEditingRound(null);
@@ -57,7 +57,7 @@ const AdminICOPage: React.FC = () => {
 
   const handleConfigUpdate = () => {
     axios
-      .post(`${baseUrl}/admin/update-config`, publicState.config)
+      .post(`${icoBaseUrl}/admin/update-config`, publicState.config)
       .then(() => {
         toast.success("Config updated successfully!");
         syncData();
