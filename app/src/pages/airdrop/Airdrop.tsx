@@ -6,7 +6,7 @@ import AirdropPeriod from "../../components/airdrop-period/AirdropPeriod";
 const Airdrop: React.FC = () => {
   return (
     <main
-      className="wrapper community-page"
+      className="wrapper"
       style={{
         width: "100%",
       }}
@@ -18,7 +18,7 @@ const Airdrop: React.FC = () => {
           content="Welcome to the home page of my application."
         />
       </Helmet>
-      <div className="airdrop-period-box">
+      <div className="">
         <AirdropPeriod />
       </div>
     </main>

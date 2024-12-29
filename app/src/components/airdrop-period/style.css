@@ -4,18 +4,21 @@ input::-webkit-inner-spin-button {
   margin: 0;
 }
 
-input[type="number"] {
+input[type=number] {
   -moz-appearance: textfield;
 }
+
 
 .airdrop-period-container {
   position: relative;
   max-width: 699px;
+
 }
+
 
 .airdrop-period-box {
   width: 100%;
-  background-color: rgba(32, 32, 32, 0.7);
+  background-color: rgba(32, 32, 32, 1);
   padding: 20px;
   padding-top: 58px;
   padding-bottom: 44px;
@@ -34,9 +37,10 @@ input[type="number"] {
 }
 
 .timer-wrap {
-  padding: 24px;
+  padding: 12px;
   margin: 0 auto;
 }
+
 .timer-box {
   display: flex;
   justify-content: center;
@@ -48,7 +52,7 @@ input[type="number"] {
   background-color: #fff;
   padding: 16px;
   border-radius: 15px;
-  width: 99px;
+  width: 70px;
   text-align: center;
 }
 
@@ -59,17 +63,22 @@ input[type="number"] {
   color: #8109a3;
   line-height: 24px;
   margin-bottom: 6px;
+
 }
+
 .timer-day {
   font-size: 18px;
   font-weight: 600;
   letter-spacing: -1px;
 }
 
+
 .timer-colon {
   color: #fff;
   font-size: 24px;
 }
+
+
 
 .airdrop-period-body {
   padding: 0 42px;
@@ -77,7 +86,7 @@ input[type="number"] {
 
 .airdrop-period-textbox {
   padding-bottom: 34px;
-  border-bottom: 1px solid #7a7482;
+  border-bottom: 1px solid #7A7482;
 }
 
 .airdrop-period-textbox h3 {
@@ -128,11 +137,9 @@ input[type="number"] {
   color: #292929;
   font-weight: 500;
   font-family: "Pretendard";
+
 }
 
-.input-mecca{
-  text-overflow: ellipsis;
-}
 .input-mecca::placeholder {
   font-size: 16px;
   letter-spacing: 0px;
@@ -147,6 +154,7 @@ input[type="number"] {
 
 .input-mecca-container input {
   padding: 24px;
+  padding-right: 24px;
 }
 
 .input-token-container span {
@@ -165,6 +173,7 @@ input[type="number"] {
   width: 225px;
 }
 
+
 .wallet-address-input label,
 .token-selector label {
   font-size: 16px;
@@ -175,6 +184,7 @@ input[type="number"] {
   margin-bottom: 6px;
   margin-top: 14px;
 }
+
 
 .mecca-logo-input {
   position: absolute;

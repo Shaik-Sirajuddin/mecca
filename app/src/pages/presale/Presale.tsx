@@ -6,9 +6,10 @@ import PresaleBox from "../../components/presalebox/PresaleBox";
 const Presale: React.FC = () => {
   return (
     <main
-      className="wrapper community-page"
+      className="wrapper"
       style={{
         width: "100%",
+        background: "black",
       }}
     >
       <Helmet>
@@ -19,7 +20,12 @@ const Presale: React.FC = () => {
         />
       </Helmet>
       <section className="public-sail-sec">
-        <div className="container">
+        <div
+          className="container"
+          style={{
+            maxWidth: "600px",
+          }}
+        >
           <div className="row">
             <div className="col-md-12">
               <PresaleBox />

@@ -163,6 +163,12 @@ a {
   text-decoration: none;
 }
 
+button {
+  border: none;
+  outline: 0;
+  box-shadow: none;
+}
+
 a:focus,
 a:hover,
 a:active {
@@ -241,7 +247,7 @@ input[type="number"] {
 }
 
 .text-box h1 {
-  font-size: 36px;
+  font-size: 26px;
   letter-spacing: -1px;
   color: #fff;
   font-weight: 800;
