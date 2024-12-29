@@ -25,7 +25,6 @@ export class User implements IUser {
   actions: Action[];
 
   constructor(data: any) {
-    console.log("dta here ", data);
     this.accumulated_interest = new Decimal(
       (data.accumulated_interest || 0).toString()
     );
@@ -34,7 +33,7 @@ export class User implements IUser {
     );
     this.principal_in_stake = new Decimal(
       (data.principal_in_stake || 0).toString()
-    );
+    );  
     this.stake_time = new Decimal((data.stake_time || 0).toString());
     this.withdraw_request = WithdrawRequest.parse(
       (data.withdraw_request && data.withdraw_request.length
@@ -70,11 +69,7 @@ export class User implements IUser {
   }
 
   calculateUnaccountedInterest(appState: AppState): Decimal {
-    console.log(
-      appState.interest_history.length,
-      "leng",
-      this.change_list_index
-    );
+   
     if (appState.interest_history.length == 0) {
       return new Decimal(0);
     }

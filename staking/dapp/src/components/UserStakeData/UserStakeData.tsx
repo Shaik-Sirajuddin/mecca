@@ -3,7 +3,6 @@ import { IRootState } from "../../app/store";
 import { User } from "../../schema/user";
 import { formatBalance } from "../../utils/helper";
 import { AppState } from "../../schema/app_state_schema";
-import { useEffect } from "react";
 
 const UserStakeData = () => {
   const appState = useSelector(
@@ -11,9 +10,6 @@ const UserStakeData = () => {
   );
   const user = useSelector((state: IRootState) => new User(state.user.data));
 
-  useEffect(() => {
-    console.log("user data", user);
-  }, [user]);
   return (
     <div className="my-wallet-box bg-wallet mb-3">
       <h2 className="text-24 text-white font-bold mb-4">My wallet</h2>

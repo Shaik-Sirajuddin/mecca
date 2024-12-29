@@ -26,7 +26,7 @@
     "availableQuantityLabel": "Available:",
     "withdrawalAmountLabel": "Withdrawl:",
     "unstake": "Unstake",
-    "lockupNote": "*Lock up for 00 hours after Unstaking.",
+    "lockupNote": "*Lock up for {{days}} days after Unstaking.",
     "lockupTimerTitle": "Lockup Timer",
     "claimButton": "Claim",
     "partialUnstakingTitle": "Partial Unstaking",

@@ -91,7 +91,7 @@
 
 .bg-unstaking {
   filter: drop-shadow(0px 3px 4px rgba(4, -1, -1, 0.18));
-  background-color: rgba(137, 9, 165, 0.8);
+  background-color: rgba(68, 20, 78, 0.6);
 }
 
 .bg-partial {
@@ -189,9 +189,13 @@
 }
 
 .unstaking-btn:disabled {
-  background-color: var(--gray-3) !important;
+  background-color: rgba(128, 0, 128, 0.232) !important;
   color: #fff;
   cursor: not-allowed;
+}
+
+.unstaking-btn:disabled:hover {
+  border-color: transparent;
 }
 
 .unstaking-btn.bg-pink-1:hover {

@@ -3,22 +3,30 @@ import React, { useState, useEffect } from "react";
 interface TimerProps {
   endTime: Date;
   color: string;
+  onTimerComplete: () => void;
 }
 
-const LockupTimer: React.FC<TimerProps> = ({ color, endTime }) => {
+const LockupTimer: React.FC<TimerProps> = ({
+  color,
+  endTime,
+  onTimerComplete,
+}) => {
   const [time, setTime] = useState({
     hours: 0,
     minutes: 0,
     seconds: 0,
   });
 
-  const getTimeDifference = (date1: string | Date, date2: string | Date) => {
+  const getTimeDifference = (
+    startDate: string | Date,
+    endDate: string | Date
+  ) => {
     // Convert input to Date objects if they are strings
-    const start = new Date(date1);
-    const end = new Date(date2);
+    const start = new Date(startDate);
+    const end = new Date(endDate);
 
     // Get the difference in milliseconds
-    let diffInMs = Math.abs(end.getTime() - start.getTime());
+    let diffInMs = end.getTime() - start.getTime();
 
     // If the difference is negative, set it to 0
     if (diffInMs < 0) {
@@ -36,12 +44,13 @@ const LockupTimer: React.FC<TimerProps> = ({ color, endTime }) => {
     const timer = setInterval(() => {
       setTime((prevTime) => {
         const { hours, minutes, seconds } = getTimeDifference(
-          endTime,
-          new Date()
+          new Date(),
+          endTime
         );
 
         // Decrement logic
         if (hours === 0 && minutes === 0 && seconds === 0) {
+          onTimerComplete();
           clearInterval(timer);
           return prevTime;
         }
@@ -51,7 +60,7 @@ const LockupTimer: React.FC<TimerProps> = ({ color, endTime }) => {
     }, 1000);
 
     return () => clearInterval(timer);
-  }, [endTime]);
+  }, [endTime, onTimerComplete]);
 
   return (
     <div className="timer-grid-box">
@@ -59,21 +68,21 @@ const LockupTimer: React.FC<TimerProps> = ({ color, endTime }) => {
         <p style={{ color }} className="text-20 font-medium">
           {time.hours.toString().padStart(2, "0")}
         </p>
-        <span>시</span>
+        <span>H</span>
       </div>
       <span className="timer-separator">:</span>
       <div className="timer-box">
         <p style={{ color }} className="text-20 font-medium">
           {time.minutes.toString().padStart(2, "0")}
         </p>
-        <span>분</span>
+        <span>M</span>
       </div>
       <span className="timer-separator">:</span>
       <div className="timer-box">
         <p style={{ color }} className="text-20 font-medium">
           {time.seconds.toString().padStart(2, "0")}
         </p>
-        <span>초</span>
+        <span>S</span>
       </div>
     </div>
   );

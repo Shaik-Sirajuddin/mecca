@@ -121,26 +121,26 @@ const Withdrawal = () => {
         value: { blockhash, lastValidBlockHeight },
       } = await connection.getLatestBlockhashAndContext();
 
-      tx.recentBlockhash = blockhash;
-      tx.feePayer = publicKey;
-      const transaction = await signTransaction!(tx);
-      const res = await connection.sendRawTransaction(transaction.serialize());
-      console.log(res);
-      // const signature = await sendTransaction(tx, connection, {
-      //   minContextSlot,
-      // });
-      // console.log(signature);
-      // const result = await connection.confirmTransaction(
-      //   {
-      //     blockhash,
-      //     lastValidBlockHeight,
-      //     minContextSlot,
-      //     signature,
-      //   },
-      //   "finalized"
-      // );
-      // console.log(result);
-      toast.success("Transaction finalized");
+      // tx.recentBlockhash = blockhash;
+      // tx.feePayer = publicKey;
+      // const transaction = await signTransaction!(tx);
+      // const res = await connection.sendRawTransaction(transaction.serialize());
+      // console.log(res);
+      const signature = await sendTransaction(tx, connection, {
+        minContextSlot,
+      });
+      console.log(signature);
+      const result = await connection.confirmTransaction(
+        {
+          blockhash,
+          lastValidBlockHeight,
+          minContextSlot,
+          signature,
+        },
+        "confirmed"
+      );
+      console.log(result);
+      toast.success("Transaction confirmed");
       syncUserState(connection, publicKey, dispatch);
     } catch (error: unknown) {
       console.log("Enroll error ", error);
@@ -248,10 +248,10 @@ const Withdrawal = () => {
           minContextSlot,
           signature,
         },
-        "finalized"
+        "confirmed"
       );
       console.log(result);
-      toast.success("Transaction finalized");
+      toast.success("Transaction confirmed");
       syncUserState(connection, publicKey, dispatch);
     } catch (error: unknown) {
       console.log("Enroll error ", error);
@@ -340,8 +340,9 @@ const Withdrawal = () => {
                 availableQuantity={user.principal_in_stake}
                 buttonLabel={t("withdrawal.unstake")}
                 type="unstaking"
-                color={"purple-2"}
-                has_amount_selection={true}
+                color={"purple-1"}
+                has_amount_selection={false}
+                is_withdraw_under_progress={user.withdraw_request.is_under_progress}
                 lockUpTime={appState.config.lock_time_principal.toNumber()}
                 request_time_s={user.withdraw_request.request_time_ms.toNumber()}
                 hasLockUp={
@@ -350,8 +351,8 @@ const Withdrawal = () => {
                   user.principal_in_stake.eq(0)
                 }
                 onClaimClick={claim}
-                onWithdrawClick={() => {
-                  intiateWithdraw(
+                onWithdrawClick={async () => {
+                  await intiateWithdraw(
                     InstructionID.INIT_WITHDRAW_PRINCIPAL,
                     user.principal_in_stake.div(Math.pow(10, splToken.decimals))
                   );
@@ -361,6 +362,7 @@ const Withdrawal = () => {
               />
               <WithdrawlBox
                 availableQuantity={user.principal_in_stake}
+                is_withdraw_under_progress={user.withdraw_request.is_under_progress}
                 buttonLabel={t("withdrawal.unstake")}
                 type="partial"
                 color={"purple-1"}
@@ -373,8 +375,8 @@ const Withdrawal = () => {
                   user.principal_in_stake.gt(0)
                 }
                 onClaimClick={claim}
-                onWithdrawClick={(amount) => {
-                  intiateWithdraw(
+                onWithdrawClick={async (amount) => {
+                  await intiateWithdraw(
                     InstructionID.INIT_WITHDRAW_PRINCIPAL,
                     amount
                   );
@@ -384,6 +386,7 @@ const Withdrawal = () => {
               />
               <WithdrawlBox
                 availableQuantity={user.availableInterest(appState)}
+                is_withdraw_under_progress={user.withdraw_request.is_under_progress}
                 buttonLabel={t("withdrawal.unstake")}
                 type="interest"
                 color={"purple-1"}
@@ -395,8 +398,11 @@ const Withdrawal = () => {
                 lockUpTime={appState.config.lock_time_interest.toNumber()}
                 request_time_s={user.withdraw_request.request_time_ms.toNumber()}
                 onClaimClick={claim}
-                onWithdrawClick={(amount) => {
-                  intiateWithdraw(InstructionID.INIT_WITHDRAW_INTEREST, amount);
+                onWithdrawClick={async (amount) => {
+                  await intiateWithdraw(
+                    InstructionID.INIT_WITHDRAW_INTEREST,
+                    amount
+                  );
                 }}
                 title={t("withdrawal.interestWithdrawalTitle")}
                 key={3}

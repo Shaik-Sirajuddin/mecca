@@ -39,12 +39,6 @@ const Staking = () => {
     (state: IRootState) => new AppState(state.global.state)
   );
 
-  const options = {
-    title: "DTRAB Staked Amount",
-    curveType: "function",
-    legend: { position: "bottom" },
-  };
-
   const [stats, setStats] = useState<IStats>({
     day: "0",
     standy: "0",
@@ -257,7 +251,7 @@ const Staking = () => {
                       <div className="col-4 ">
                         <div className="w-100 dasboard-content-row">
                           <UserStakeData />
-                          <DepositBox />
+                          <DepositBox onStake={fetchAppState} />
                         </div>
                       </div>
                     </div>

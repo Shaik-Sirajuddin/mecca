@@ -39,11 +39,9 @@ const handler = async (
     }
 
     dispatch(setUserPdaExists(true));
-    console.log(UserSchema);
     //deserialize user data
     const userData = UserSchema.decode(userDataPDA.data);
     // const userData = deserialize(UserSchema, userDataPDA.data);
-    console.log("user ata", userAta);
     dispatch(setUserData(userData));
   } catch (error: unknown) {
     console.log(error);

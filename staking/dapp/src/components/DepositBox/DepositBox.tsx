@@ -1,5 +1,5 @@
 import { useCallback, useEffect, useMemo, useState } from "react";
-import { formatNum, updateIfValid } from "../../utils/helper";
+import { formatBalance, formatNum, updateIfValid } from "../../utils/helper";
 import { useDispatch, useSelector } from "react-redux";
 import { IRootState } from "../../app/store";
 import { BN } from "@coral-xyz/anchor";
@@ -27,14 +27,24 @@ import { AmountInstructionSchema } from "../../schema/instruction/amount_instruc
 import Decimal from "decimal.js";
 import { User } from "../../schema/user";
 import syncUserState from "../../features/user/syncUserState";
-const DepositBox = () => {
+import { AppState } from "../../schema/app_state_schema";
+import { Config } from "../../schema/config";
+
+interface Props {
+  onStake: () => void;
+}
+const DepositBox = ({ onStake }: Props) => {
   const { connection } = useConnection();
   const { wallet, connected, publicKey, sendTransaction } = useWallet();
   const dispatch = useDispatch();
   const interestRate = useSelector(
     (state: IRootState) => state.global.state.cur_interest_rate
   );
-  const [depositAmount, setDepositAmount] = useState("10000");
+  const config: Config = useSelector(
+    (state: IRootState) => new AppState(state.global.state).config
+  );
+
+  const [depositAmount, setDepositAmount] = useState("1000");
   const [expectedInterest, setExcpectedInterest] = useState(0);
   const [txLoading, setTxLoading] = useState(false);
 
@@ -59,6 +69,25 @@ const DepositBox = () => {
 
   const enrollStaking = async (instruction_id: number) => {
     try {
+      if (txLoading) return;
+      const _purchaseAmount = new Decimal(depositAmount).mul(
+        Math.pow(10, splToken.decimals)
+      );
+      if (_purchaseAmount.lt(config.min_deposit_user)) {
+        toast.info(
+          `Amount is less than minimum ${formatBalance(
+            config.min_deposit_user
+          )}`
+        );
+        return;
+      }
+      if (
+        _purchaseAmount.add(user.principal_in_stake).gt(config.max_deposit_user)
+      ) {
+        console.log("max deposit" , config.max_deposit_user.toString() , _purchaseAmount.toString() , user.principal_in_stake.toString())
+        toast.info(`Amount exceeds max deposit possible`);
+        return;
+      }
       setTxLoading(true);
       let instruction_data = Buffer.alloc(200);
 
@@ -166,6 +195,7 @@ const DepositBox = () => {
 
       toast.success("Transaction confirmed");
       syncUserState(connection, publicKey, dispatch);
+      onStake();
     } catch (error: unknown) {
       console.log("Enroll error ", error);
       toast.error(error.toString());
