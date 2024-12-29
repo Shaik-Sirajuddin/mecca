@@ -3,7 +3,7 @@ import { createServer } from "http";
 import cors from "cors";
 import bodyParser from "body-parser";
 import publicRouter from "../router/publicRouter";
-// import adminRouter from "../router/adminRouter";
+import adminRouter from "../router/adminRouter";
 const app = express();
 
 app.use(bodyParser.json());
@@ -20,7 +20,7 @@ const corsOptions = {
 app.use(cors(corsOptions));
 
 app.use("/public", cors(corsOptions), publicRouter);
-// app.use("/admin", cors(corsOptions), adminRouter);
+app.use("/admin", cors(corsOptions), adminRouter);
 
 const server = createServer(app);
 export { app };

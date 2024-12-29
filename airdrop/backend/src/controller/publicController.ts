@@ -106,8 +106,8 @@ export const claimAirdrop = async (req: Request, res: Response) => {
       underProcess: false,
     });
 
-    if(!transferStatus){
-      throw "Failed to request airdrop"
+    if (!transferStatus) {
+      throw "Failed to request airdrop";
     }
 
     responseHandler.success(res, "Success", {});
@@ -125,6 +125,7 @@ export const getAirdropConfig = async (req: Request, res: Response) => {
       minSolAmount: config.dataValues.minSolAmount,
       paused: config.dataValues.paused,
       endTime: config.dataValues.endTime,
+      amount: config.dataValues.amount,
     };
     responseHandler.success(res, "Fetched", parsedConfig);
   } catch (error) {
