@@ -109,23 +109,35 @@ const AirdropPeriod = () => {
             <div className="timer-wrap">
               <div className="timer-box">
                 <div className="timer-digits">
-                  <h3 className="timer-digit">{timerData.days}</h3>
-                  <h3 className="timer-day">day</h3>
+                  <h3 className="timer-digit">
+                    {timerData.days}
+                    <p>D</p>
+                  </h3>
+                  {/* <h3 className="timer-day">D</h3> */}
                 </div>
                 <div className="timer-colon">:</div>
                 <div className="timer-digits">
-                  <h3 className="timer-digit">{timerData.hours}</h3>
-                  <h3 className="timer-day">hours</h3>
+                  <h3 className="timer-digit">
+                    {timerData.hours}
+                    <p>H</p>
+                  </h3>
+                  {/* <h3 className="timer-day">H</h3> */}
                 </div>
                 <div className="timer-colon">:</div>
                 <div className="timer-digits">
-                  <h3 className="timer-digit">{timerData.minutes}</h3>
-                  <h3 className="timer-day">min</h3>
+                  <h3 className="timer-digit">
+                    {timerData.minutes}
+                    <p>M</p>
+                  </h3>
+                  {/* <h3 className="timer-day">M</h3> */}
                 </div>
                 <div className="timer-colon">:</div>
                 <div className="timer-digits">
-                  <h3 className="timer-digit">{timerData.seconds}</h3>
-                  <h3 className="timer-day">sec</h3>
+                  <h3 className="timer-digit">
+                    {timerData.seconds}
+                    <p>S</p>
+                  </h3>
+                  {/* <h3 className="timer-day">S</h3> */}
                 </div>
               </div>
             </div>

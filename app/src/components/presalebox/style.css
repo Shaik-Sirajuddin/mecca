@@ -86,7 +86,7 @@ input[type="number"] {
   font-weight: 500;
   font-family: "Pretendard";
   text-align: center;
-  margin-bottom: 14px;
+  margin-bottom: 12px;
 }
 
 .sail-inner {
@@ -97,7 +97,7 @@ input[type="number"] {
 }
 
 .timer-wrap {
-  padding: 16px;
+  padding: 4px;
   margin: 0 auto;
   text-align: center;
 }
@@ -121,6 +121,9 @@ input[type="number"] {
   border-radius: 15px;
   width: 70px;
   text-align: center;
+  display: flex;
+  gap: 4px;
+  justify-content: center;
 }
 
 .timer-digit {
@@ -129,7 +132,6 @@ input[type="number"] {
   font-weight: 600;
   color: #8109a3;
   line-height: 14px;
-  margin-bottom: 6px;
 }
 
 .timer-day {
@@ -460,7 +462,7 @@ input[type="number"] {
   }
 
   .timer-wrap {
-    padding: 14px;
+    padding: 4px;
   }
 
   .mecca-box-hexa p {

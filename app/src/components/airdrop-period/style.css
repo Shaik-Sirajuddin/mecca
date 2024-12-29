@@ -62,10 +62,13 @@ input[type=number] {
   font-weight: 600;
   color: #8109a3;
   line-height: 24px;
-  margin-bottom: 6px;
-
+  gap: 4px;
+  display: flex;
 }
 
+.timer-digit p {
+  color: black;
+}
 .timer-day {
   font-size: 18px;
   font-weight: 600;
