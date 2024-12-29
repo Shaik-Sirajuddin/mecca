@@ -1,0 +1,37 @@
+{
+  "staking": {
+    "title": "Dashboard",
+    "depositApy": "Deposit APY",
+    "stakingPool": "Staking Pool",
+    "participants": "Participants",
+    "interestRateAnnual": "Interest Rate (annual)",
+    "interestPaidToday": "Interest paid today",
+    "totalInterestStandby": "Total interest on standby",
+    "chartTitle": "DTRab Staked Amount",
+    "faqs": "Frequently asked questions",
+    "days7": "7 days",
+    "days60": "60 days",
+    "all": "All"
+  },
+  "withdrawal": {
+    "title": "Withdrawal",
+    "metaDescription": "Welcome to the home page of my application.",
+    "heroSectionTitle": "Staking",
+    "dtrabLabel": "DTRab",
+    "principalInStake": "Principal In Stake",
+    "accumulatedInterest": "Accumulated Interest",
+    "lockedAmount": "Locked Amount",
+    "chartTitle": "Staking Doughnut Chart",
+    "allUnstakingTitle": "All Unstaking",
+    "availableQuantityLabel": "Available:",
+    "withdrawalAmountLabel": "Withdrawl:",
+    "unstake": "Unstake",
+    "lockupNote": "*Lock up for 00 hours after Unstaking.",
+    "lockupTimerTitle": "Lockup Timer",
+    "claimButton": "Claim",
+    "partialUnstakingTitle": "Partial Unstaking",
+    "maxButton": "MAX",
+    "interestWithdrawalTitle": "Interest Withdrawal",
+    "errorsAssetsUnavailable": "Assets not available for withdrawal."
+  }
+}
