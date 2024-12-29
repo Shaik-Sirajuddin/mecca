@@ -1,12 +1,18 @@
 use borsh::BorshDeserialize;
 use solana_program::{
     account_info::{next_account_info, AccountInfo},
+    clock::Clock,
     entrypoint::ProgramResult,
     program::invoke_signed,
     pubkey::Pubkey,
+    sysvar::Sysvar,
 };
 
-use crate::state::{app_state::AppState, token_store::TokenStore, user::User};
+use crate::state::{
+    app_state::AppState,
+    token_store::TokenStore,
+    user::{Action, User},
+};
 
 fn validate_accounts(program_id: &Pubkey, accounts: &[AccountInfo]) -> ProgramResult {
     let account_iter = &mut accounts.iter();
@@ -80,6 +86,7 @@ pub fn withdraw(
 
     let mint_account = next_account_info(account_iter)?;
     let token_program = next_account_info(account_iter)?;
+    let system_program = next_account_info(account_iter)?;
 
     let user_data = &mut User::try_from_slice(&user_data_acc.data.try_borrow().unwrap())?;
     let app_state = &AppState::try_from_slice(&app_state_acc.data.borrow())?;
@@ -101,6 +108,12 @@ pub fn withdraw(
     if withdrawl_request.is_interest() {
         user_data.withdrawn_interest += withdrawl_request.amount;
     }
+
+    user_data.actions.push(Action {
+        action: crate::state::user::Act::Withdraw,
+        amount: withdrawl_request.amount,
+        time: Clock::get().unwrap().unix_timestamp as u64,
+    });
 
     invoke_signed(
         &spl_token_2022::instruction::transfer_checked(
@@ -127,5 +140,6 @@ pub fn withdraw(
         ]],
     )?;
 
+    user_data.realloc_and_save(&[user_acc, user_data_acc, system_program])?;
     Ok(())
 }

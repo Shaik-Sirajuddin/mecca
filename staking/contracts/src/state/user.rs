@@ -16,6 +16,7 @@ pub enum Act {
     IntiateWithdrawInterest,
     WithdrawPrincipal,
     WithdrawInterest,
+    Withdraw,
 }
 
 #[derive(BorshSerialize, BorshDeserialize, Clone)]

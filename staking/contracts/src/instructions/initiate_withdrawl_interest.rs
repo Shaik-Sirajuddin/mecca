@@ -76,7 +76,7 @@ pub fn initiate_withdrawl_interest(
     );
     assert!(
         is_complete_withdrawl || amount > 0,
-        "Amount exceeds user principal"
+        "Amount not provided"
     );
 
     let cur_time_s = Clock::get()?.unix_timestamp as u64;
