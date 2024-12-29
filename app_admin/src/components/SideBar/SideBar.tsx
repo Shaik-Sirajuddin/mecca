@@ -1,8 +1,14 @@
 import React from "react";
 import { Nav } from "react-bootstrap";
 import "bootstrap/dist/css/bootstrap.min.css";
+import { useNavigate } from "react-router-dom";
 
 const Sidebar: React.FC = () => {
+  const navigate = useNavigate();
+  const logout = () => {
+    localStorage.removeItem("auth-key");
+    navigate("/login");
+  };
   return (
     <div
       style={{
@@ -30,6 +36,12 @@ const Sidebar: React.FC = () => {
         <Nav.Link href="/staking" style={styles.navLink}>
           Staking
         </Nav.Link>
+        <div
+          style={styles.navLink}
+          onClick={logout}
+        >
+          Logout
+        </div>
       </Nav>
     </div>
   );
@@ -43,6 +55,7 @@ const styles = {
     padding: "10px 15px",
     color: "#333",
     textDecoration: "none",
+    cursor : 'pointer'
   },
 };
 

@@ -23,3 +23,11 @@ export const updateConfig = async (req: Request, res: Response) => {
     responseHandler.error(res, error);
   }
 };
+
+export const login = async (req: Request, res: Response) => {
+  try {
+    responseHandler.success(res, "Login success");
+  } catch (error) {
+    responseHandler.error(res, error);
+  }
+};

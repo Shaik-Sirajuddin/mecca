@@ -1,8 +1,14 @@
 import React from "react";
 import { Navbar, Nav, Container } from "react-bootstrap";
 import "bootstrap/dist/css/bootstrap.min.css";
+import { useNavigate } from "react-router-dom";
 
 const Header: React.FC = () => {
+  const navigate = useNavigate();
+  const logout = () => {
+    localStorage.removeItem("auth-key");
+    navigate("/login");
+  };
   return (
     <Navbar
       bg="light"
@@ -26,6 +32,13 @@ const Header: React.FC = () => {
             <Nav.Link href="/staking" className="fs-5">
               Staking
             </Nav.Link>
+            <div
+              className="fs-5"
+              style={{ cursor: "pointer !important" }}
+              onClick={logout}
+            >
+              Logout
+            </div>
           </Nav>
         </Navbar.Collapse>
       </Container>

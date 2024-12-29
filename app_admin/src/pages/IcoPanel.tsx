@@ -8,6 +8,7 @@ import { ContractState } from "../schema/ContractState";
 import { IcoState, Round } from "../schema/IcoState";
 import { icoBaseUrl } from "../utils/constants";
 import toast from "react-hot-toast";
+import { useNavigate } from "react-router-dom";
 
 const AdminICOPage: React.FC = () => {
   const [contractState, setContractState] = useState<ContractState>(
@@ -15,6 +16,7 @@ const AdminICOPage: React.FC = () => {
   );
   const [publicState, setPublicState] = useState<IcoState>(IcoState.dummy());
   const [editingRound, setEditingRound] = useState<Round | null>(null);
+  const navigate = useNavigate();
 
   const syncData = () => {
     axios
@@ -32,8 +34,11 @@ const AdminICOPage: React.FC = () => {
   };
 
   useEffect(() => {
+    if (!localStorage.getItem("auth-key")) {
+      navigate("/login");
+    }
     syncData();
-  }, []);
+  }, [navigate]);
 
   const handleEditRound = (round: Round) => {
     setEditingRound(round);
@@ -42,7 +47,11 @@ const AdminICOPage: React.FC = () => {
   const handleUpdateRound = () => {
     if (editingRound) {
       axios
-        .post(`${icoBaseUrl}/admin/update-round/`, editingRound)
+        .post(`${icoBaseUrl}/admin/update-round/`, editingRound, {
+          headers: {
+            authorization: localStorage.getItem("auth-key"),
+          },
+        })
         .then(() => {
           toast.success("Round updated successfully!");
           setEditingRound(null);
@@ -57,7 +66,11 @@ const AdminICOPage: React.FC = () => {
 
   const handleConfigUpdate = () => {
     axios
-      .post(`${icoBaseUrl}/admin/update-config`, publicState.config)
+      .post(`${icoBaseUrl}/admin/update-config`, publicState.config, {
+        headers: {
+          authorization: localStorage.getItem("auth-key"),
+        },
+      })
       .then(() => {
         toast.success("Config updated successfully!");
         syncData();

@@ -6,11 +6,14 @@ import "bootstrap/dist/css/bootstrap.min.css";
 import { AirdropConfig } from "../../schema/AirdropConfig";
 import { airdropBaseUrl } from "../../utils/constants";
 import toast from "react-hot-toast";
+import { useNavigate } from "react-router-dom";
 
 const AirdropAdmin: React.FC = () => {
   const [airdropConfig, setAirdropConfig] = useState<AirdropConfig>(
     AirdropConfig.dummy()
   );
+
+  const navigate = useNavigate();
 
   useEffect(() => {
     // Fetch airdrop config
@@ -25,7 +28,11 @@ const AirdropAdmin: React.FC = () => {
 
   const handleConfigUpdate = () => {
     axios
-      .post(`${airdropBaseUrl}/admin/update-config`, airdropConfig)
+      .post(`${airdropBaseUrl}/admin/update-config`, airdropConfig, {
+        headers: {
+          authorization: localStorage.getItem("auth-key"),
+        },
+      })
       .then(() => {
         toast.success("Airdrop configuration updated successfully!");
       })
@@ -34,6 +41,12 @@ const AirdropAdmin: React.FC = () => {
         toast.error(error.toString());
       });
   };
+
+  useEffect(() => {
+    if (!localStorage.getItem("auth-key")) {
+      navigate("/login");
+    }
+  }, [navigate]);
 
   if (!airdropConfig) {
     return <div className="text-center">Loading...</div>;

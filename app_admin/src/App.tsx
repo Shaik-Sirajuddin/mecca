@@ -1,10 +1,11 @@
 import IcoPanel from "./pages/IcoPanel";
 import "./App.css";
 import "bootstrap/dist/css/bootstrap.min.css";
-import { Route, Routes } from "react-router";
+import { Route, Routes } from "react-router-dom";
 import AirdropAdmin from "./pages/Airdrop/Airdrop";
 import Header from "./components/Header/Header";
 import Sidebar from "./components/SideBar/SideBar";
+import Login from "./pages/Login/Login";
 function App() {
   return (
     <>
@@ -18,6 +19,7 @@ function App() {
           <Routes>
             <Route path="/" element={<IcoPanel />} />
             <Route path="/airdrop" element={<AirdropAdmin />} />
+            <Route path="/login" element={<Login />} />
           </Routes>
         </div>
       </div>
