@@ -11,7 +11,7 @@ export const deci = (value: Decimal.Value) => {
 
 export const isValidDeci = (value: Decimal.Value) => {
   try {
-    const _val = new Decimal(value);
+    new Decimal(value);
     return true;
   } catch (e) {
     return false;
