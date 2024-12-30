@@ -20,7 +20,11 @@ const AdminICOPage: React.FC = () => {
 
   const syncData = () => {
     axios
-      .get(`${icoBaseUrl}/admin/contract-state`)
+      .get(`${icoBaseUrl}/admin/contract-state`, {
+        headers: {
+          authorization: localStorage.getItem("auth-key"),
+        },
+      })
       .then((response) =>
         setContractState(new ContractState(response.data.body))
       )
