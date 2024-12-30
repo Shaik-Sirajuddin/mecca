@@ -9,6 +9,12 @@ const Airdrop: React.FC = () => {
       className="wrapper"
       style={{
         width: "100%",
+        display: "flex",
+        justifyContent: "center",
+        alignItems: "center",
+        background: "#202020",
+        height: "100%",
+        minHeight: "550px",
       }}
     >
       <Helmet>
