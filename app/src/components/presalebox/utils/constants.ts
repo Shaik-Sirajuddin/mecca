@@ -1,6 +1,6 @@
 import { PublicKey } from "@solana/web3.js";
 
-export const baseUrl = `https://staking.meccain.com`;
+export const baseUrl = `https://apiico.meccain.com`;
 
 export const usdtTokenMint = new PublicKey(
   "usXAt5xg39Mopw9sfZNCQRLgwMPkczA3HrHMTQHdYVz"
