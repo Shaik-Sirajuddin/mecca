@@ -1,5 +1,5 @@
 import { PublicKey } from "@solana/web3.js";
-export const baseUrl = `http://localhost:3030`;
+export const baseUrl = `http://apistaking.meccain.com`;
 //TODO : take token program as string inputs
 export const stakeProgramId = new PublicKey(
   "4XEWqwbKe2jq6A85QzTZr34M4eoc2hPzyFrwePPgeP7X"
