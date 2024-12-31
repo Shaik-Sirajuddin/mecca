@@ -402,7 +402,7 @@ input[type="number"] {
 }
 
 @media (max-width: 575px) {
-  .timer-digits{
+  .timer-digits {
     width: 24px;
   }
   .mecca-calc-wrap {
@@ -470,6 +470,9 @@ input[type="number"] {
   }
   .sail-inner {
     padding-bottom: 20px;
+  }
+  .sail-box {
+    padding: 0px !important;
   }
 }
 

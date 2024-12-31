@@ -7,7 +7,13 @@ import { WalletWrapper } from "./pages/wallet_wrapper.tsx";
 import { Toaster } from "react-hot-toast";
 createRoot(document.getElementById("ico-root")!).render(
   <StrictMode>
-    <Toaster position="top-right" reverseOrder={false} />
+    <Toaster
+      position="top-right"
+      reverseOrder={false}
+      containerStyle={{
+        zIndex: "10000",
+      }}
+    />
     <WalletWrapper child={<App />} />
   </StrictMode>
 );
