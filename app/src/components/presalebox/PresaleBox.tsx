@@ -1,5 +1,6 @@
 import { useCallback, useEffect, useRef, useState } from "react";
 import {
+  getPurchaseTx,
   getSPlTokenBalance,
   getTokensInSale,
   getUserTokenAta,
@@ -8,14 +9,9 @@ import {
 import TokenProgress from "../presale-range-slider/PresaleRangeSlider";
 import "./style.css";
 import toast from "react-hot-toast";
-import { PublicKey, Transaction } from "@solana/web3.js";
+import { PublicKey, SendTransactionError } from "@solana/web3.js";
 import Decimal from "decimal.js";
-import {
-  ContractState,
-  ContractStateSchema,
-} from "../../schema/ico/ContractState";
-import { baseUrl, icoStatePDAId, token, usdt } from "./utils/constants";
-import { IcoState, Round } from "../../schema/ico/IcoState";
+import { appConfigPDA, token, usdt } from "./utils/constants";
 import { useConnection, useWallet } from "@solana/wallet-adapter-react";
 import {
   deci,
@@ -25,11 +21,14 @@ import {
   updateIfValid,
 } from "./utils/utils";
 import { WalletMultiButton } from "@solana/wallet-adapter-react-ui";
+import { AppConfig, AppConfigSchema } from "../../schema/ico/AppConfig";
+import { Round } from "../../schema/ico/Round";
 
 const PresaleBox = () => {
   const { connection } = useConnection();
-  const { connected, publicKey, sendTransaction } = useWallet();
-  const [usdtAta, setUsdtAta] = useState<PublicKey | null>(null);
+  const { connected, publicKey, sendTransaction, signTransaction } =
+    useWallet();
+  const [, setUsdtAta] = useState<PublicKey | null>(null);
   const [tokenAta, setTokenAta] = useState<PublicKey | null>(null);
 
   //amount in decimal represented as string '10.232'
@@ -41,7 +40,6 @@ const PresaleBox = () => {
   const [usdtBalance, setUsdtBalance] = useState(new Decimal(0));
   const [solBalance, setSolBalance] = useState(new Decimal(0));
 
-  const [icoState, setIcoState] = useState(IcoState.dummy());
   const [curRoundId, setCurRoundId] = useState(0);
   const [solPrice, setSolPrice] = useState(100);
 
@@ -56,7 +54,7 @@ const PresaleBox = () => {
   //   id: 0,
   //   tokenPrice: new Decimal(0.1),
   // });
-  const [contractState, setContractState] = useState(ContractState.dummy());
+  const [appConfig, setAppConfig] = useState(AppConfig.dummy());
   const [availableForPurchase, setAvailableForPurchase] = useState(
     new Decimal(0)
   );
@@ -69,8 +67,8 @@ const PresaleBox = () => {
 
   const getSaleState = () => {
     const curTime = Date.now();
-    const startTime = icoState.config.startTime.getTime();
-    const endTime = getNextRound(curRoundId).endTime.getTime();
+    const startTime = appConfig.start_time.getTime();
+    const endTime = getNextRound(curRoundId).end_time.getTime();
     if (curTime < startTime) {
       return presaleStates.IN_FUTURE;
     } else if (curTime >= startTime && curTime < endTime) {
@@ -86,10 +84,10 @@ const PresaleBox = () => {
     const _saleState = getSaleState();
     if (_saleState === presaleStates.IN_FUTURE) {
       remainingTime =
-        Math.floor(icoState.config.startTime.getTime() / 1000) - currentTime;
+        Math.floor(appConfig.start_time.getTime() / 1000) - currentTime;
     } else if (_saleState === presaleStates.RUNNING) {
       remainingTime =
-        Math.floor(icoState.rounds[curRoundId].endTime.getTime() / 1000) -
+        Math.floor(appConfig.rounds[curRoundId].end_time.getTime() / 1000) -
         currentTime;
     }
     setSaleState(_saleState);
@@ -106,18 +104,18 @@ const PresaleBox = () => {
       hours,
       seconds,
     });
-  }, [curRoundId, icoState]);
+  }, [curRoundId, appConfig]);
 
   const getNextRound = (curId: number) => {
-    if (curId == icoState.rounds.length - 1) {
-      return icoState.rounds[curId];
+    if (curId == appConfig.rounds.length - 1) {
+      return appConfig.rounds[curId];
     }
-    return icoState.rounds[curId + 1];
+    return appConfig.rounds[curId + 1];
   };
   const getCurrentRoundIdx = (rounds: Round[]) => {
     const curTime = Date.now();
     for (let i = 0; i < rounds.length; i++) {
-      if (rounds[i].endTime.getTime() > curTime) {
+      if (rounds[i].end_time.getTime() > curTime) {
         return i;
       }
     }
@@ -126,12 +124,7 @@ const PresaleBox = () => {
 
   const syncInitialState = async () => {
     try {
-      const _state = await fetchIcoState();
-      if (_state) {
-        const ico_state = new IcoState(_state);
-        setIcoState(ico_state);
-      }
-      fetchContractState();
+      await fetchIcoState();
       const _inSale = await getTokensInSale(connection);
       setAvailableForPurchase(_inSale);
     } catch (error) {
@@ -141,25 +134,14 @@ const PresaleBox = () => {
 
   const fetchIcoState = async () => {
     try {
-      const response = await fetch(`${baseUrl}/public/state`);
-      const data = await response.json();
-      return data.body as IcoState;
-    } catch (error: unknown) {
-      console.log("Waste time", error);
-    }
-  };
-
-  const fetchContractState = async () => {
-    try {
       const accountInfo = await connection.getAccountInfo(
-        icoStatePDAId,
+        appConfigPDA,
         "processed"
       );
-      const deserializedData = ContractStateSchema.decode(accountInfo?.data);
-      setContractState(new ContractState(deserializedData));
-    } catch (error) {
-      //TODO : show toast
-      console.log(error);
+      const deserializedData = AppConfigSchema.decode(accountInfo?.data);
+      setAppConfig(new AppConfig(deserializedData));
+    } catch (error: unknown) {
+      console.log("Fetch Ico state", error);
     }
   };
 
@@ -196,6 +178,10 @@ const PresaleBox = () => {
 
   const purchaseWithUSDT = async () => {
     try {
+      if (!publicKey) {
+        toast.error("Wallet not connected");
+        return;
+      }
       let parsedUsdtAmount = deci(usdtAmount);
       if (parsedUsdtAmount === null) {
         toast.error("Enter valid amount");
@@ -206,9 +192,9 @@ const PresaleBox = () => {
         toast.error("Amount exceeds balance");
         return;
       }
-      const curRound = icoState.rounds[curRoundId];
+      const curRound = appConfig.rounds[curRoundId];
 
-      if (curRound.endTime.getTime() < Date.now()) {
+      if (curRound.end_time.getTime() < Date.now()) {
         toast.error("Round ended");
         return;
       }
@@ -220,23 +206,12 @@ const PresaleBox = () => {
         return;
       }
 
-      const purchaseTxReq = await fetch(`${baseUrl}/public/purchase`, {
-        method: "POST",
-        body: JSON.stringify({
-          amount: usdtAmount,
-          is_usdt: true,
-          pubkey: publicKey!.toString(),
-          token_ata: tokenAta!.toString(),
-          usdt_ata: usdtAta!.toString(),
-        }),
-        headers: {
-          "Content-Type": "application/json",
-        },
-      });
-
-      const data = await purchaseTxReq.json();
-      const encodedTx = data.body.data;
-      const tx = Transaction.from(Buffer.from(encodedTx, "base64"));
+      const tx = await getPurchaseTx(
+        publicKey,
+        parsedUsdtAmount.toString(),
+        true,
+        connection
+      );
       const response = await sendTransaction(tx, connection);
       console.log(response);
       toast.success(`Purchase success`);
@@ -256,6 +231,10 @@ const PresaleBox = () => {
 
   const purchaseWithSol = async () => {
     try {
+      if (!publicKey) {
+        toast.error("Wallet not connected");
+        return;
+      }
       let parsedSolAmount = deci(solAmount);
       if (parsedSolAmount === null) {
         toast.error("Enter valid amount");
@@ -266,9 +245,9 @@ const PresaleBox = () => {
         toast.error("Amount exceeds balance");
         return;
       }
-      const curRound = icoState.rounds[curRoundId];
+      const curRound = appConfig.rounds[curRoundId];
 
-      if (curRound.endTime.getTime() < Date.now()) {
+      if (curRound.end_time.getTime() < Date.now()) {
         toast.error("Round ended");
         return;
       }
@@ -280,29 +259,29 @@ const PresaleBox = () => {
         return;
       }
 
-      const purchaseTxReq = await fetch(`${baseUrl}/public/purchase`, {
-        method: "POST",
-        body: JSON.stringify({
-          amount: solAmount,
-          is_usdt: false,
-          pubkey: publicKey!.toString(),
-          token_ata: tokenAta!.toString(),
-        }),
-        headers: {
-          "Content-Type": "application/json",
-        },
-      });
+      const tx = await getPurchaseTx(
+        publicKey,
+        parsedSolAmount.toString(),
+        false,
+        connection
+      );
+      // const response = await sendTransaction(tx, connection);
+      // console.log(response);
+      const recentBlockhash = await connection.getLatestBlockhash();
+      tx.recentBlockhash = recentBlockhash.blockhash;
+      tx.feePayer = publicKey;
+      const response = await signTransaction!(tx);
+      try {
+        const res = await connection.sendRawTransaction(response.serialize());
+        console.log(res);
+      } catch (error) {
+        if (error instanceof SendTransactionError) {
+          const logs = await error.getLogs(connection);
+          console.log(logs);
+        }
+        console.log(error);
+      }
 
-      const data = await purchaseTxReq.json();
-      const encodedTx = data.body.data;
-      const tx = Transaction.from(Buffer.from(encodedTx, "base64"));
-      const response = await sendTransaction(tx, connection);
-      console.log(response);
-      // const response = await signTransaction!(tx)
-      // const res = await connection.sendRawTransaction(
-      //   response.serialize()
-      // )
-      // console.log(res)
       //end
       toast.success(`Purchase success`);
       setTimeout(() => {
@@ -328,7 +307,8 @@ const PresaleBox = () => {
   };
 
   const calculateReceivable = useCallback(() => {
-    const price = icoState.rounds[curRoundId].tokenPrice;
+    const round = appConfig.rounds[curRoundId];
+    const price = round.round_price.div(Math.pow(10, round.price_decimals));
     if (isUsdt) {
       const usdt_amount = deci(usdtAmount);
       if (usdt_amount === null) return;
@@ -341,7 +321,7 @@ const PresaleBox = () => {
       const amount = usdt_value.div(price).toString();
       setReceivableToken(amount);
     }
-  }, [curRoundId, icoState.rounds, isUsdt, solPrice, usdtAmount, solAmount]);
+  }, [curRoundId, appConfig.rounds, isUsdt, solPrice, usdtAmount, solAmount]);
 
   const handleBuyClick = async () => {
     setTxInProgress(true);
@@ -380,9 +360,9 @@ const PresaleBox = () => {
     // setInterval(fetchAndUpdate, 2000);
   };
   useEffect(() => {
-    const cur_round_id = getCurrentRoundIdx(icoState.rounds);
+    const cur_round_id = getCurrentRoundIdx(appConfig.rounds);
     setCurRoundId(cur_round_id);
-  }, [icoState]);
+  }, [appConfig]);
 
   useEffect(() => {
     syncInitialState();
@@ -415,6 +395,10 @@ const PresaleBox = () => {
     }, 1000);
   }
 
+  const calculatePrice = (round: Round) => {
+    return round.round_price.div(Math.pow(10, round.price_decimals));
+  };
+
   useEffect(() => {
     startCountdown();
     return () => {
@@ -425,16 +409,16 @@ const PresaleBox = () => {
   return (
     <div className="sail-container">
       <div className="sail-top-front">
-        <img src="/images/public-sail-box-top-front.png" alt="" />
+        <img src="/wp-includes/images/public-sail-box-top-front.png" alt="" />
       </div>
       <div className="sail-top-back">
-        <img src="/images/public-sail-box-top-back.png" alt="" />
+        <img src="/wp-includes/images/public-sail-box-top-back.png" alt="" />
       </div>
       <div className="sail-box">
         <div className="sail-inner">
           <div className="sail-inner-heading">
             <h2>Presale Stage {curRoundId + 1}</h2>
-            <p>$ {icoState.rounds[curRoundId].tokenPrice.toString()}</p>
+            <p>$ {calculatePrice(appConfig.rounds[curRoundId]).toString()}</p>
           </div>
           <div className="timer-wrap">
             <div className="timer-box">
@@ -474,16 +458,14 @@ const PresaleBox = () => {
           <div className="sail-inner-price">
             <p>
               Join Others Before the Price increases to : $
-              {getNextRound(curRoundId).tokenPrice.toString()} $
+              {calculatePrice(getNextRound(curRoundId)).toString()} $
             </p>
           </div>
           <TokenProgress
             amountInSale={availableForPurchase
-              .add(contractState.tokens_sold)
+              .add(appConfig.tokens_sold)
               .div(Math.pow(10, token.decimals))}
-            soldAmount={contractState.tokens_sold.div(
-              Math.pow(10, token.decimals)
-            )}
+            soldAmount={appConfig.tokens_sold.div(Math.pow(10, token.decimals))}
           />
           <div
             className="flex"
@@ -496,7 +478,8 @@ const PresaleBox = () => {
           </div>
           <div className="mecca-rate-wrap">
             <h4>
-              1 MECCA = {icoState.rounds[curRoundId].tokenPrice.toString()} $
+              1 MECCA ={" "}
+              {calculatePrice(appConfig.rounds[curRoundId]).toString()} $
             </h4>
           </div>
           <div className="sail-body">
@@ -529,7 +512,7 @@ const PresaleBox = () => {
                         setIsUsdt(false);
                       }}
                     />
-                    <img src="/images/sol-dark-logo.png" alt="" />
+                    <img src="/wp-includes/images/sol-dark-logo.png" alt="" />
                     <span>Sol</span>
                   </label>
                   <label className="form-radio-label">
@@ -541,19 +524,20 @@ const PresaleBox = () => {
                       style={{
                         cursor: "pointer",
                       }}
-                      defaultChecked
                       onClick={() => {
                         setIsUsdt(true);
                       }}
                     />
-                    <img src="/images/ustd-logo.png" alt="" />
+                    <img src="/wp-includes/images/ustd-logo.png" alt="" />
                     <span>USDT</span>
                   </label>
                 </div>
 
                 <div className="inputs-wrap">
                   <div className="w-100">
-                    <label htmlFor="mecca-pay">MECCA You pay</label>
+                    <label htmlFor="mecca-pay">
+                      {isUsdt ? "USDT" : "SOL"} You pay
+                    </label>
                     <div className="input-mecca-container">
                       <input
                         type="text"
@@ -577,7 +561,9 @@ const PresaleBox = () => {
                         MAX
                       </button>
                       <img
-                        src="/images/mecca-logo.png"
+                        src={`/wp-includes/images/${
+                          isUsdt ? "ustd" : "sol-dark"
+                        }-logo.png`}
                         alt=""
                         className="mecca-logo-input"
                       />
@@ -594,6 +580,11 @@ const PresaleBox = () => {
                         name="mecca-pay"
                         id="mecca-receive"
                         className="input-mecca mecca-receive"
+                      />
+                      <img
+                        src={`/wp-includes/images/mecca-logo.png`}
+                        alt=""
+                        className="mecca-logo-input"
                       />
                     </div>
                   </div>
@@ -637,10 +628,13 @@ const PresaleBox = () => {
         </div>
       </div>
       <div className="sail-bottom-front">
-        <img src="/images/public-sail-box-bottom-front.png" alt="" />
+        <img
+          src="/wp-includes/images/public-sail-box-bottom-front.png"
+          alt=""
+        />
       </div>
       <div className="sail-bottom-back">
-        <img src="/images/public-sail-box-bottom-back.png" alt="" />
+        <img src="/wp-includes/images/public-sail-box-bottom-back.png" alt="" />
       </div>
     </div>
   );

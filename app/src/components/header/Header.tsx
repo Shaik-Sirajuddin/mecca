@@ -9,14 +9,18 @@ const Header: React.FC = () => {
     <Navbar expand="lg" className="navbar">
       <Container>
         <Navbar.Brand href="#">
-          <img src="images/logo.png" alt="Logo" className="img-fluid" />
+          <img
+            src="/wp-includes/images/logo.png"
+            alt="Logo"
+            className="img-fluid"
+          />
         </Navbar.Brand>
         <div className="d-flex align-items-center gap-4">
           <Nav.Link href="#" className="nav-link d-block d-lg-none">
-            <img src="images/globe-earth.svg" alt="Globe" />
+            <img src="/wp-includes/images/globe-earth.svg" alt="Globe" />
           </Nav.Link>
           <Navbar.Toggle aria-controls="basic-navbar-nav">
-            <img src="images/hamburger.svg" alt="Menu" />
+            <img src="/wp-includes/images/hamburger.svg" alt="Menu" />
           </Navbar.Toggle>
         </div>
         <Navbar.Collapse id="basic-navbar-nav">
@@ -38,7 +42,7 @@ const Header: React.FC = () => {
               </Nav.Link>
             </Link>
             <Nav.Link href="#" className="nav-link d-lg-block d-none">
-              <img src="images/globe-earth.svg" alt="Globe" />
+              <img src="/wp-includes/images/globe-earth.svg" alt="Globe" />
             </Nav.Link>
             <Nav.Link href="#" className="nav-link btn-staking">
               Staking

@@ -59,7 +59,7 @@ export const claimsByDate = async (req: Request, res: Response) => {
   try {
     let { date } = req.body;
 
-    let { startOfDay, endOfDay } = getDayStartAndEnd(date);
+    let { startOfDay, endOfDay } = getDayStartAndEnd(new Date(date));
 
     let claims = await AirdropRequest.findAll({
       where: {

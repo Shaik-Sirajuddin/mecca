@@ -159,7 +159,7 @@ const AirdropPeriod = () => {
                     <label htmlFor="token-selection">Token</label>
                     <div className="input-token-container">
                       <img
-                        src="/images/mecca-logo.png"
+                        src="/wp-includes/images/mecca-logo.png"
                         alt=""
                         className="mecca-logo-input"
                       />

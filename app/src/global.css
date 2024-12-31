@@ -240,7 +240,7 @@ input[type="number"] {
 }
 
 .community-page {
-  background-image: url(../images/airdrop-container-bg.png);
+  background-image: url(../wp-includes/images/airdrop-container-bg.png);
   background-repeat: no-repeat;
   background-size: cover;
   background-position: center;
