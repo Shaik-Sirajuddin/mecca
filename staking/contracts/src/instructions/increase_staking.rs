@@ -150,13 +150,13 @@ pub fn increase_stake(
     let user_acc_data = &mut User::try_from_slice(&user_data_account.data.try_borrow().unwrap())?;
 
     assert!(
-        increase_instruction.amount >= app_state_data.min_deposit_user,
+        increase_instruction.amount >= app_state_data.config.min_deposit_user,
         "Amount less than minimum threshould"
     );
 
     assert!(
         user_acc_data.principal_in_stake + increase_instruction.amount
-            <= app_state_data.max_deposit_user,
+            <= app_state_data.config.max_deposit_user,
         "Amount exceeds maximum threshould"
     );
 

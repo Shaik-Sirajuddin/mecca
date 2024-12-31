@@ -11,7 +11,7 @@ import { AppState } from "../../../schema/app_state_schema";
 import { IRootState } from "../../../app/store";
 import { User } from "../../../schema/user";
 import syncUserState from "../../../features/user/syncUserState";
-import { useEffect, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import { formatBalance } from "../../../utils/helper";
 import { toast } from "react-toastify";
 import {
@@ -21,25 +21,23 @@ import {
   TransactionInstruction,
 } from "@solana/web3.js";
 import { InterestWithdrawItnSchema } from "../../../schema/instruction/interest_withdraw_instruction";
-import {
-  appStateId,
-  appTokenStoreAtaId,
-  appTokenStoreOwnerId,
-  splToken,
-  stakeProgramId,
-  tokenMint,
-  tokenProgramId,
-} from "../../../utils/constants";
+import { appStateId, splToken, stakeProgramId } from "../../../utils/constants";
 import { BN } from "@coral-xyz/anchor";
-import { deriveUserPDA, getATA } from "../../../utils/web3";
+import {
+  deriveUserPDA,
+  getAppState,
+  getClaimInstruction,
+} from "../../../utils/web3";
 import { InstructionID } from "../../../interface/InstructionId";
 import { AmountInstructionSchema } from "../../../schema/instruction/amount_instruction";
+import { setAppState } from "../../../features/globalData/globalDataSlice";
 
 const Withdrawal = () => {
   const { t } = useTranslation();
   const { connection } = useConnection();
   const { connected, publicKey, sendTransaction, signTransaction } =
     useWallet();
+
   const [txLoading, setTxLoading] = useState(false);
   const dispatch = useDispatch();
   const appState = useSelector(
@@ -47,74 +45,30 @@ const Withdrawal = () => {
   );
   const user = useSelector((state: IRootState) => new User(state.user.data));
 
+  const fetchAppState = useCallback(async () => {
+    try {
+      const deserializedData = await getAppState(connection);
+      dispatch(setAppState(deserializedData));
+      // console.log(data);
+    } catch (error: unknown) {
+      console.log(error);
+    }
+  }, [connection, dispatch]);
+
+  useEffect(() => {
+    fetchAppState();
+  }, [fetchAppState]);
+
   const claim = async () => {
     try {
       if (!publicKey) {
         return;
       }
-      const instruction_id = InstructionID.WITHDRAW;
       setTxLoading(true);
-      const instructionIdBuffer = new Uint8Array([instruction_id]);
 
-      //TODO : verify user ata exists and has balance
-      const enroll_instruction = new TransactionInstruction({
-        programId: new PublicKey(stakeProgramId),
-        keys: [
-          {
-            //user account
-            pubkey: publicKey!,
-            isWritable: true,
-            isSigner: true,
-          },
-          {
-            //user data account (pda)
-            pubkey: deriveUserPDA(publicKey!),
-            isWritable: true,
-            isSigner: false,
-          },
-          {
-            //app state
-            pubkey: appStateId,
-            isWritable: true,
-            isSigner: false,
-          },
-          {
-            pubkey: getATA(publicKey),
-            isWritable: true,
-            isSigner: false,
-          },
-          {
-            pubkey: appTokenStoreAtaId,
-            isWritable: true,
-            isSigner: false,
-          },
-          {
-            pubkey: appTokenStoreOwnerId,
-            isWritable: false,
-            isSigner: false,
-          },
-          {
-            pubkey: tokenMint,
-            isWritable: false,
-            isSigner: false,
-          },
-          {
-            pubkey: tokenProgramId,
-            isWritable: false,
-            isSigner: false,
-          },
-          {
-            //system program
-            pubkey: SystemProgram.programId,
-            isSigner: false,
-            isWritable: false,
-          },
-        ],
-        data: Buffer.concat([instructionIdBuffer]),
-      });
-
+      const claim_instruction = getClaimInstruction(publicKey);
       const tx = new Transaction();
-      tx.add(enroll_instruction);
+      tx.add(claim_instruction);
 
       const {
         context: { slot: minContextSlot },
@@ -151,10 +105,14 @@ const Withdrawal = () => {
   };
   const intiateWithdraw = async (instruction_id: number, amount: Decimal) => {
     try {
+      if (!publicKey) {
+        toast.error("Wallet not connected");
+        return;
+      }
       setTxLoading(true);
       let instruction_data = Buffer.alloc(200);
 
-      if (instruction_id == InstructionID.INIT_WITHDRAW_PRINCIPAL) {
+      if (instruction_id === InstructionID.INIT_WITHDRAW_PRINCIPAL) {
         AmountInstructionSchema.encode(
           {
             amount: new BN(
@@ -170,7 +128,7 @@ const Withdrawal = () => {
           0,
           AmountInstructionSchema.getSpan(instruction_data)
         );
-      } else if (instruction_id == InstructionID.INIT_WITHDRAW_INTEREST) {
+      } else if (instruction_id === InstructionID.INIT_WITHDRAW_INTEREST) {
         InterestWithdrawItnSchema.encode(
           {
             amount: new BN(
@@ -198,7 +156,7 @@ const Withdrawal = () => {
       const instructionIdBuffer = new Uint8Array([instruction_id]);
 
       //TODO : verify user ata exists and has balance
-      const enroll_instruction = new TransactionInstruction({
+      const intiate_withdraw_instruction = new TransactionInstruction({
         programId: new PublicKey(stakeProgramId),
         keys: [
           {
@@ -230,7 +188,11 @@ const Withdrawal = () => {
       });
 
       const tx = new Transaction();
-      tx.add(enroll_instruction);
+      tx.add(intiate_withdraw_instruction);
+      if (instruction_id == InstructionID.INIT_WITHDRAW_INTEREST) {
+        const claim_instruction = getClaimInstruction(publicKey);
+        tx.add(claim_instruction);
+      }
 
       const {
         context: { slot: minContextSlot },
@@ -318,6 +280,12 @@ const Withdrawal = () => {
                               )}
                             </p>
                           </li>
+                          <li className="withdrawal-list-item">
+                            <h3>{t("withdrawal.withdrawn_interest")}</h3>
+                            <p className="fw-bold">
+                              {formatBalance(user.withdrawn_interest)}
+                            </p>
+                          </li>
                         </ul>
                       </div>
                       <div className="chart-wrap">
@@ -342,7 +310,9 @@ const Withdrawal = () => {
                 type="unstaking"
                 color={"purple-1"}
                 has_amount_selection={false}
-                is_withdraw_under_progress={user.withdraw_request.is_under_progress}
+                is_withdraw_under_progress={
+                  user.withdraw_request.is_under_progress
+                }
                 lockUpTime={appState.config.lock_time_principal.toNumber()}
                 request_time_s={user.withdraw_request.request_time_ms.toNumber()}
                 hasLockUp={
@@ -362,7 +332,9 @@ const Withdrawal = () => {
               />
               <WithdrawlBox
                 availableQuantity={user.principal_in_stake}
-                is_withdraw_under_progress={user.withdraw_request.is_under_progress}
+                is_withdraw_under_progress={
+                  user.withdraw_request.is_under_progress
+                }
                 buttonLabel={t("withdrawal.unstake")}
                 type="partial"
                 color={"purple-1"}
@@ -386,7 +358,9 @@ const Withdrawal = () => {
               />
               <WithdrawlBox
                 availableQuantity={user.availableInterest(appState)}
-                is_withdraw_under_progress={user.withdraw_request.is_under_progress}
+                is_withdraw_under_progress={
+                  user.withdraw_request.is_under_progress
+                }
                 buttonLabel={t("withdrawal.unstake")}
                 type="interest"
                 color={"purple-1"}

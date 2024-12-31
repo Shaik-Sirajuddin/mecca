@@ -1,9 +1,5 @@
 use process::process_instruction;
-use solana_program::{
-    account_info::AccountInfo,
-    entrypoint::{entrypoint, ProgramResult},
-    pubkey::Pubkey,
-};
+use solana_program::entrypoint::entrypoint;
 
 pub mod process;
 pub mod state;

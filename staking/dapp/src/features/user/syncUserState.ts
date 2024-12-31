@@ -9,7 +9,7 @@ import {
   setUserPdaExists,
 } from "./userSlice";
 import { Dispatch } from "@reduxjs/toolkit";
-import { UserSchema } from "../../schema/user";
+import { User, UserSchema } from "../../schema/user";
 
 const handler = async (
   connection: Connection,
@@ -41,6 +41,8 @@ const handler = async (
     dispatch(setUserPdaExists(true));
     //deserialize user data
     const userData = UserSchema.decode(userDataPDA.data);
+    let user_data = new User(userData)
+    console.log(user_data.stake_time.toString())
     // const userData = deserialize(UserSchema, userDataPDA.data);
     dispatch(setUserData(userData));
   } catch (error: unknown) {

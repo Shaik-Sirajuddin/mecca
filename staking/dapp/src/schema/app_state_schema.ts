@@ -2,6 +2,8 @@ import * as borsh from "@coral-xyz/borsh";
 import { Config, ConfigSchema } from "./config";
 import { RateChange, RateChangeSchema } from "./rate_change";
 import Decimal from "decimal.js";
+import { PublicKey } from "@solana/web3.js";
+import { stakeProgramId } from "../utils/constants";
 
 export interface IAppState {
   user_count: number; // u32
@@ -12,7 +14,7 @@ export interface IAppState {
   cur_interest_rate: number; // u32
   interest_history: RateChange[];
   config: Config;
-  authority: Uint8Array; // Pubkey (32 bytes)
+  authority: PublicKey; // Pubkey (32 bytes)
 }
 
 export class AppState implements IAppState {
@@ -24,7 +26,7 @@ export class AppState implements IAppState {
   cur_interest_rate: number; // u32
   interest_history: RateChange[];
   config: Config;
-  authority: Uint8Array; // Pubkey (32 bytes)
+  authority: PublicKey; // Pubkey (32 bytes)
 
   constructor(data: any) {
     this.user_count = data.user_count || 0;
@@ -39,7 +41,7 @@ export class AppState implements IAppState {
     this.config = Config.parse(
       (data.config && data.config.length ? data.config[0] : {}) || {}
     );
-    this.authority = Uint8Array.from(data.authority || []);
+    this.authority = new PublicKey(data.authority || stakeProgramId);
   }
 
   // Function to calculate total interest rate change

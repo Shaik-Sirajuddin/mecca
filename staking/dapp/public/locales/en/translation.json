@@ -6,7 +6,7 @@
     "participants": "Participants",
     "interestRateAnnual": "Interest Rate (annual)",
     "interestPaidToday": "Interest paid today",
-    "totalInterestStandby": "Total interest on standby",
+    "totalInterestStandby": "StandBy Interest",
     "chartTitle": "DTRab Staked Amount",
     "faqs": "Frequently asked questions",
     "days7": "7 days",
@@ -19,7 +19,7 @@
     "heroSectionTitle": "Staking",
     "dtrabLabel": "DTRab",
     "principalInStake": "Principal In Stake",
-    "accumulatedInterest": "Accumulated Interest",
+    "accumulatedInterest": "Available Interest",
     "lockedAmount": "Locked Amount",
     "chartTitle": "Staking Doughnut Chart",
     "allUnstakingTitle": "All Unstaking",
@@ -32,6 +32,7 @@
     "partialUnstakingTitle": "Partial Unstaking",
     "maxButton": "MAX",
     "interestWithdrawalTitle": "Interest Withdrawal",
+    "withdrawn_interest": "Claimed Interest",
     "errorsAssetsUnavailable": "Assets not available for withdrawal."
   }
 }

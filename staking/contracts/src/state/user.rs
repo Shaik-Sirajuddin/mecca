@@ -2,7 +2,7 @@ use std::ops::{Div, Mul};
 
 use borsh::{to_vec, BorshDeserialize, BorshSerialize};
 use solana_program::{
-    account_info::AccountInfo, clock::Clock, entrypoint::ProgramResult, program::invoke,
+    account_info::AccountInfo, clock::Clock, entrypoint::ProgramResult, msg, program::invoke,
     rent::Rent, system_instruction, sysvar::Sysvar,
 };
 
@@ -82,11 +82,11 @@ impl User {
     pub const SEED_PREFIX: &'static str = "user-data-";
 
     fn calculate_interest(&self, time: u64, amount: u64, interest_rate: u64) -> u64 {
-        interest_rate //interest per year
-            .mul(time) // no of seconds
-            .mul(amount) //stake amount
-            .div((365u64 * 86400 * 100) as u64)
-            .div(10u64.pow(*TokenStore::TOKEN_DECIMALS as u32))
+        (interest_rate as u128) //interest per year
+            .mul(time as u128) // no of seconds
+            .mul(amount as u128) //stake amount
+            .div((365u128 * 86400 * 100) as u128)
+            .div(10u128.pow(*TokenStore::TOKEN_DECIMALS as u32)) as u64
     }
 
     pub fn calculate_unaccounted_interest(&self, app_state: &AppState, cur_time_s: u64) -> u64 {

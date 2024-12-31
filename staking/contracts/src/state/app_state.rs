@@ -1,5 +1,3 @@
-use std::ops::Mul;
-
 use borsh::{to_vec, BorshDeserialize, BorshSerialize};
 use solana_program::{
     account_info::AccountInfo, clock::Clock, entrypoint::ProgramResult, program::invoke,
@@ -17,6 +15,8 @@ pub struct RateChange {
 pub struct Config {
     pub lock_time_principal: u64,
     pub lock_time_interest: u64,
+    pub min_deposit_user: u64,
+    pub max_deposit_user: u64,
 }
 
 #[derive(BorshSerialize, BorshDeserialize)]
@@ -28,8 +28,6 @@ pub struct AppState {
     pub deposit_threshould: u64,
     pub min_interest_rate: u32,
     pub cur_interest_rate: u32,
-    pub min_deposit_user: u64,
-    pub max_deposit_user: u64,
     pub interest_history: Vec<RateChange>,
     pub config: Config,
     pub authority: Pubkey,
@@ -37,11 +35,12 @@ pub struct AppState {
 
 impl AppState {
     pub const SEED_PREFIX: &'static str = "app-state";
-    pub const BUMP: &'static u8 = &254;
+    pub const BUMP: &'static u8 = &255;
     //set address to a pda dervied
-    pub const PDA: &'static str = "Frga5CNcEaiwcjSwz8Bt8v8QBjqkQdj52Mg2LQzoHjwc";
+    pub const PDA: &'static str = "GaWai5NwaAeLe87PYaWU5YN5GiXEDCmXGBxKEhKn2aWT";
 
-    pub const OWNER: &'static str = "12VKkD7Rs9CxCkC3EJ8uwiuXBAKmRM4ANHjJoEKLFehu";
+    //when intializing app state , the caller should match owner
+    pub const OWNER: &'static str = "9tFmeBvKhr3PhgdUYYSUuVZTzSrFDB5GzkD8H2DnmMhG";
 
     pub fn new(authority: &Pubkey) -> Self {
         //TODO : check when can unix timestamp be negative
@@ -55,13 +54,13 @@ impl AppState {
             staked_amount: 0,
             min_interest_rate: 5 * 10u32.pow(*TokenStore::TOKEN_DECIMALS as u32),
             cur_interest_rate: 30 * 10u32.pow(*TokenStore::TOKEN_DECIMALS as u32),
-            min_deposit_user: 1_000 * 10u64.pow(*TokenStore::TOKEN_DECIMALS as u32),
-            max_deposit_user: 10_000_000 * 10u64.pow(*TokenStore::TOKEN_DECIMALS as u32),
             interest_history: vec![rate_change],
             authority: authority.clone(),
             config: Config {
                 lock_time_principal: 86400 * 30, //applicable f
                 lock_time_interest: 0,           //applicable f
+                min_deposit_user: 1_000 * 10u64.pow(*TokenStore::TOKEN_DECIMALS as u32),
+                max_deposit_user: 10_000_000 * 10u64.pow(*TokenStore::TOKEN_DECIMALS as u32),
             },
             deposit_threshould: 10_000_000 * 13, // calculated based on min interest , cur interest , for every 100 users interest change
         }

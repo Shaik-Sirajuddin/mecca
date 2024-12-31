@@ -30,6 +30,7 @@ import {
   ResponsiveContainer,
 } from "recharts";
 import { IDailyStats } from "../../../interface/IDailyStats";
+import { getAppState } from "../../../utils/web3";
 const Staking = () => {
   const { t } = useTranslation();
   const dispatch = useDispatch();
@@ -74,14 +75,8 @@ const Staking = () => {
 
   const fetchAppState = useCallback(async () => {
     try {
-      const accountInfo = await connection.getAccountInfo(
-        new PublicKey(appStateId)
-      );
-      if (!accountInfo || !accountInfo?.data) {
-        console.log("no account info");
-        return;
-      }
-      const deserializedData = AppStateSchema.decode(accountInfo?.data);
+      const deserializedData = await getAppState(connection);
+
       dispatch(setAppState(deserializedData));
       // console.log(data);
     } catch (error: unknown) {
@@ -105,7 +100,7 @@ const Staking = () => {
       </Helmet>
       <div className="wrapper withdrawal-bg">
         <section className="staking-banner-sec">
-          <div className="container">
+          <div className="container" style={{'maxWidth' : '1200px'}}>
             <div className="staking-banner-wrap">
               <div className="row">
                 <div className="col-md-12">

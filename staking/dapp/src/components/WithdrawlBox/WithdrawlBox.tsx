@@ -156,30 +156,32 @@ const WithdrawlBox: React.FC<Props> = (props) => {
               color="#3d5741"
             />
           )}
-          <button
-            disabled={!(props.hasLockUp && timerCompleted)}
-            className={`unstaking-btn claim-btn btn-primary bg-${props.color} but-primary`}
-            style={{
-              display: "flex",
-              gap: "4px",
-            }}
-            onClick={async () => {
-              setClaimLoading(true);
-              await props.onClaimClick();
-              setClaimLoading(false);
-            }}
-          >
-            <div
+          {props.type !== "interest" && (
+            <button
+              disabled={!(props.hasLockUp && timerCompleted)}
+              className={`unstaking-btn claim-btn btn-primary bg-${props.color} but-primary`}
               style={{
-                display: claimLoading ? "inline-block" : "none",
-                width: "18px",
-                height: "18px",
+                display: "flex",
+                gap: "4px",
               }}
-              id="loader"
-              className="btn-sky text-xl"
-            />
-            {t("withdrawal.claimButton")}
-          </button>
+              onClick={async () => {
+                setClaimLoading(true);
+                await props.onClaimClick();
+                setClaimLoading(false);
+              }}
+            >
+              <div
+                style={{
+                  display: claimLoading ? "inline-block" : "none",
+                  width: "18px",
+                  height: "18px",
+                }}
+                id="loader"
+                className="btn-sky text-xl"
+              />
+              {t("withdrawal.claimButton")}
+            </button>
+          )}
         </div>
       </div>
     </div>

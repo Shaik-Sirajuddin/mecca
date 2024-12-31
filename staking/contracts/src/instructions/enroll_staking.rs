@@ -59,12 +59,12 @@ fn validate_accounts(program_id: &Pubkey, accounts: &[AccountInfo]) -> ProgramRe
 
     assert!(
         *app_token_account.key == Pubkey::from_str_const(TokenStore::ASSOCIATED_TOKEN_ACCOUNT),
-        "Provided app token account doesn't match with contract"
+        "Provided contract ata doesn't match with contract"
     );
 
     assert!(
         *app_token_account_owner.key == Pubkey::from_str_const(TokenStore::OWNER_PDA),
-        "Provided app token account owner doesn't match with contract"
+        "Provided contract ata owner doesn't match with contract"
     );
 
     assert!(
@@ -138,12 +138,12 @@ pub fn enroll_staking(
     let app_state_data = &mut AppState::try_from_slice(&app_state.data.borrow())?;
 
     assert!(
-        enroll_instruction.amount >= app_state_data.min_deposit_user,
+        enroll_instruction.amount >= app_state_data.config.min_deposit_user,
         "Amount less than minimum threshould"
     );
 
     assert!(
-        enroll_instruction.amount <= app_state_data.max_deposit_user,
+        enroll_instruction.amount <= app_state_data.config.max_deposit_user,
         "Amount exceeds maximum threshould"
     );
 
