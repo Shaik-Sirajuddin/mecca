@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useMemo, useState } from "react";
+import { useEffect, useState } from "react";
 import { formatBalance, formatNum, updateIfValid } from "../../utils/helper";
 import { useDispatch, useSelector } from "react-redux";
 import { IRootState } from "../../app/store";
@@ -35,7 +35,7 @@ interface Props {
 }
 const DepositBox = ({ onStake }: Props) => {
   const { connection } = useConnection();
-  const { wallet, connected, publicKey, sendTransaction } = useWallet();
+  const { connected, publicKey, sendTransaction } = useWallet();
   const dispatch = useDispatch();
   const interestRate = useSelector(
     (state: IRootState) => state.global.state.cur_interest_rate
@@ -48,9 +48,7 @@ const DepositBox = ({ onStake }: Props) => {
   const [expectedInterest, setExcpectedInterest] = useState(0);
   const [txLoading, setTxLoading] = useState(false);
 
-  const userDataAccountId = useSelector(
-    (state: IRootState) => state.user.dataAccountId
-  );
+
   const user = useSelector((state: IRootState) => new User(state.user.data));
   const userPDAExists = useSelector(
     (state: IRootState) => state.user.dataAccExists
@@ -84,7 +82,12 @@ const DepositBox = ({ onStake }: Props) => {
       if (
         _purchaseAmount.add(user.principal_in_stake).gt(config.max_deposit_user)
       ) {
-        console.log("max deposit" , config.max_deposit_user.toString() , _purchaseAmount.toString() , user.principal_in_stake.toString())
+        console.log(
+          "max deposit",
+          config.max_deposit_user.toString(),
+          _purchaseAmount.toString(),
+          user.principal_in_stake.toString()
+        );
         toast.info(`Amount exceeds max deposit possible`);
         return;
       }
@@ -183,7 +186,7 @@ const DepositBox = ({ onStake }: Props) => {
         minContextSlot,
       });
 
-      const result = await connection.confirmTransaction(
+      await connection.confirmTransaction(
         {
           blockhash,
           lastValidBlockHeight,
@@ -196,7 +199,7 @@ const DepositBox = ({ onStake }: Props) => {
       toast.success("Transaction confirmed");
       syncUserState(connection, publicKey, dispatch);
       onStake();
-    } catch (error: unknown) {
+    } catch (error: any) {
       console.log("Enroll error ", error);
       toast.error(error.toString());
     } finally {
@@ -224,7 +227,7 @@ const DepositBox = ({ onStake }: Props) => {
         return;
       }
       enrollStaking(userPDAExists ? 2 : 1);
-    } catch (error) {
+    } catch (error: any) {
       console.log(error);
       toast.error(error.toString());
     }

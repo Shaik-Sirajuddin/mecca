@@ -35,10 +35,10 @@ import { setAppState } from "../../../features/globalData/globalDataSlice";
 const Withdrawal = () => {
   const { t } = useTranslation();
   const { connection } = useConnection();
-  const { connected, publicKey, sendTransaction, signTransaction } =
+  const { connected, publicKey, sendTransaction} =
     useWallet();
 
-  const [txLoading, setTxLoading] = useState(false);
+  const [, setTxLoading] = useState(false);
   const dispatch = useDispatch();
   const appState = useSelector(
     (state: IRootState) => new AppState(state.global.state)
@@ -96,7 +96,7 @@ const Withdrawal = () => {
       console.log(result);
       toast.success("Transaction confirmed");
       syncUserState(connection, publicKey, dispatch);
-    } catch (error: unknown) {
+    } catch (error: any) {
       console.log("Enroll error ", error);
       toast.error(error.toString());
     } finally {
@@ -215,7 +215,7 @@ const Withdrawal = () => {
       console.log(result);
       toast.success("Transaction confirmed");
       syncUserState(connection, publicKey, dispatch);
-    } catch (error: unknown) {
+    } catch (error: any) {
       console.log("Enroll error ", error);
       toast.error(error.toString());
     } finally {

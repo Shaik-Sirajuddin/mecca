@@ -1,6 +1,6 @@
 import Nav from "react-bootstrap/Nav";
 import Navbar from "react-bootstrap/Navbar";
-import { Link, useLocation } from "react-router-dom";
+import { useLocation } from "react-router-dom";
 import LangOption from "../language-option/LangOption";
 import { useState } from "react";
 import "./styls.css";

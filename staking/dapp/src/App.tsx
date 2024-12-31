@@ -9,7 +9,6 @@ const App: React.FC = () => {
       <Router>
         <HelmetProvider>
           <Routes>
-            {/* Airdrop Pages */}
             <Route path="/" element={<Staking />} />
             {/* Staking Pages */}
             <Route path="/staking" element={<Staking />} />
