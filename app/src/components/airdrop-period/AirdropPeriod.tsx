@@ -181,6 +181,9 @@ const AirdropPeriod = () => {
                         placeholder="Enter your Solana wallet address."
                         name="mecca-pay"
                         id="mecca-pay"
+                        style={{
+                          'textOverflow' : 'ellipsis'
+                        }}
                         className="input-mecca mecca-pay"
                         value={address}
                         onChange={(event) => {

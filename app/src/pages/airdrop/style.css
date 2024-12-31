@@ -292,5 +292,6 @@
 
   .input-mecca-container input {
     padding: 12px !important;
+    height: 46px !important;
   }
 }

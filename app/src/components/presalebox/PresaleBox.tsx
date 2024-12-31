@@ -557,6 +557,11 @@ const PresaleBox = () => {
                         type="button"
                         className="max-input-mecca-pay max-btn"
                         onClick={maxToken}
+                        style={{
+                          display: "flex",
+                          justifyContent: "center",
+                          alignItems: "center",
+                        }}
                       >
                         MAX
                       </button>
