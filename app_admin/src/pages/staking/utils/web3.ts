@@ -17,25 +17,11 @@ import {
   Transaction,
   TransactionInstruction,
 } from "@solana/web3.js";
-import { Decimal } from "decimal.js";
 import { Config, ConfigSchema } from "../../../schema/staking/config";
 import { WithdrawTokensInstruction } from "../../../schema/ico/instructions/WithdrawInstruction";
 
 export const getUserTokenAta = (user: PublicKey) => {
   return getAssociatedTokenAddressSync(tokenMint, user, true, tokenProgramId);
-};
-
-export const getSPlTokenBalance = async (
-  connection: Connection,
-  ata: PublicKey
-) => {
-  try {
-    const balance = await connection.getTokenAccountBalance(ata, "processed");
-    return new Decimal(balance.value.amount);
-  } catch (error) {
-    console.log(error);
-    return new Decimal(0);
-  }
 };
 
 export const getUpdateConfigInstruction = (user: PublicKey, config: Config) => {
@@ -110,7 +96,6 @@ export const getUpdateOwnerTransaction = async (
   );
   return tx;
 };
-
 
 export const getWithdrawTokensTransaction = async (
   user: PublicKey,

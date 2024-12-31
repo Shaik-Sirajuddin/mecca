@@ -37,3 +37,17 @@ export function getStartOfDayUTC() {
     Date.UTC(now.getUTCFullYear(), now.getUTCMonth(), now.getUTCDate())
   );
 }
+
+export function getDayStartAndEnd(date: Date) {
+  // Create a new Date object from the given date
+
+  // Set the start of the day (00:00:00)
+  const startOfDay = new Date(date);
+  startOfDay.setHours(0, 0, 0, 0);
+
+  // Set the end of the day (23:59:59.999)
+  const endOfDay = new Date(date);
+  endOfDay.setHours(23, 59, 59, 999);
+
+  return { startOfDay, endOfDay };
+}

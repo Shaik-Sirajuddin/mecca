@@ -10,6 +10,8 @@ export const adminMiddleware = (
     let authKey = process.env.AUTH_KEY!;
     let authSecret = req.headers.authorization?.trim();
 
+    console.log(authSecret , authKey)
+
     if (!authSecret || authSecret != authKey) {
       throw "Unauthorized";
     }

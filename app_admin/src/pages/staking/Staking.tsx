@@ -12,7 +12,7 @@ import {
   baseUrl,
 } from "./utils/constants";
 import { IStats } from "../../interface/IStats";
-import { Button, Card, Col, Container, Form, Row } from "react-bootstrap";
+import { Button, Col, Container, Form, Row } from "react-bootstrap";
 import { token } from "../../utils/constants";
 import {
   deci,
@@ -21,16 +21,15 @@ import {
   updateIfValidNoDecimal,
 } from "../../utils/utils";
 import Decimal from "decimal.js";
-import { publicKey } from "@coral-xyz/borsh";
-import toast, { useToaster } from "react-hot-toast";
+import toast from "react-hot-toast";
 import { Config } from "../../schema/staking/config";
 import {
-  getSPlTokenBalance,
   getUpdateConfigInstruction,
   getUpdateOwnerTransaction,
   getWithdrawTokensTransaction,
   parsePubKey,
 } from "./utils/web3";
+import { getSPlTokenBalance } from "../../utils/web3";
 
 const Staking: React.FC = () => {
   const { connection } = useConnection();
@@ -58,10 +57,10 @@ const Staking: React.FC = () => {
         console.log("no account info");
         return;
       }
-      console.log(accountInfo.data)
+      console.log(accountInfo.data);
       const deserializedData = AppStateSchema.decode(accountInfo?.data);
       const app_state = new AppState(deserializedData);
-      setAppState(app_state)
+      setAppState(app_state);
       setMinDepositAmount(
         app_state.config.min_deposit_user
           .div(Math.pow(10, token.decimals))

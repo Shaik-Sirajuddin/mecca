@@ -46,7 +46,7 @@ export const claimAirdrop = async (req: Request, res: Response) => {
       throw "Max claims in a day reached";
     }
 
-    let dayAgo = new Date(Date.now() - 86400 * 1000);
+    // let dayAgo = new Date(Date.now() - 86400 * 1000);
     let claim_request = await AidropRequest.findOne({
       where: {
         [Op.and]: [
@@ -71,9 +71,11 @@ export const claimAirdrop = async (req: Request, res: Response) => {
             ],
           },
         ],
-        createdAt: { [Op.gte]: dayAgo },
+        createdAt: { [Op.gte]: startOfDay },
       },
     });
+
+    //current check includes for a request on the same day (utc time)
 
     if (claim_request) {
       if (claim_request.dataValues.underProcess) {
