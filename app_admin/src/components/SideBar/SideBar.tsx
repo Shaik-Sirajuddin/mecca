@@ -2,6 +2,7 @@ import React from "react";
 import { Nav } from "react-bootstrap";
 import "bootstrap/dist/css/bootstrap.min.css";
 import { useNavigate } from "react-router-dom";
+import { WalletMultiButton } from "@solana/wallet-adapter-react-ui";
 
 const Sidebar: React.FC = () => {
   const navigate = useNavigate();
@@ -27,6 +28,9 @@ const Sidebar: React.FC = () => {
         <h2>MEA Admin</h2>
       </div>
       <Nav className="flex-column">
+        <div style={styles.navLink}>
+          <WalletMultiButton />
+        </div>
         <Nav.Link href="/" style={styles.navLink}>
           ICO
         </Nav.Link>
@@ -36,10 +40,7 @@ const Sidebar: React.FC = () => {
         <Nav.Link href="/staking" style={styles.navLink}>
           Staking
         </Nav.Link>
-        <div
-          style={styles.navLink}
-          onClick={logout}
-        >
+        <div style={styles.navLink} onClick={logout}>
           Logout
         </div>
       </Nav>
@@ -55,7 +56,7 @@ const styles = {
     padding: "10px 15px",
     color: "#333",
     textDecoration: "none",
-    cursor : 'pointer'
+    cursor: "pointer",
   },
 };
 

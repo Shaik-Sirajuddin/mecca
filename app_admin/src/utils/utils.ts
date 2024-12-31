@@ -48,3 +48,35 @@ export const formatNum = (amount: string, decimals = token.decimals) => {
   }
   return formattedNum;
 };
+
+export function isValidNumber(str: string) {
+  const regex = /^-?\d+(\.\d+)?$|^-?\d+\.$/;
+  return regex.test(str);
+}
+export const updateIfValid = (
+  value: string,
+  trigger: (value: string) => void
+) => {
+  if (isValidNumber(value) || value.length === 0) {
+    console.log("valid", value);
+    trigger(value);
+  } else {
+    console.log("notvalid", value);
+  }
+};
+
+export function isValidNoDecimalNum(str: string) {
+  const regex = /^\d+$/;
+  return regex.test(str);
+}
+export const updateIfValidNoDecimal = (
+  value: string,
+  trigger: (value: string) => void
+) => {
+  if (isValidNoDecimalNum(value) || value.length === 0) {
+    console.log("valid", value);
+    trigger(value);
+  } else {
+    console.log("notvalid", value);
+  }
+};
