@@ -50,7 +50,7 @@ input[type="number"] {
 }
 
 .sail-inner-heading h2 {
-  font-size: 30px;
+  font-size: 22px;
   letter-spacing: -1px;
   color: #ffffff;
   font-weight: 800;
@@ -226,7 +226,7 @@ input[type="number"] {
 }
 
 .amount-wrap .amount-row h4 {
-  font-size: 16px;
+  font-size: 14px;
   letter-spacing: 0px;
   line-height: 24px;
   color: #ffffff;
@@ -235,7 +235,7 @@ input[type="number"] {
 }
 
 .amount-wrap .amount-row p {
-  font-size: 16px;
+  font-size: 14px;
   letter-spacing: 0px;
   line-height: 28px;
   color: #ffffff;
@@ -313,7 +313,7 @@ input[type="number"] {
 
 .input-mecca-container input {
   width: 100%;
-  height: 52px;
+  height: 20px;
   border-radius: 5px;
   background-color: #dbdbdb;
   border: transparent;
@@ -373,7 +373,7 @@ input[type="number"] {
   font-family: "Pretendard";
   text-align: center;
   width: 100%;
-  height: 52px;
+  height: 40px;
   border-radius: 5px;
   filter: drop-shadow(0px 3px 3px rgba(4, -1, -1, 0.35));
   background-color: #8909a5;
@@ -430,7 +430,7 @@ input[type="number"] {
 
   .submit-btn {
     font-size: 20px;
-    height: 48px;
+    height: 40px;
   }
 
   .sail-top-back {

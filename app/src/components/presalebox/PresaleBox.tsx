@@ -416,8 +416,18 @@ const PresaleBox = () => {
       </div>
       <div className="sail-box">
         <div className="sail-inner">
-          <div className="sail-inner-heading">
-            <h2>Presale Stage {curRoundId + 1}</h2>
+          <div
+            className="sail-inner-heading"
+            style={{
+              display: "flex",
+              justifyContent: "space-between",
+              padding: "10px 10px",
+              borderRadius: "10px",
+              background: "#2020206b",
+              alignItems: "center",
+            }}
+          >
+            <h2 style={{ marginTop: "0px" }}>Presale Stage {curRoundId + 1}</h2>
             <p>$ {calculatePrice(appConfig.rounds[curRoundId]).toString()}</p>
           </div>
           <div className="timer-wrap">
@@ -461,6 +471,12 @@ const PresaleBox = () => {
               {calculatePrice(getNextRound(curRoundId)).toString()} $
             </p>
           </div>
+          <div className="mecca-rate-wrap">
+            <h4>
+              1 MECCA ={" "}
+              {calculatePrice(appConfig.rounds[curRoundId]).toString()} $
+            </h4>
+          </div>
           <TokenProgress
             amountInSale={availableForPurchase
               .add(appConfig.tokens_sold)
@@ -476,12 +492,7 @@ const PresaleBox = () => {
           >
             <WalletMultiButton />
           </div>
-          <div className="mecca-rate-wrap">
-            <h4>
-              1 MECCA ={" "}
-              {calculatePrice(appConfig.rounds[curRoundId]).toString()} $
-            </h4>
-          </div>
+
           <div className="sail-body">
             <div className="amount-wrap">
               {/* <div className="amount-row">
