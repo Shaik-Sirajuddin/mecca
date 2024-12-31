@@ -21,4 +21,6 @@ export const appTokenStoreAtaId = new PublicKey(
 );
 export const splToken = {
   decimals: 6,
+  name: "MECCA",
+  symbol: "MEA",
 };

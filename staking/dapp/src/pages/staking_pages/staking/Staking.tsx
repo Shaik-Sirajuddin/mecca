@@ -153,7 +153,7 @@ const Staking = () => {
                                   <h3 className="text-22 text-purple-1 font-bold">
                                     {formatBalance(appState.staked_amount)}
                                   </h3>
-                                  <p className="text-14">MECCA</p>
+                                  <p className="text-14">{splToken.symbol}</p>
                                 </div>
                               </div>
                             </div>
@@ -185,7 +185,7 @@ const Staking = () => {
                                   <h3 className="text-22 text-purple-1 font-bold">
                                     {formatBalance(new Decimal(stats.day))}
                                   </h3>
-                                  <p className="text-14">MECCA</p>
+                                  <p className="text-14">{splToken.symbol}</p>
                                 </div>
                               </div>
                               <div className="col bg-white p-3 rounded-3">
@@ -198,7 +198,7 @@ const Staking = () => {
                                   <h3 className="text-22 text-purple-1 font-bold">
                                     {formatBalance(new Decimal(stats.standy))}
                                   </h3>
-                                  <p className="text-14">MECCA</p>
+                                  <p className="text-14">{splToken.symbol}</p>
                                 </div>
                               </div>
                             </div>

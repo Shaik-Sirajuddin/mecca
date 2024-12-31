@@ -254,7 +254,7 @@ const Withdrawal = () => {
                               )
                             )}
                           </h2>
-                          <p>MECCA</p>
+                          <p>{splToken.symbol}</p>
                         </div>
 
                         <ul className="withdrawal-list">

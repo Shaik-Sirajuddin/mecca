@@ -256,7 +256,7 @@ const DepositBox = ({ onStake }: Props) => {
         <li className="mb-3 mt-3">
           <div className="wallet-staking bg-white rounded-3 p-3 wallet-box-textbox">
             <div className="flex wallet-staking-box  gap-2">
-              <h4 className="text-14 text-gray-1">MECCA</h4>
+              <h4 className="text-14 text-gray-1">{splToken.symbol}</h4>
 
               <input
                 style={{
@@ -295,7 +295,7 @@ const DepositBox = ({ onStake }: Props) => {
               <h3 className="text-22 text-green-1 font-bold">
                 {formatNum(expectedInterest.toString())}
               </h3>
-              <p className="text-14 text-gray-1">MECCA</p>
+              <p className="text-14 text-gray-1">{splToken.symbol}</p>
             </div>
           </div>
         </li>

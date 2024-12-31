@@ -3,6 +3,7 @@ import { IRootState } from "../../app/store";
 import { User } from "../../schema/user";
 import { formatBalance } from "../../utils/helper";
 import { AppState } from "../../schema/app_state_schema";
+import { splToken } from "../../utils/constants";
 
 const UserStakeData = () => {
   const appState = useSelector(
@@ -21,7 +22,7 @@ const UserStakeData = () => {
               <h3 className="text-22 text-green-1 font-bold fw-bolder">
                 {formatBalance(user.principal_in_stake)}
               </h3>
-              <p className="text-14 text-gray-1">MECCA</p>
+              <p className="text-14 text-gray-1">{splToken.symbol}</p>
             </div>
           </div>
         </li>
@@ -42,7 +43,7 @@ const UserStakeData = () => {
                 {" "}
                 {formatBalance(user.availableInterest(appState))}
               </h3>
-              <p className="text-14 text-gray-1">MECCA</p>
+              <p className="text-14 text-gray-1">{splToken.symbol}</p>
             </div>
           </div>
         </li>
