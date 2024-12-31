@@ -100,7 +100,7 @@ const Staking = () => {
       </Helmet>
       <div className="wrapper withdrawal-bg">
         <section className="staking-banner-sec">
-          <div className="container" style={{'maxWidth' : '1200px'}}>
+          <div className="container" style={{'maxWidth' : '1100px'}}>
             <div className="staking-banner-wrap">
               <div className="row">
                 <div className="col-md-12">
