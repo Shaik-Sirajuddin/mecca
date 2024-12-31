@@ -45,14 +45,18 @@ const AirdropAdmin: React.FC = () => {
   const fetchClaimsByDate = async () => {
     try {
       const response = await fetch(`${airdropBaseUrl}/admin/claims`, {
+        method: "POST",
         headers: {
           authorization: localStorage.getItem("auth-key")!,
+          "Content-Type": "application/json",
         },
         body: JSON.stringify({
-          date: claimsDate,
+          date: claimsDate.getTime(),
         }),
       });
+      console.log(claimsDate);
       const data = await response.json();
+      console.log(data);
       const _claims: AidropRequest[] = [];
       data.body.forEach((item: any) => {
         _claims.push(new AidropRequest(item));
@@ -263,10 +267,7 @@ const AirdropAdmin: React.FC = () => {
               <Button
                 variant="primary"
                 className="ms-3"
-                onClick={async (e) => {
-                  e.preventDefault();
-                  await fetchClaimsByDate();
-                }}
+                onClick={fetchClaimsByDate}
               >
                 Fetch Claims
               </Button>
