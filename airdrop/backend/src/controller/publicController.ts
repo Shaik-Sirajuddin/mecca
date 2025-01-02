@@ -18,10 +18,10 @@ export const claimAirdrop = async (req: Request, res: Response) => {
     let config = (await AirdropConfig.findOne({ where: {} }))!;
 
     if (config.dataValues.paused) {
-      throw "Aidrop paused";
+      throw "Aidrop is currently paused";
     }
     if (config.dataValues.endTime.getTime() <= Date.now()) {
-      throw "Airdrop Completed";
+      throw "Airdrop Period has been Completed";
     }
 
     let startOfDay = getStartOfDayUTC();
@@ -42,8 +42,8 @@ export const claimAirdrop = async (req: Request, res: Response) => {
       },
     });
 
-    if (claimCount > 5000) {
-      throw "Max claims in a day reached";
+    if (claimCount >= 5000) {
+      throw "The airdrop has been ended today. Maximum claims Reached";
     }
 
     // let dayAgo = new Date(Date.now() - 86400 * 1000);
@@ -79,15 +79,15 @@ export const claimAirdrop = async (req: Request, res: Response) => {
 
     if (claim_request) {
       if (claim_request.dataValues.underProcess) {
-        throw "A request is under progress";
+        throw "Too frequent requests";
       }
-      throw "Already claimed";
+      throw "Airdrop is possible once a day";
     }
     let balance = await getBalanceUser(pubkey);
     balance = balance.div(Math.pow(10, 9));
 
     if (balance.lt(config.dataValues.minSolAmount)) {
-      throw "Insufficient sol balance in account";
+      throw "Please come back later , There isn't sufficient balance in airdrop wallet";
     }
 
     let new_claim_request = await AidropRequest.create({
