@@ -1,7 +1,17 @@
 import { Helmet } from "react-helmet-async";
 import RootLayout from "../layout/RootLayout";
 import "./style.css";
-
+import {
+  Chart as ChartJS,
+  CategoryScale,
+  LinearScale,
+  PointElement,
+  LineElement,
+  Title,
+  Tooltip,
+  Legend,
+} from "chart.js";
+import { Line } from "react-chartjs-2";
 // Updated Staking Page
 import { useCallback, useEffect, useState } from "react";
 import FaqsContainer from "../../../components/faqs/faqs";
@@ -18,18 +28,29 @@ import { setAppState } from "../../../features/globalData/globalDataSlice";
 import { formatBalance } from "../../../utils/helper";
 import { IStats } from "../../../interface/IStats";
 import Decimal from "decimal.js";
-import {
-  LineChart,
-  Line,
-  XAxis,
-  YAxis,
-  CartesianGrid,
-  Tooltip,
-  Legend,
-  ResponsiveContainer,
-} from "recharts";
+// import {
+//   LineChart,
+//   Line,
+//   XAxis,
+//   YAxis,
+//   CartesianGrid,
+//   Tooltip,
+//   Legend,
+//   ResponsiveContainer,
+// } from "recharts";
 import { IDailyStats } from "../../../interface/IDailyStats";
 import { getAppState } from "../../../utils/web3";
+
+ChartJS.register(
+  CategoryScale,
+  LinearScale,
+  PointElement,
+  LineElement,
+  Title,
+  Tooltip,
+  Legend
+);
+
 const Staking = () => {
   const { t } = useTranslation();
   const dispatch = useDispatch();
@@ -53,6 +74,7 @@ const Staking = () => {
         stakedAmount: item.stakedAmount,
       };
     });
+
     return res;
   };
   const syncStats = async () => {
@@ -88,6 +110,34 @@ const Staking = () => {
     syncStats();
   }, [fetchAppState]);
 
+  const options = {
+    responsive: true,
+    plugins: {
+      legend: {
+        position: "top" as const,
+      },
+    },
+  };
+
+  const getVisibleDay = (date: Date) => {
+    return date.getDay().toString() + "/" + date.getMonth().toString();
+  };
+  const data = {
+    labels: chartData.map((item) => {
+      return getVisibleDay(new Date(item.date));
+    }),
+    datasets: [
+      {
+        label: "Staked Amount",
+        data: chartData.map((item) => {
+          return item.stakedAmount;
+        }),
+        borderColor: '#9807b5',
+        backgroundColor: "violet",
+      },
+    ],
+  };
+
   return (
     <RootLayout>
       <Helmet>
@@ -99,7 +149,7 @@ const Staking = () => {
       </Helmet>
       <div className="wrapper withdrawal-bg">
         <section className="staking-banner-sec">
-          <div className="container" style={{'maxWidth' : '1100px'}}>
+          <div className="container" style={{ maxWidth: "1100px" }}>
             <div className="staking-banner-wrap">
               <div className="row">
                 <div className="col-md-12">
@@ -217,7 +267,8 @@ const Staking = () => {
                               height: "320px",
                             }}
                           >
-                            <ResponsiveContainer width="100%" height="100%">
+                            <Line data={data} options={options}></Line>
+                            {/* <ResponsiveContainer width="100%" height="100%">
                               <LineChart
                                 data={getParsedData(chartData)}
                                 margin={{
@@ -227,9 +278,15 @@ const Staking = () => {
                                   bottom: 5,
                                 }}
                               >
-                                <CartesianGrid strokeDasharray="3 3" />
-                                <XAxis dataKey="date" />
-                                <YAxis dataKey="stakedAmount" />
+                                <CartesianGrid strokeDasharray="6 6" />
+                                <XAxis
+                                  dataKey="date"
+                                  interval={"preserveStartEnd"}
+                                />
+                                <YAxis
+                                  dataKey="stakedAmount"
+                                  domain={[0, "dataMin"]}
+                                />
                                 <Tooltip />
                                 <Legend />
                                 <Line
@@ -238,7 +295,7 @@ const Staking = () => {
                                   stroke="#9807b5"
                                 />
                               </LineChart>
-                            </ResponsiveContainer>
+                            </ResponsiveContainer> */}
                           </div>
                         </div>
                       </div>
