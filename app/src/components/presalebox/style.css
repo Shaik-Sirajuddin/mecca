@@ -12,6 +12,7 @@ input[type="number"] {
   position: relative;
   max-width: 699px;
   margin: 0 auto;
+  background: black;
 }
 
 .sail-top-back {

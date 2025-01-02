@@ -9,7 +9,6 @@ const Presale: React.FC = () => {
       className="wrapper"
       style={{
         width: "100%",
-        background: "black",
       }}
     >
       <Helmet>
