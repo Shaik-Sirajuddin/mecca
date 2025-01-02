@@ -67,16 +67,6 @@ const Staking = () => {
 
   const [chartData, setChartData] = useState<IDailyStats[]>([]);
 
-  const getParsedData = (data: IDailyStats[]) => {
-    const res = data.map((item) => {
-      return {
-        date: new Date(item.date).toLocaleDateString(),
-        stakedAmount: item.stakedAmount,
-      };
-    });
-
-    return res;
-  };
   const syncStats = async () => {
     try {
       const response = await fetch(`${baseUrl}/public/stats`);
