@@ -6,87 +6,59 @@ function Faqs() {
     <Accordion className="faqs-wrap" defaultActiveKey="0">
       <Accordion.Item eventKey="0" className="faq-item">
         <Accordion.Header className="faq-head">
-          <span>01</span> According to what standards are these tokens issued?
+          <span>01</span> How can I stake MEA tokens?
         </Accordion.Header>
         <Accordion.Body className="faq-body">
-          Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do
-          eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad
-          minim veniam, quis nostrud exercitation ullamco laboris nisi ut
-          aliquip ex ea commodo consequat. Duis aute irure dolor in
-          reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla
-          pariatur. Excepteur sint occaecat cupidatat non proident, sunt in
-          culpa qui officia deserunt mollit anim id est laborum.
+          MEA token staking is available on the MECCA staking website. Connect
+          your wallet, select the number of MEA tokens you want to stake, and
+          click the "Start Staking" button. After staking, you can monitor your
+          rewards regularly. MEA tokens can be obtained through pre-sales,
+          airdrops, or by purchasing them from listed exchanges.
         </Accordion.Body>
       </Accordion.Item>
       <Accordion.Item eventKey="1" className="faq-item">
         <Accordion.Header className="faq-head">
-          <span>02</span> Are there any rate limits?
+          <span>02</span> How are staking rewards calculated?
         </Accordion.Header>
         <Accordion.Body className="faq-body">
-          Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do
-          eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad
-          minim veniam, quis nostrud exercitation ullamco laboris nisi ut
-          aliquip ex ea commodo consequat. Duis aute irure dolor in
-          reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla
-          pariatur. Excepteur sint occaecat cupidatat non proident, sunt in
-          culpa qui officia deserunt mollit anim id est laborum.
+          Staking rewards are calculated based on the number of tokens staked
+          and the duration of the staking period. The Annual Percentage Rate
+          (APR) may vary depending on platform policies and ecosystem
+          conditions. Real-time reward rates can be checked on the staking page.
         </Accordion.Body>
       </Accordion.Item>
       <Accordion.Item eventKey="2" className="faq-item">
         <Accordion.Header className="faq-head">
-          <span>03</span> What if I want to request a large number of tokens?
+          <span>03</span> Can I withdraw staked MEA tokens anytime?
         </Accordion.Header>
         <Accordion.Body className="faq-body">
-          Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do
-          eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad
-          minim veniam, quis nostrud exercitation ullamco laboris nisi ut
-          aliquip ex ea commodo consequat. Duis aute irure dolor in
-          reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla
-          pariatur. Excepteur sint occaecat cupidatat non proident, sunt in
-          culpa qui officia deserunt mollit anim id est laborum.
+          Staked MEA tokens can be withdrawn freely after the lock-up period
+          ends. The lock-up period and conditions are specified when choosing a
+          staking program and may vary based on platform policies. Reward
+          earnings, however, can be withdrawn at any time without a lock-up
+          period.
         </Accordion.Body>
       </Accordion.Item>
       <Accordion.Item eventKey="3" className="faq-item">
         <Accordion.Header className="faq-head">
-          <span>04</span> Do you support other tokens?
+          <span>04</span> Where can I check my staking rewards?
         </Accordion.Header>
         <Accordion.Body className="faq-body">
-          Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do
-          eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad
-          minim veniam, quis nostrud exercitation ullamco laboris nisi ut
-          aliquip ex ea commodo consequat. Duis aute irure dolor in
-          reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla
-          pariatur. Excepteur sint occaecat cupidatat non proident, sunt in
-          culpa qui officia deserunt mollit anim id est laborum.
+          Staking rewards can be viewed in real-time on the staking dashboard.
+          Rewards are updated regularly and can either be automatically
+          transferred to your wallet or accumulated for additional staking.
         </Accordion.Body>
       </Accordion.Item>
       <Accordion.Item eventKey="4" className="faq-item">
         <Accordion.Header className="faq-head">
-          <span>05</span> Is MECCA worth something like some Ethereum testnets
-          that can be traded at real prices?
+          <span>05</span> What is the minimum amount of MEA tokens required for
+          staking?
         </Accordion.Header>
         <Accordion.Body className="faq-body">
-          Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do
-          eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad
-          minim veniam, quis nostrud exercitation ullamco laboris nisi ut
-          aliquip ex ea commodo consequat. Duis aute irure dolor in
-          reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla
-          pariatur. Excepteur sint occaecat cupidatat non proident, sunt in
-          culpa qui officia deserunt mollit anim id est laborum.
-        </Accordion.Body>
-      </Accordion.Item>
-      <Accordion.Item eventKey="5" className="faq-item">
-        <Accordion.Header className="faq-head">
-          <span>06</span> What happens if my requests keep failing?
-        </Accordion.Header>
-        <Accordion.Body className="faq-body">
-          Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do
-          eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad
-          minim veniam, quis nostrud exercitation ullamco laboris nisi ut
-          aliquip ex ea commodo consequat. Duis aute irure dolor in
-          reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla
-          pariatur. Excepteur sint occaecat cupidatat non proident, sunt in
-          culpa qui officia deserunt mollit anim id est laborum.
+          The minimum amount required to participate in staking is 1,000 MEA.
+          The maximum amount that can be staked is 10,000,000 MEA. These limits
+          may change depending on platform policies, and detailed information
+          can be found on the staking page.
         </Accordion.Body>
       </Accordion.Item>
     </Accordion>
