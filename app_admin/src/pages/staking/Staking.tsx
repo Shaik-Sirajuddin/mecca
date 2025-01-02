@@ -33,7 +33,7 @@ import { getSPlTokenBalance } from "../../utils/web3";
 
 const Staking: React.FC = () => {
   const { connection } = useConnection();
-  const { publicKey, sendTransaction, signTransaction } = useWallet();
+  const { publicKey, sendTransaction } = useWallet();
   const [appState, setAppState] = useState(AppState.dummy());
   const [stats, setStats] = useState<IStats>({
     day: "0",

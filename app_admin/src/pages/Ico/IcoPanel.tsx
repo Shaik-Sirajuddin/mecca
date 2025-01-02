@@ -1,14 +1,11 @@
 // Import necessary libraries and components
 import React, { useState, useEffect } from "react";
-import axios from "axios";
 import { Container, Row, Col, Button, Form, Card } from "react-bootstrap";
 import "bootstrap/dist/css/bootstrap.min.css";
 import { deci, formatBalance, updateIfValid } from "../../utils/utils";
-import { icoBaseUrl } from "../../utils/constants";
 import toast from "react-hot-toast";
 import { useNavigate } from "react-router-dom";
 import { AppConfig, AppConfigSchema } from "../../schema/ico/AppConfig";
-import { SaleState } from "../../schema/ico/SaleState";
 import { Round } from "../../schema/ico/Round";
 import { useConnection, useWallet } from "@solana/wallet-adapter-react";
 import {
@@ -22,12 +19,10 @@ import {
   getUpdateConfigTransaction,
   getUpdateOwnerTransaction,
   getUpdateRoundTransaction,
-  getUserTokenAta,
   getWithdrawTokensTransaction,
   parsePubKey,
 } from "./utils/web3";
 import Decimal from "decimal.js";
-import { PublicKey } from "@solana/web3.js";
 
 const AdminICOPage: React.FC = () => {
   const [appConfig, setAppConfig] = useState<AppConfig>(AppConfig.dummy());
@@ -40,7 +35,7 @@ const AdminICOPage: React.FC = () => {
   const [editingRound, setEditingRound] = useState<Round | null>(null);
   const navigate = useNavigate();
   const { connection } = useConnection();
-  const { connected, publicKey, sendTransaction, signTransaction } =
+  const { publicKey, sendTransaction } =
     useWallet();
 
   const delayedUpdate = (sync: () => any) => {

@@ -1,0 +1,19 @@
+[Unit]
+Description=Staking Backend Service
+After=network.target
+
+[Service]
+ExecStart=/bin/bash -c 'source /root/.nvm/nvm.sh && /root/.nvm/versions/node/v22.12.0/bin/pnpm run dev'
+WorkingDirectory=/root/mecca/staking/backend
+Environment=NODE_ENV=production
+Restart=on-failure
+RestartSec=3s
+User=root
+Group=root
+
+[Install]
+WantedBy=multi-user.target
+
+
+
+sudo nano /etc/systemd/system/mea_staking_backend.service

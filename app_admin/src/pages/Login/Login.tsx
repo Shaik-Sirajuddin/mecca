@@ -1,11 +1,10 @@
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { Form, Button, Container, Row, Col, Alert } from "react-bootstrap";
+import { Form, Button, Container, Row, Col } from "react-bootstrap";
 import toast from "react-hot-toast";
-import { airdropBaseUrl, icoBaseUrl } from "../../utils/constants";
+import { airdropBaseUrl } from "../../utils/constants";
 
 const Login: React.FC = () => {
-  const [username, setUsername] = useState("");
   const [secretKey, setSecretKey] = useState("");
   const navigate = useNavigate();
 
@@ -51,8 +50,6 @@ const Login: React.FC = () => {
                 placeholder="Enter username"
                 defaultValue={"admin"}
                 readOnly={true}
-                // value={username}
-                onChange={(e) => setUsername(e.target.value)}
               />
             </Form.Group>
 
