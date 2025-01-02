@@ -34,7 +34,7 @@ const PresaleBox = () => {
   //amount in decimal represented as string '10.232'
   const [solAmount, setSolAmount] = useState("0.01");
   const [usdtAmount, setUsdtAmount] = useState("0.01");
-  const [receivableToken, setReceivableToken] = useState("0.1");
+  const [receivableToken, setReceivableToken] = useState("100");
 
   const [tokenBalance, setTokenBalance] = useState(new Decimal(0));
   const [usdtBalance, setUsdtBalance] = useState(new Decimal(0));
@@ -299,29 +299,63 @@ const PresaleBox = () => {
   };
 
   const maxToken = () => {
-    if (isUsdt) {
-      setUsdtAmount(usdtBalance.div(Math.pow(10, usdt.decimals)).toString());
-    } else {
-      setSolAmount(solBalance.div(Math.pow(10, 9)).toString());
-    }
+    // if (isUsdt) {
+    //   setUsdtAmount(usdtBalance.div(Math.pow(10, usdt.decimals)).toString());
+    // } else {
+    //   setSolAmount(solBalance.div(Math.pow(10, 9)).toString());
+    // }
+    // calculateReceivable();
+    calculateMaxReceivable();
   };
 
-  const calculateReceivable = useCallback(() => {
+  const calculateRequired = useCallback(() => {
+    const requiredReceivable = deci(receivableToken);
+    if (requiredReceivable == null) return;
     const round = appConfig.rounds[curRoundId];
     const price = round.round_price.div(Math.pow(10, round.price_decimals));
+    const reqUsdAmount = requiredReceivable.mul(price);
+
     if (isUsdt) {
-      const usdt_amount = deci(usdtAmount);
-      if (usdt_amount === null) return;
-      const amount = usdt_amount.div(price).toString();
-      setReceivableToken(amount);
+      setUsdtAmount(reqUsdAmount.toFixed(usdt.decimals));
     } else {
-      const sol_amount = deci(solAmount);
-      if (sol_amount === null) return;
-      const usdt_value = sol_amount.mul(solPrice);
-      const amount = usdt_value.div(price).toString();
-      setReceivableToken(amount);
+      const reqSolAmount = reqUsdAmount.div(solPrice).toFixed(9); // 9 decimals for solana
+      setSolAmount(reqSolAmount);
     }
-  }, [curRoundId, appConfig.rounds, isUsdt, solPrice, usdtAmount, solAmount]);
+  }, [receivableToken, appConfig.rounds, curRoundId, isUsdt, solPrice]);
+
+  useEffect(calculateRequired, [calculateRequired]);
+
+  const calculateMaxReceivable = useCallback(() => {
+    //calculate max receivable
+    const round = appConfig.rounds[curRoundId];
+    const price = round.round_price.div(Math.pow(10, round.price_decimals));
+
+    if (isUsdt) {
+      const usdt_amount = usdtBalance.div(Math.pow(10, usdt.decimals));
+      const amount = usdt_amount.div(price);
+      setReceivableToken(
+        Decimal.min(amount, availableForPurchase).toFixed(token.decimals)
+      );
+    } else {
+      const sol_amount = solBalance.div(Math.pow(10, 9));
+      const usdt_value = sol_amount.mul(solPrice);
+      const amount = usdt_value.div(price);
+      setReceivableToken(
+        Decimal.min(
+          amount,
+          availableForPurchase.div(Math.pow(10, token.decimals))
+        ).toFixed(token.decimals)
+      );
+    }
+  }, [
+    appConfig.rounds,
+    curRoundId,
+    usdtBalance,
+    isUsdt,
+    availableForPurchase,
+    solBalance,
+    solPrice,
+  ]);
 
   const handleBuyClick = async () => {
     setTxInProgress(true);
@@ -333,9 +367,9 @@ const PresaleBox = () => {
     setTxInProgress(false);
   };
 
-  useEffect(() => {
-    calculateReceivable();
-  }, [calculateReceivable, solPrice]);
+  // useEffect(() => {
+  //   calculateReceivable();
+  // }, [calculateReceivable, solPrice]);
 
   useEffect(() => {
     console.log("contract state ", solBalance.toString());
@@ -556,12 +590,37 @@ const PresaleBox = () => {
                         name="mecca-pay"
                         id="mecca-pay"
                         className="input-mecca mecca-pay"
+                        readOnly={true}
                         value={isUsdt ? usdtAmount : solAmount}
                         onChange={(event) => {
                           updateIfValid(
                             event.target.value,
                             isUsdt ? setUsdtAmount : setSolAmount
                           );
+                        }}
+                      />
+
+                      <img
+                        src={`/wp-includes/images/${
+                          isUsdt ? "ustd" : "sol-dark"
+                        }-logo.png`}
+                        alt=""
+                        className="mecca-logo-input"
+                      />
+                    </div>
+                  </div>
+                  <div className="w-100">
+                    <label htmlFor="mecca-pay">MECCA You receive</label>
+                    <div className="input-mecca-container">
+                      <input
+                        type="text"
+                        value={receivableToken}
+                        placeholder=""
+                        name="mecca-pay"
+                        id="mecca-receive"
+                        className="input-mecca mecca-receive"
+                        onChange={(event) => {
+                          updateIfValid(event.target.value, setReceivableToken);
                         }}
                       />
                       <button
@@ -576,27 +635,6 @@ const PresaleBox = () => {
                       >
                         MAX
                       </button>
-                      <img
-                        src={`/wp-includes/images/${
-                          isUsdt ? "ustd" : "sol-dark"
-                        }-logo.png`}
-                        alt=""
-                        className="mecca-logo-input"
-                      />
-                    </div>
-                  </div>
-                  <div className="w-100">
-                    <label htmlFor="mecca-pay">MECCA You receive</label>
-                    <div className="input-mecca-container">
-                      <input
-                        readOnly={true}
-                        type="text"
-                        value={formatNum(receivableToken)}
-                        placeholder=""
-                        name="mecca-pay"
-                        id="mecca-receive"
-                        className="input-mecca mecca-receive"
-                      />
                       <img
                         src={`/wp-includes/images/mecca-logo.png`}
                         alt=""
