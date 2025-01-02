@@ -579,36 +579,6 @@ const PresaleBox = () => {
 
                 <div className="inputs-wrap">
                   <div className="w-100">
-                    <label htmlFor="mecca-pay">
-                      {isUsdt ? "USDT" : "SOL"} You pay
-                    </label>
-                    <div className="input-mecca-container">
-                      <input
-                        type="text"
-                        placeholder=""
-                        name="mecca-pay"
-                        id="mecca-pay"
-                        className="input-mecca mecca-pay"
-                        readOnly={true}
-                        value={isUsdt ? usdtAmount : solAmount}
-                        onChange={(event) => {
-                          updateIfValid(
-                            event.target.value,
-                            isUsdt ? setUsdtAmount : setSolAmount
-                          );
-                        }}
-                      />
-
-                      <img
-                        src={`/wp-includes/images/${
-                          isUsdt ? "ustd" : "sol-dark"
-                        }-logo.png`}
-                        alt=""
-                        className="mecca-logo-input"
-                      />
-                    </div>
-                  </div>
-                  <div className="w-100">
                     <label htmlFor="mecca-pay">MECCA You receive</label>
                     <div className="input-mecca-container">
                       <input
@@ -636,6 +606,36 @@ const PresaleBox = () => {
                       </button>
                       <img
                         src={`/wp-includes/images/mecca-logo.png`}
+                        alt=""
+                        className="mecca-logo-input"
+                      />
+                    </div>
+                  </div>
+                  <div className="w-100">
+                    <label htmlFor="mecca-pay">
+                      {isUsdt ? "USDT" : "SOL"} You pay
+                    </label>
+                    <div className="input-mecca-container">
+                      <input
+                        type="text"
+                        placeholder=""
+                        name="mecca-pay"
+                        id="mecca-pay"
+                        className="input-mecca mecca-pay"
+                        readOnly={true}
+                        value={isUsdt ? usdtAmount : solAmount}
+                        onChange={(event) => {
+                          updateIfValid(
+                            event.target.value,
+                            isUsdt ? setUsdtAmount : setSolAmount
+                          );
+                        }}
+                      />
+
+                      <img
+                        src={`/wp-includes/images/${
+                          isUsdt ? "ustd" : "sol-dark"
+                        }-logo.png`}
                         alt=""
                         className="mecca-logo-input"
                       />

@@ -16,6 +16,15 @@ function Header() {
         <div className="container">
           <div className="nav-wrapper">
             <div className="brand-wrap">
+              <Navbar.Brand href="/staking">
+                <img
+                  alt="logo"
+                  src="/images/logo.png"
+                  width="180"
+                  height="50"
+                  className="d-inline-block logo-img"
+                />
+              </Navbar.Brand>
               <button
                 onClick={() => setToggleMenu((pre) => !pre)}
                 className="p-2 hamburger-btn"
@@ -31,15 +40,6 @@ function Header() {
                   <path d="M 5 8 A 2.0002 2.0002 0 1 0 5 12 L 45 12 A 2.0002 2.0002 0 1 0 45 8 L 5 8 z M 5 23 A 2.0002 2.0002 0 1 0 5 27 L 45 27 A 2.0002 2.0002 0 1 0 45 23 L 5 23 z M 5 38 A 2.0002 2.0002 0 1 0 5 42 L 45 42 A 2.0002 2.0002 0 1 0 45 38 L 5 38 z"></path>
                 </svg>
               </button>
-              <Navbar.Brand href="/staking">
-                <img
-                  alt="logo"
-                  src="/images/logo.png"
-                  width="180"
-                  height="50"
-                  className="d-inline-block logo-img"
-                />
-              </Navbar.Brand>
             </div>
 
             <Nav className={`${toggleMenu && "show"}` + " nav-list"}>
