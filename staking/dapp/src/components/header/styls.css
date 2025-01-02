@@ -83,7 +83,6 @@ main {
   display: flex;
   align-items: center;
   justify-content: space-between;
-  width: 100%;
 }
 
 .hamburger-btn {
@@ -171,4 +170,10 @@ main {
   .wallet-btn {
     margin: 24px auto 10px auto;
   }
+}
+
+@media (max-width : 1022px){
+ .brand-wrap{
+  width: 100%;
+ }
 }

@@ -186,7 +186,7 @@ const AirdropPeriod = () => {
               <div className="airdrop-form-wrap">
                 <div className="airdrop-form-row">
                   <div className="token-selector">
-                    <label htmlFor="token-selection">MEA</label>
+                    <label htmlFor="token-selection">MECCA Token</label>
                     <div className="input-token-container">
                       <img
                         src="/wp-includes/images/mecca-logo.png"

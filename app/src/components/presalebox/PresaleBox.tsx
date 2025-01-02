@@ -16,7 +16,6 @@ import { useConnection, useWallet } from "@solana/wallet-adapter-react";
 import {
   deci,
   formatBalance,
-  formatNum,
   presaleStates,
   updateIfValid,
 } from "./utils/utils";

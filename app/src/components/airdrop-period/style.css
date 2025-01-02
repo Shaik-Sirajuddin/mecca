@@ -24,6 +24,7 @@ input[type="number"] {
   background: rgb(21 23 18 / 40%);
   -webkit-backdrop-filter : blur(5px);
   position: relative;
+  border-radius: 12px;
   z-index: 1;
 }
 

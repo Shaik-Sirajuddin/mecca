@@ -6,9 +6,10 @@
   background-position: 70% center;
 }
 .wrapper{
-  backdrop-filter: blur(5px);
-  background: rgb(21 23 18 / 40%);
-  -webkit-backdrop-filter : blur(5px);
+  background:transparent;
+  /* backdrop-filter: blur(5px); */
+  /* background: rgb(21 23 18 / 40%); */
+  /* -webkit-backdrop-filter : blur(5px); */
 }
 
 .bototm-space {
