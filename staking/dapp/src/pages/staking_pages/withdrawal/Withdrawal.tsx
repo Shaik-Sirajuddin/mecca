@@ -360,7 +360,7 @@ const Withdrawal = () => {
                 is_withdraw_under_progress={
                   user.withdraw_request.is_under_progress
                 }
-                buttonLabel={t("withdrawal.unstake")}
+                buttonLabel={t("withdrawal.withdraw")}
                 type="interest"
                 color={"purple-1"}
                 hasLockUp={

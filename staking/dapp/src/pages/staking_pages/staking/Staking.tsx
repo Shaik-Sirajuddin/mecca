@@ -172,7 +172,7 @@ const Staking = () => {
                                   <h3 className="text-22 text-pink font-bold">
                                     {appState.total_registered}
                                   </h3>
-                                  <p className="text-14">%</p>
+                                  <p className="text-14">Staker</p>
                                 </div>
                               </div>
                               <div className="col bg-white p-3 rounded-3">

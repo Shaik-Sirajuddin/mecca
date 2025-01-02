@@ -33,6 +33,7 @@
     "maxButton": "MAX",
     "interestWithdrawalTitle": "Interest Withdrawal",
     "withdrawn_interest": "Claimed Interest",
-    "errorsAssetsUnavailable": "Assets not available for withdrawal."
+    "errorsAssetsUnavailable": "Assets not available for withdrawal.",
+    "withdraw" : "Withdraw"
   }
 }

@@ -13,3 +13,10 @@
   cursor: not-allowed; /* Show not-allowed cursor */
   pointer-events: none; /* Disable interactions */
 }
+
+.withdraw-input-wrapper{
+  display: flex;
+  justify-content: end;
+  gap: 4px;
+  align-items: center;
+}

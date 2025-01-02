@@ -48,19 +48,18 @@ function Header() {
                 href="/staking"
                 className={`${path === "/staking" && "active"}`}
               >
-                <div className="active-state"></div>
+                {/* <div className="active-state"></div> */}
                 <span>Staking</span>
               </Nav.Link>
               <Nav.Link
                 className={`${path === "/withdrawal" && "active"}`}
                 href="/withdrawal"
               >
-                <div className="active-state"></div>
+                {/* <div className="active-state"></div> */}
                 Withdrawal
               </Nav.Link>
 
               <WalletMultiButton style={{}} />
-              <LangOption />
             </Nav>
 
             {/* <ul className="auth-links-list">

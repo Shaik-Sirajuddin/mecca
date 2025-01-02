@@ -64,49 +64,42 @@ const WithdrawlBox: React.FC<Props> = (props) => {
       </div>
       <div className="staking-boxs">
         <div className="flex flex-col staking-input-boxs gap-3">
-          <div className="staking-input-box" style={{ display: "block" }}>
+          <div className="staking-input-box">
             <p className="staking-input-label">
               {t("withdrawal.availableQuantityLabel")}
             </p>
-            <div
-              style={{
-                display: "flex",
-                justifyContent: "end",
-                gap: "4px",
-                alignItems: "center",
-              }}
-            >
+            <div>
               <p
                 className={`staking-input text-${props.color}`}
                 style={{ flex: "1" }}
               >
                 {formatBalance(props.availableQuantity)}
               </p>
-              {props.has_amount_selection && (
+            </div>
+          </div>
+
+          {props.has_amount_selection && (
+            <div className="staking-input-box" style={{ display: "block" }}>
+              <p className="staking-input-label">
+                {t("withdrawal.withdrawalAmountLabel")}
+              </p>
+              <div className="withdraw-input-wrapper">
+                <input
+                  type="text"
+                  onChange={(event) => {
+                    updateIfValid(event.target.value, setWithdrawQuantity);
+                  }}
+                  value={withdrawQuantity}
+                  className="staking-input interest-withdrawal-amount text-gray-1 font-medium"
+                  // className={`staking-input text-${props.color}`}
+                />
                 <button
                   onClick={maxClick}
                   className={`max-btn bg-${props.color} text-white d-inline-flex`}
                 >
                   {t("withdrawal.maxButton")}
                 </button>
-              )}
-            </div>
-          </div>
-
-          {props.has_amount_selection && (
-            <div className="staking-input-box">
-              <p className="staking-input-label">
-                {t("withdrawal.withdrawalAmountLabel")}
-              </p>
-              <input
-                type="text"
-                onChange={(event) => {
-                  updateIfValid(event.target.value, setWithdrawQuantity);
-                }}
-                value={withdrawQuantity}
-                className="staking-input interest-withdrawal-amount text-gray-1 font-medium"
-                // className={`staking-input text-${props.color}`}
-              />
+              </div>
             </div>
           )}
           {!props.has_amount_selection && (
@@ -146,11 +139,13 @@ const WithdrawlBox: React.FC<Props> = (props) => {
           />
           {props.buttonLabel}
         </button>
-        <p className={`text-14 text-white text-center mb-3`}>
-          {t("withdrawal.lockupNote", {
-            days: convertSecondsToDaysHours(props.lockUpTime).days,
-          })}
-        </p>
+        {props.hasLockUp && (
+          <p className={`text-14 text-white text-center mb-3`}>
+            {t("withdrawal.lockupNote", {
+              days: convertSecondsToDaysHours(props.lockUpTime).days,
+            })}
+          </p>
+        )}
         <div className="lookup-timer-wrap">
           {props.hasLockUp && !timerCompleted && (
             <h3 className={`text-18 text-center font-bold text-white`}>
@@ -191,7 +186,7 @@ const WithdrawlBox: React.FC<Props> = (props) => {
                 id="loader"
                 className="btn-sky text-xl"
               />
-              {t("withdrawal.claimButton")}
+              {t(`withdrawal.claimButton`)}
             </button>
           )}
         </div>
