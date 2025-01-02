@@ -106,7 +106,7 @@ const WithdrawlBox: React.FC<Props> = (props) => {
             <div
               className=""
               style={{
-                height: "64px",
+                height: "86px",
               }}
             ></div>
           )}
