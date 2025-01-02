@@ -2,7 +2,12 @@
 import React, { useState, useEffect } from "react";
 import { Container, Row, Col, Button, Form, Card } from "react-bootstrap";
 import "bootstrap/dist/css/bootstrap.min.css";
-import { deci, formatBalance, updateIfValid } from "../../utils/utils";
+import {
+  convertToLocalISOString,
+  deci,
+  formatBalance,
+  updateIfValid,
+} from "../../utils/utils";
 import toast from "react-hot-toast";
 import { useNavigate } from "react-router-dom";
 import { AppConfig, AppConfigSchema } from "../../schema/ico/AppConfig";
@@ -35,8 +40,7 @@ const AdminICOPage: React.FC = () => {
   const [editingRound, setEditingRound] = useState<Round | null>(null);
   const navigate = useNavigate();
   const { connection } = useConnection();
-  const { publicKey, sendTransaction } =
-    useWallet();
+  const { publicKey, sendTransaction } = useWallet();
 
   const delayedUpdate = (sync: () => any) => {
     setTimeout(sync, 2000);
@@ -316,11 +320,12 @@ const AdminICOPage: React.FC = () => {
               </Form.Group>
               <Form.Group controlId="endTime" className="mb-3">
                 <Form.Label>End Time</Form.Label>
+
                 <Form.Control
                   type="datetime-local"
-                  value={new Date(editingRound.end_time)
-                    .toISOString()
-                    .slice(0, 16)}
+                  value={convertToLocalISOString(
+                    new Date(editingRound.end_time)
+                  )}
                   onChange={(e) => {
                     console.log(e.target.value, new Date(e.target.value));
                     setEditingRound({
@@ -356,20 +361,44 @@ const AdminICOPage: React.FC = () => {
             </Form.Group>
             <Form.Group controlId="startTime" className="mb-3">
               <Form.Label>Start Time</Form.Label>
+
               <Form.Control
                 type="datetime-local"
-                value={new Date(appConfig.start_time)
-                  .toISOString()
-                  .slice(0, 16)}
+                value={convertToLocalISOString(new Date(appConfig.start_time))}
                 onChange={(e) => {
-                  console.log(e.target.value);
-                  setAppConfig(appConfig);
                   setAppConfig({
                     ...appConfig,
                     start_time: new Date(e.target.value),
                   });
                 }}
               />
+              {/* <DateTimePicker
+                onChange={(time) => {
+                  if (time) {
+                    setAppConfig({
+                      ...appConfig,
+                      start_time: new Date(time ?? ""),
+                    });
+                    console.log(time.toLocaleString())
+                  }
+                }}
+                value={appConfig.start_time}
+                // disableClock={true} // Removes the clock
+              /> */}
+              {/* <TimePicker
+                value={secondsToTimeString(
+                  appConfig.start_time.getTime() / 1000
+                )}
+                onChange={(time) => {
+                  setAppConfig({
+                    ...appConfig,
+                    start_time: new Date(
+                      timeStringToSeconds(time ?? "") * 1000
+                    ),
+                  });
+                }}
+                format={"h:mm a"}
+              /> */}
             </Form.Group>
             <Form.Group controlId="paused" className="mb-3">
               <Form.Check

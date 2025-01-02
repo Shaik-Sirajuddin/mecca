@@ -80,3 +80,15 @@ export const updateIfValidNoDecimal = (
     console.log("notvalid", value);
   }
 };
+export const convertToLocalISOString = (date: Date | string) => {
+  // Ensure date is a Date object
+  const localDate = new Date(date);
+
+  // Get local time offset in minutes and adjust the date
+  const localTimeOffset = localDate.getTimezoneOffset();
+  localDate.setMinutes(localDate.getMinutes() - localTimeOffset);
+
+  // Manually construct the ISO string with the adjusted date
+  const localISOString = localDate.toISOString().slice(0, -1); // Remove 'Z' to avoid UTC output
+  return localISOString;
+};

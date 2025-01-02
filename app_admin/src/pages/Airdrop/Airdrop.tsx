@@ -19,7 +19,7 @@ import Decimal from "decimal.js";
 import { useConnection } from "@solana/wallet-adapter-react";
 import { tokenHolderAta, tokenHolderOwner } from "./utils/constants";
 import { getSPlTokenBalance } from "../../utils/web3";
-import { formatBalance } from "../../utils/utils";
+import { convertToLocalISOString, formatBalance } from "../../utils/utils";
 import { AidropRequest } from "../../schema/AirdropRequest";
 
 const AirdropAdmin: React.FC = () => {
@@ -216,10 +216,8 @@ const AirdropAdmin: React.FC = () => {
             <Form.Group controlId="endTime" className="mb-3">
               <Form.Label>End Time</Form.Label>
               <Form.Control
+                value={convertToLocalISOString(new Date(airdropConfig.endTime))}
                 type="datetime-local"
-                value={new Date(airdropConfig.endTime)
-                  .toISOString()
-                  .slice(0, 16)}
                 onChange={(e) =>
                   setAirdropConfig({
                     ...airdropConfig,
