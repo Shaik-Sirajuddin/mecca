@@ -1,7 +1,6 @@
 import React from "react";
 import Modal from "react-bootstrap/Modal";
 import "./style.css";
-import { Button } from "react-bootstrap";
 export interface PopUpProps {
   show: boolean;
   onClose: () => void;
