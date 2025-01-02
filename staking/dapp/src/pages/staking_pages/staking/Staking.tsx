@@ -12,6 +12,7 @@ import {
   Legend,
 } from "chart.js";
 import { Line } from "react-chartjs-2";
+
 // Updated Staking Page
 import { useCallback, useEffect, useState } from "react";
 import FaqsContainer from "../../../components/faqs/faqs";
@@ -132,7 +133,7 @@ const Staking = () => {
         data: chartData.map((item) => {
           return item.stakedAmount;
         }),
-        borderColor: '#9807b5',
+        borderColor: "#9807b5",
         backgroundColor: "violet",
       },
     ],
