@@ -35,7 +35,7 @@ const TokenProgress: React.FC<props> = (props: props) => {
           style={{
             width: "100%",
             height: "10px",
-            background: `linear-gradient(to right, #922AAF ${soldPercentage}%, #f0f0f0 ${soldPercentage}%)`, // Dynamic fill
+            background: `linear-gradient(to right, #922AAF ${soldPercentage}%, rgb(204 195 217) ${soldPercentage}%)`, // Dynamic fill
             borderRadius: "50px",
             outline: "none",
           }}

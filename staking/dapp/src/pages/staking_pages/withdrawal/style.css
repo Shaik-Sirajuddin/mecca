@@ -138,6 +138,7 @@
   background-color: #fff;
   padding: 16px;
   display: flex;
+  gap: 4px;
   align-items: center;
   justify-content: space-between;
   border-radius: 12px;
@@ -162,7 +163,7 @@
   font-weight: 500;
   border: transparent;
   text-align: end;
-  width: 49%;
+  width: 100%;
 }
 
 .staking-input.unstaking-withdrawal-amount::placeholder {

@@ -64,21 +64,33 @@ const WithdrawlBox: React.FC<Props> = (props) => {
       </div>
       <div className="staking-boxs">
         <div className="flex flex-col staking-input-boxs gap-3">
-          <div className="staking-input-box">
+          <div className="staking-input-box" style={{ display: "block" }}>
             <p className="staking-input-label">
               {t("withdrawal.availableQuantityLabel")}
             </p>
-            <p className={`staking-input text-${props.color}`}>
-              {formatBalance(props.availableQuantity)}
-            </p>
-            {props.has_amount_selection && (
-              <button
-                onClick={maxClick}
-                className={`max-btn bg-${props.color} text-white d-inline-flex`}
+            <div
+              style={{
+                display: "flex",
+                justifyContent: "end",
+                gap: "4px",
+                alignItems: "center",
+              }}
+            >
+              <p
+                className={`staking-input text-${props.color}`}
+                style={{ flex: "1" }}
               >
-                {t("withdrawal.maxButton")}
-              </button>
-            )}
+                {formatBalance(props.availableQuantity)}
+              </p>
+              {props.has_amount_selection && (
+                <button
+                  onClick={maxClick}
+                  className={`max-btn bg-${props.color} text-white d-inline-flex`}
+                >
+                  {t("withdrawal.maxButton")}
+                </button>
+              )}
+            </div>
           </div>
 
           {props.has_amount_selection && (

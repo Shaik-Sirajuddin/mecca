@@ -12,9 +12,11 @@ const Airdrop: React.FC = () => {
         display: "flex",
         justifyContent: "center",
         alignItems: "center",
-        background: "#202020",
         height: "100%",
         minHeight: "550px",
+        // background: "#202020",
+        // background: "rgba(21, 23, 18, 0.4)",
+        // backdropFilter : 'blue(5px)'
       }}
     >
       <Helmet>

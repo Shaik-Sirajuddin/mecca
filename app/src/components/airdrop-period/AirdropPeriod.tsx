@@ -4,6 +4,7 @@ import { AirdropConfig } from "../../schema/airdrop/AirdropConfig";
 import { baseUrl } from "./utils/constants";
 import toast from "react-hot-toast";
 import { getParsedPublicKey } from "./utils/utils";
+import PopUpModal, { PopUpProps } from "../PopUpModal/PopUpModal";
 
 const AirdropPeriod = () => {
   const [airdropConfig, setAirdropConfig] = useState(AirdropConfig.dummy());
@@ -18,6 +19,16 @@ const AirdropPeriod = () => {
     seconds: 0,
   });
   const [address, setAddress] = useState("");
+
+  const [showModal, setShowModal] = useState(false);
+
+  const [modalDate, setModalDate] = useState<PopUpProps>({
+    type: "success",
+    title: "Message from",
+    message: "this is details text",
+    onClose: () => {},
+    show: false,
+  });
 
   const fetchConfig = async () => {
     try {
@@ -82,14 +93,33 @@ const AirdropPeriod = () => {
       });
       const data = await response.json();
       if (!data.success) {
-        toast.error(data.message ?? "Something went wrong");
+        setModalDate({
+          ...modalDate,
+          title: "Claim Failed",
+          message: data.message.toString() ?? "Something went wrong",
+          type: "error",
+        });
+        setShowModal(true);
         return;
       }
-
-      toast.success("Airdrop sent to wallet");
-    } catch (error) {
+      setModalDate({
+        ...modalDate,
+        title: "Claimed",
+        message: "Airdrop sent to wallet",
+        type: "success",
+      });
+      setShowModal(true);
+      // toast.success("Airdrop sent to wallet");
+    } catch (error: any) {
+      setModalDate({
+        ...modalDate,
+        title: "Claim Failed",
+        message: error.toString(),
+        type: "error",
+      });
+      setShowModal(true);
       console.log(error);
-      toast.error("Something went wrong");
+      // toast.error("Something went wrong");
     } finally {
       setReqInProgress(false);
     }
@@ -156,7 +186,7 @@ const AirdropPeriod = () => {
               <div className="airdrop-form-wrap">
                 <div className="airdrop-form-row">
                   <div className="token-selector">
-                    <label htmlFor="token-selection">Token</label>
+                    <label htmlFor="token-selection">MEA</label>
                     <div className="input-token-container">
                       <img
                         src="/wp-includes/images/mecca-logo.png"
@@ -165,9 +195,10 @@ const AirdropPeriod = () => {
                       />
                       <input
                         type="text"
-                        placeholder="0.001"
+                        value={airdropConfig.amount}
                         name="token selection"
                         id="token-selection"
+                        readOnly={true}
                         className="input-mecca token-input "
                       />
                       {/* <span>MECCA</span> */}
@@ -182,7 +213,7 @@ const AirdropPeriod = () => {
                         name="mecca-pay"
                         id="mecca-pay"
                         style={{
-                          'textOverflow' : 'ellipsis'
+                          textOverflow: "ellipsis",
                         }}
                         className="input-mecca mecca-pay"
                         value={address}
@@ -222,6 +253,13 @@ const AirdropPeriod = () => {
             </form>
           </div>
         </div>
+        <PopUpModal
+          {...modalDate}
+          onClose={() => {
+            setShowModal(false);
+          }}
+          show={showModal}
+        />
       </div>
     </div>
   );

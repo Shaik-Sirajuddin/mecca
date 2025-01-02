@@ -26,7 +26,7 @@ input[type="number"] {
   position: absolute;
   top: -50px;
   right: -60px;
-  z-index: 2;
+  z-index: 0;
   width: 360px;
 }
 
@@ -313,7 +313,7 @@ input[type="number"] {
 
 .input-mecca-container input {
   width: 100%;
-  height: 20px;
+  height: 46px;
   border-radius: 5px;
   background-color: #dbdbdb;
   border: transparent;

@@ -10,6 +10,9 @@ export const fetchStats = async (req: Request, res: Response) => {
     let interest = {
       day: await getCacheData(CACHE_KEY.INTEREST_24HR),
       standy: await getCacheData(CACHE_KEY.INTEREST_STANDY),
+      pending_principal_withdrawl: await getCacheData(
+        CACHE_KEY.PENDING_PRINCIPAL_WITHDRAWL
+      ),
     };
     responseHandler.success(res, "Fetched", { interest });
   } catch (error) {

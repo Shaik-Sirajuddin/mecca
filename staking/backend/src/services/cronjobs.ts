@@ -3,13 +3,14 @@ import {
   findTotalAccInterest24Hrs,
   getAppState,
   getInterestStandBy,
+  getPendingPrinciapalWithdrawl,
 } from "../web3";
 import { rpcConnection } from "../config/rpcConnection";
 import { setCacheData } from "../config/redis";
 import { CACHE_KEY } from "../enums/CacheKeys";
 import { AppState } from "../schema/app_state_schema";
 import DailyStats from "../models/DailyStats";
-import { splToken } from "../constants";
+import { splToken, stakeProgramId } from "../constants";
 import { getStartOfDayUTC } from "../utils/utils";
 // Schedule a job to run every 10 minutes
 
@@ -38,14 +39,25 @@ const createDBEntry = async (appState: AppState) => {
 };
 const updateStats = async () => {
   let appState = await getAppState(rpcConnection);
+  let programAccounts = await rpcConnection.getProgramAccounts(stakeProgramId, {
+    encoding: "base64",
+  });
   createDBEntry(appState);
   setCacheData(
     CACHE_KEY.INTEREST_24HR,
-    (await findTotalAccInterest24Hrs(rpcConnection, appState)).toString()
+    (
+      await findTotalAccInterest24Hrs(rpcConnection, appState, programAccounts)
+    ).toString()
   );
   setCacheData(
     CACHE_KEY.INTEREST_STANDY,
-    (await getInterestStandBy(rpcConnection, appState)).toString()
+    (
+      await getInterestStandBy(rpcConnection, appState, programAccounts)
+    ).toString()
+  );
+  setCacheData(
+    CACHE_KEY.PENDING_PRINCIPAL_WITHDRAWL,
+    (await getPendingPrinciapalWithdrawl(programAccounts)).toString()
   );
 };
 

@@ -38,6 +38,7 @@ const Staking: React.FC = () => {
   const [stats, setStats] = useState<IStats>({
     day: "0",
     standy: "0",
+    pending_principal_withdrawl: "0",
   });
 
   const [ownerAddress, setOwnerAddress] = useState("");
@@ -90,7 +91,10 @@ const Staking: React.FC = () => {
     try {
       const response = await fetch(`${baseUrl}/public/stats`);
       const data = await response.json();
-      setStats(data.body.interest);
+      setStats({
+        ...data.body.interest,
+        pending_principal_withdrawl: "0",
+      });
     } catch (error) {
       console.log(error);
     }
@@ -247,7 +251,7 @@ const Staking: React.FC = () => {
               <strong>Staking Pool:</strong>{" "}
               <p className="fs-3">
                 {formatBalance(appState.staked_amount)}
-                <span className="fs-5"> MECCA</span>
+                <span className="fs-5"> MEA</span>
               </p>
             </p>
           </Col>
@@ -256,7 +260,7 @@ const Staking: React.FC = () => {
               <strong>Interest Paid Today:</strong>{" "}
               <p className="fs-3">
                 {formatBalance(new Decimal(stats.day))}
-                <span className="fs-5"> MECCA</span>
+                <span className="fs-5"> MEA</span>
               </p>
             </p>
           </Col>
@@ -265,7 +269,40 @@ const Staking: React.FC = () => {
               <strong>Standby Interest:</strong>{" "}
               <p className="fs-3">
                 {formatBalance(new Decimal(stats.standy))}
-                <span className="fs-5"> MECCA</span>
+                <span className="fs-5"> MEA</span>
+              </p>
+            </p>
+          </Col>
+        </Row>
+        <Row>
+          <Col>
+            <p>
+              <strong>Pool Balance</strong>{" "}
+              <p className="fs-3">
+                {formatBalance(holderBalance)}
+                <span className="fs-5"> MEA</span>
+              </p>
+            </p>
+          </Col>
+          <Col>
+            <p>
+              <strong>Withdrawl In Progress (PRN)</strong>{" "}
+              <p className="fs-3">
+                {formatBalance(new Decimal(stats.pending_principal_withdrawl))}
+                <span className="fs-5"> MEA</span>
+              </p>
+            </p>
+          </Col>
+          <Col>
+            <p>
+              <strong>Pool Balance IA (ex: PRN)</strong>{" "}
+              <p className="fs-3">
+                {formatBalance(
+                  holderBalance
+                    .sub(new Decimal(stats.pending_principal_withdrawl))
+                    .sub(appState.staked_amount)
+                )}
+                <span className="fs-5"> MEA</span>
               </p>
             </p>
           </Col>

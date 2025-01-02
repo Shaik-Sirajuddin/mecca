@@ -5,6 +5,11 @@
   background-size: 600px;
   background-position: 70% center;
 }
+.wrapper{
+  backdrop-filter: blur(5px);
+  background: rgb(21 23 18 / 40%);
+  -webkit-backdrop-filter : blur(5px);
+}
 
 .bototm-space {
   margin-bottom: 94px;
@@ -283,7 +288,6 @@
   .input-token-container {
     padding-left: 12px !important;
     padding-right: 12px !important;
-    height: 48px !important;
   }
 
   .airdrop-wrap {

@@ -35,8 +35,7 @@ import { setAppState } from "../../../features/globalData/globalDataSlice";
 const Withdrawal = () => {
   const { t } = useTranslation();
   const { connection } = useConnection();
-  const { connected, publicKey, sendTransaction} =
-    useWallet();
+  const { connected, publicKey, sendTransaction } = useWallet();
 
   const [, setTxLoading] = useState(false);
   const dispatch = useDispatch();
@@ -238,7 +237,7 @@ const Withdrawal = () => {
       </Helmet>
       <div className="wrapper withdrawal-bg">
         <section className="withdrawal-banner-sec">
-          <div className="container">
+          <div className="container" style={{ maxWidth: "1100px" }}>
             <div className="withdrawal-banner-wrap">
               <div className="row">
                 <div className="col-md-12">
@@ -302,7 +301,7 @@ const Withdrawal = () => {
         </section>
 
         <section className="unstaking-sec">
-          <div className="container">
+          <div className="container" style={{ maxWidth: "1100px" }}>
             <div className="unstaking-grid">
               <WithdrawlBox
                 availableQuantity={user.principal_in_stake}

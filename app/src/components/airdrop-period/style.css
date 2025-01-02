@@ -4,25 +4,25 @@ input::-webkit-inner-spin-button {
   margin: 0;
 }
 
-input[type=number] {
+input[type="number"] {
   -moz-appearance: textfield;
 }
-
 
 .airdrop-period-container {
   position: relative;
   max-width: 699px;
-
 }
-
 
 .airdrop-period-box {
   width: 100%;
-  background-color: rgba(32, 32, 32, 1);
+  /* background-color: rgba(32, 32, 32, 1); */
   padding: 20px;
   padding-top: 58px;
   padding-bottom: 44px;
   box-shadow: (0px 3px 8px rgba(4, -1, -1, 0.35));
+  backdrop-filter: blur(5px);
+  background: rgb(21 23 18 / 40%);
+  -webkit-backdrop-filter : blur(5px);
   position: relative;
   z-index: 1;
 }
@@ -75,13 +75,10 @@ input[type=number] {
   letter-spacing: -1px;
 }
 
-
 .timer-colon {
   color: #fff;
   font-size: 24px;
 }
-
-
 
 .airdrop-period-body {
   padding: 0 42px;
@@ -89,7 +86,7 @@ input[type=number] {
 
 .airdrop-period-textbox {
   padding-bottom: 34px;
-  border-bottom: 1px solid #7A7482;
+  border-bottom: 1px solid #7a7482;
 }
 
 .airdrop-period-textbox h3 {
@@ -114,7 +111,7 @@ input[type=number] {
 .airdrop-form-row {
   display: flex;
   align-items: center;
-  margin-bottom: 24px;
+  margin-bottom: 22px;
   gap: 22px;
 }
 
@@ -123,7 +120,7 @@ input[type=number] {
   position: relative;
   border-radius: 5px;
   background-color: #dbdbdb;
-  height: 52px;
+  height: 46px;
   padding-left: 24px;
   padding-right: 24px;
 }
@@ -140,7 +137,6 @@ input[type=number] {
   color: #292929;
   font-weight: 500;
   font-family: "Pretendard";
-
 }
 
 .input-mecca::placeholder {
@@ -176,7 +172,6 @@ input[type=number] {
   width: 225px;
 }
 
-
 .wallet-address-input label,
 .token-selector label {
   font-size: 16px;
@@ -187,7 +182,6 @@ input[type=number] {
   margin-bottom: 6px;
   margin-top: 14px;
 }
-
 
 .mecca-logo-input {
   position: absolute;
@@ -209,7 +203,7 @@ input[type=number] {
   font-family: "Pretendard";
   text-align: center;
   width: 100%;
-  height: 62px;
+  height: 52px;
   border-radius: 5px;
   filter: drop-shadow(0px 3px 3px rgba(4, -1, -1, 0.35));
   background-color: #dbdbdb;
