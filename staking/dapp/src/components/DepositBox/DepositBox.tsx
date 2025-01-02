@@ -48,7 +48,6 @@ const DepositBox = ({ onStake }: Props) => {
   const [expectedInterest, setExcpectedInterest] = useState(0);
   const [txLoading, setTxLoading] = useState(false);
 
-
   const user = useSelector((state: IRootState) => new User(state.user.data));
   const userPDAExists = useSelector(
     (state: IRootState) => state.user.dataAccExists
@@ -289,6 +288,20 @@ const DepositBox = ({ onStake }: Props) => {
             <div className="flex align-items-center gap-2 mb-3">
               <h4 className="text-16 text-gray-1">Annual expected interest</h4>
               {/* <img src="/images/question-mark.png" /> */}
+              <a
+                data-tooltip-id="my-tooltip"
+                data-tooltip-content="Interest accumulated over 365 days for the amount staked"
+                style={{
+                  background: "#9807b5",
+                  borderRadius: "20px",
+                  padding: "2px 8px",
+                  color: "white",
+                  cursor: "pointer",
+                  fontSize : '13px'
+                }}
+              >
+                ?
+              </a>
             </div>
 
             <div className="w-100 wallet-staking-box flex align-items-center gap-2 justify-content-end">
