@@ -266,22 +266,22 @@ const PresaleBox = () => {
         false,
         connection
       );
-      // const response = await sendTransaction(tx, connection);
-      // console.log(response);
-      const recentBlockhash = await connection.getLatestBlockhash();
-      tx.recentBlockhash = recentBlockhash.blockhash;
-      tx.feePayer = publicKey;
-      const response = await signTransaction!(tx);
-      try {
-        const res = await connection.sendRawTransaction(response.serialize());
-        console.log(res);
-      } catch (error) {
-        if (error instanceof SendTransactionError) {
-          const logs = await error.getLogs(connection);
-          console.log(logs);
-        }
-        console.log(error);
-      }
+      const response = await sendTransaction(tx, connection);
+      console.log(response);
+      // const recentBlockhash = await connection.getLatestBlockhash();
+      // tx.recentBlockhash = recentBlockhash.blockhash;
+      // tx.feePayer = publicKey;
+      // const response = await signTransaction!(tx);
+      // try {
+      //   const res = await connection.sendRawTransaction(response.serialize());
+      //   console.log(res);
+      // } catch (error) {
+      //   if (error instanceof SendTransactionError) {
+      //     const logs = await error.getLogs(connection);
+      //     console.log(logs);
+      //   }
+      //   console.log(error);
+      // }
 
       //end
       toast.success(`Purchase success`);
