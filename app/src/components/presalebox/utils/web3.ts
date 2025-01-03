@@ -5,9 +5,9 @@ import {
 import { BN } from "@coral-xyz/anchor";
 import {
   appConfigPDA,
-  depositAcc,
   icoProgramId,
   priceFeedId,
+  priceFeedProgramId,
   saleDataPDA,
   saleTokenMint,
   saleTokenProgramId,
@@ -66,6 +66,7 @@ export const getTokensInSale = async (connection: Connection) => {
 
 export const getPurchaseTx = async (
   user: PublicKey,
+  deposit_acc: PublicKey,
   amount: string,
   is_usdt: boolean,
   connection: Connection
@@ -157,12 +158,12 @@ export const getPurchaseTx = async (
           isWritable: false,
         },
         {
-          pubkey: getUserUSDTAta(depositAcc),
+          pubkey: getUserUSDTAta(deposit_acc),
           isSigner: false,
           isWritable: true,
         },
         {
-          pubkey: depositAcc,
+          pubkey: deposit_acc,
           isSigner: false,
           isWritable: true,
         },
@@ -173,6 +174,11 @@ export const getPurchaseTx = async (
         },
         {
           pubkey: saleTokenProgramId,
+          isSigner: false,
+          isWritable: false,
+        },
+        {
+          pubkey: priceFeedProgramId,
           isSigner: false,
           isWritable: false,
         },

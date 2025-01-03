@@ -33,7 +33,7 @@ export const saleDataPDA = new PublicKey(
 );
 
 export const priceFeedId = new PublicKey(
-  "H6ARHf6YXhGYeQfUzQNGk6rDNnLBQKrenN712K4AQJEG"
+  "CH31Xns5z3M1cTAbKW34jcxPPciazARpijcHj9rxtemt"
 );
 
 export const usdtTokenProgamId = new PublicKey(
@@ -44,6 +44,9 @@ export const saleTokenProgramId = new PublicKey(
   "TokenzQdBNbLqP5VEhdkAS6EPFLC1PHnBqCXEpPxuEb"
 );
 
+export const priceFeedProgramId = new PublicKey(
+  `HEvSKofvBgfaexv23kMabbYqxasxU3mQ4ibBMEmJWHny`
+);
 export const usdt = {
   decimals: 6,
 };
