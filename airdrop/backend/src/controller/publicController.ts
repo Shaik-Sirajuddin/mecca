@@ -81,6 +81,9 @@ export const claimAirdrop = async (req: Request, res: Response) => {
       if (claim_request.dataValues.underProcess) {
         throw "Too frequent requests";
       }
+      if (claim_request.dataValues.ip === userIp) {
+        throw "Multiple Claims not possible from Same IP";
+      }
       throw "Airdrop is possible once a day";
     }
     let balance = await getBalanceUser(pubkey);
