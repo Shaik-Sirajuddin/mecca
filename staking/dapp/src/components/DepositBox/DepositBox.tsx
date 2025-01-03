@@ -29,6 +29,7 @@ import { User } from "../../schema/user";
 import syncUserState from "../../features/user/syncUserState";
 import { AppState } from "../../schema/app_state_schema";
 import { Config } from "../../schema/config";
+import PopUpModal, { PopUpProps } from "../PopUpModal/PopUpModal";
 
 interface Props {
   onStake: () => void;
@@ -57,6 +58,16 @@ const DepositBox = ({ onStake }: Props) => {
     (state: IRootState) => new Decimal(state.user.tokenBalance)
   );
 
+  const [showModal, setShowModal] = useState(false);
+
+  const [modalDate, setModalDate] = useState<PopUpProps>({
+    type: "success",
+    title: "Message from",
+    message: "this is details text",
+    onClose: () => {},
+    show: false,
+  });
+
   useEffect(() => {
     setExcpectedInterest(
       (parseFloat(depositAmount) * interestRate) /
@@ -71,23 +82,27 @@ const DepositBox = ({ onStake }: Props) => {
         Math.pow(10, splToken.decimals)
       );
       if (_purchaseAmount.lt(config.min_deposit_user)) {
-        toast.info(
-          `Amount is less than minimum ${formatBalance(
+        setModalDate({
+          ...modalDate,
+          message: `Amount is less than minimum (${formatBalance(
             config.min_deposit_user
-          )}`
-        );
+          )})`,
+          type: "error",
+        });
+        setShowModal(true);
         return;
       }
       if (
         _purchaseAmount.add(user.principal_in_stake).gt(config.max_deposit_user)
       ) {
-        console.log(
-          "max deposit",
-          config.max_deposit_user.toString(),
-          _purchaseAmount.toString(),
-          user.principal_in_stake.toString()
-        );
-        toast.info(`Amount exceeds max deposit possible`);
+        setModalDate({
+          ...modalDate,
+          message: `Amount exceeds max deposit possible (${formatBalance(
+            config.max_deposit_user
+          )})`,
+          type: "error",
+        });
+        setShowModal(true);
         return;
       }
       setTxLoading(true);
@@ -195,12 +210,24 @@ const DepositBox = ({ onStake }: Props) => {
         "confirmed"
       );
 
-      toast.success("Transaction confirmed");
+      setModalDate({
+        ...modalDate,
+        message: `Succefully Staked`,
+        type: "success",
+      });
+      setShowModal(true);
+
       syncUserState(connection, publicKey, dispatch);
       onStake();
     } catch (error: any) {
       console.log("Enroll error ", error);
-      toast.error(error.toString());
+      setModalDate({
+        ...modalDate,
+        title: "Staking Failed",
+        message: error.toString(),
+        type: "error",
+      });
+      setShowModal(true);
     } finally {
       setTxLoading(false);
     }
@@ -297,7 +324,7 @@ const DepositBox = ({ onStake }: Props) => {
                   padding: "2px 8px",
                   color: "white",
                   cursor: "pointer",
-                  fontSize : '13px'
+                  fontSize: "13px",
                 }}
               >
                 ?
@@ -339,6 +366,13 @@ const DepositBox = ({ onStake }: Props) => {
           Stake
         </div>
       </button>
+      <PopUpModal
+        {...modalDate}
+        onClose={() => {
+          setShowModal(false);
+        }}
+        show={showModal}
+      />
     </div>
   );
 };

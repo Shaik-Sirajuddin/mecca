@@ -31,6 +31,9 @@ import {
 import { InstructionID } from "../../../interface/InstructionId";
 import { AmountInstructionSchema } from "../../../schema/instruction/amount_instruction";
 import { setAppState } from "../../../features/globalData/globalDataSlice";
+import PopUpModal, {
+  PopUpProps,
+} from "../../../components/PopUpModal/PopUpModal";
 
 const Withdrawal = () => {
   const { t } = useTranslation();
@@ -42,6 +45,15 @@ const Withdrawal = () => {
   const appState = useSelector(
     (state: IRootState) => new AppState(state.global.state)
   );
+  const [showModal, setShowModal] = useState(false);
+
+  const [modalDate, setModalDate] = useState<PopUpProps>({
+    type: "success",
+    title: "Message from",
+    message: "this is details text",
+    onClose: () => {},
+    show: false,
+  });
   const user = useSelector((state: IRootState) => new User(state.user.data));
 
   const fetchAppState = useCallback(async () => {
@@ -93,11 +105,25 @@ const Withdrawal = () => {
         "confirmed"
       );
       console.log(result);
+      setModalDate({
+        ...modalDate,
+        title: "Claim Succefull",
+        // message: "Succefully claimed",
+        type: "success",
+      });
+      setShowModal(true);
       toast.success("Transaction confirmed");
+
       syncUserState(connection, publicKey, dispatch);
     } catch (error: any) {
       console.log("Enroll error ", error);
-      toast.error(error.toString());
+      setModalDate({
+        ...modalDate,
+        title: "Claim Failed",
+        message: error.toString(),
+        type: "error",
+      });
+      setShowModal(true);
     } finally {
       setTxLoading(false);
     }
@@ -108,6 +134,12 @@ const Withdrawal = () => {
         toast.error("Wallet not connected");
         return;
       }
+
+      if (amount.eq(0)) {
+        toast.error("Amount should be grater than 0");
+        return;
+      }
+
       setTxLoading(true);
       let instruction_data = Buffer.alloc(200);
 
@@ -188,7 +220,9 @@ const Withdrawal = () => {
 
       const tx = new Transaction();
       tx.add(intiate_withdraw_instruction);
-      if (instruction_id == InstructionID.INIT_WITHDRAW_INTEREST) {
+      const interestWithdrawl =
+        instruction_id === InstructionID.INIT_WITHDRAW_INTEREST;
+      if (interestWithdrawl) {
         const claim_instruction = getClaimInstruction(publicKey);
         tx.add(claim_instruction);
       }
@@ -212,11 +246,24 @@ const Withdrawal = () => {
         "confirmed"
       );
       console.log(result);
-      toast.success("Transaction confirmed");
+      setModalDate({
+        ...modalDate,
+        title: interestWithdrawl
+          ? `Withdrawl Successful`
+          : `Withdrawl Initiated`,
+        type: "success",
+      });
+      setShowModal(true);
       syncUserState(connection, publicKey, dispatch);
     } catch (error: any) {
       console.log("Enroll error ", error);
-      toast.error(error.toString());
+      setModalDate({
+        ...modalDate,
+        title: "Withdrawl Failed",
+        message: error.toString(),
+        type: "error",
+      });
+      setShowModal(true);
     } finally {
       setTxLoading(false);
     }
@@ -384,6 +431,13 @@ const Withdrawal = () => {
           </div>
         </section>
       </div>
+      <PopUpModal
+        {...modalDate}
+        onClose={() => {
+          setShowModal(false);
+        }}
+        show={showModal}
+      />
     </RootLayout>
   );
 };

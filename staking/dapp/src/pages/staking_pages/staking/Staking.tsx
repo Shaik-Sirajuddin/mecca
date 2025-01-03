@@ -29,16 +29,6 @@ import { setAppState } from "../../../features/globalData/globalDataSlice";
 import { formatBalance } from "../../../utils/helper";
 import { IStats } from "../../../interface/IStats";
 import Decimal from "decimal.js";
-// import {
-//   LineChart,
-//   Line,
-//   XAxis,
-//   YAxis,
-//   CartesianGrid,
-//   Tooltip,
-//   Legend,
-//   ResponsiveContainer,
-// } from "recharts";
 import { IDailyStats } from "../../../interface/IDailyStats";
 import { getAppState } from "../../../utils/web3";
 
@@ -92,6 +82,8 @@ const Staking = () => {
       console.log(error);
     }
   };
+
+ 
 
   // const { publicKey, sendTransaction } = useWallet();
 
@@ -333,6 +325,7 @@ const Staking = () => {
           </div>
         </section>
       </div>
+      
     </RootLayout>
   );
 };
