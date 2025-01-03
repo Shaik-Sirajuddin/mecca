@@ -76,7 +76,7 @@ export const getPurchaseTx = async (
   const userTokenAta = getUserTokenAta(user);
   const userUSDTAta = getUserUSDTAta(user);
 
-  const accountInfo = connection.getAccountInfo(userTokenAta);
+  const accountInfo = await connection.getAccountInfo(userTokenAta);
 
   if (!accountInfo) {
     tx.add(
@@ -178,12 +178,12 @@ export const getPurchaseTx = async (
           isWritable: false,
         },
         {
-          pubkey: priceFeedProgramId,
+          pubkey: SystemProgram.programId,
           isSigner: false,
           isWritable: false,
         },
         {
-          pubkey: SystemProgram.programId,
+          pubkey: priceFeedProgramId,
           isSigner: false,
           isWritable: false,
         },
