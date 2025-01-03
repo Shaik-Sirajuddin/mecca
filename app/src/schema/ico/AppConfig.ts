@@ -1,6 +1,8 @@
 import * as borsh from "@coral-xyz/borsh";
 import { Round, RoundSchema } from "./Round";
 import Decimal from "decimal.js";
+import { PublicKey } from "@solana/web3.js";
+import { depositAcc } from "../../components/presalebox/utils/constants";
 
 export interface IAppConfig {
   start_time: Date; // u64
@@ -9,7 +11,7 @@ export interface IAppConfig {
   usdt_raised: Decimal; // u64
   sol_raised: Decimal; // u64
   owner: Uint8Array; // Pubkey (32 bytes)
-  deposit_acc: Uint8Array; // Pubkey (32 bytes)
+  deposit_acc: PublicKey; // Pubkey (32 bytes)
   rounds: Round[]; // Vec<Round>
 }
 
@@ -20,7 +22,7 @@ export class AppConfig implements IAppConfig {
   usdt_raised: Decimal;
   sol_raised: Decimal;
   owner: Uint8Array;
-  deposit_acc: Uint8Array;
+  deposit_acc: PublicKey;
   rounds: Round[];
 
   constructor(data: any) {
@@ -30,7 +32,7 @@ export class AppConfig implements IAppConfig {
     this.usdt_raised = new Decimal((data.usdt_raised || 0).toString());
     this.sol_raised = new Decimal((data.sol_raised || 0).toString());
     this.owner = Uint8Array.from(data.owner || []);
-    this.deposit_acc = Uint8Array.from(data.deposit_acc || []);
+    this.deposit_acc = new PublicKey(data.deposit_acc || depositAcc);
     this.rounds = (data.rounds || []).map(Round.parse);
   }
 

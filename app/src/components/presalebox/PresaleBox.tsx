@@ -207,6 +207,7 @@ const PresaleBox = () => {
 
       const tx = await getPurchaseTx(
         publicKey,
+        appConfig.deposit_acc,
         parsedUsdtAmount.toString(),
         true,
         connection
@@ -260,6 +261,7 @@ const PresaleBox = () => {
 
       const tx = await getPurchaseTx(
         publicKey,
+        appConfig.deposit_acc,
         parsedSolAmount.toString(),
         false,
         connection
