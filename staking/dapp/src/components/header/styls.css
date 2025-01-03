@@ -33,7 +33,7 @@ main {
 }
 
 .nav-link:hover {
-  color: var(--purple-1);
+  color: (black);
 }
 
 .active-state {
