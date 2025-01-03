@@ -92,3 +92,10 @@ export const convertToLocalISOString = (date: Date | string) => {
   const localISOString = localDate.toISOString().slice(0, -1); // Remove 'Z' to avoid UTC output
   return localISOString;
 };
+
+export const setToUTC = (date: Date) => {
+  // Set the time of the date object to UTC
+  const utcDate = new Date(date); // Create a new date object to preserve the original date
+  utcDate.setUTCHours(date.getHours(), date.getMinutes(), date.getSeconds(), date.getMilliseconds());
+  return utcDate;
+};
