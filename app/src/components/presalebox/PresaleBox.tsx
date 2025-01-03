@@ -25,7 +25,7 @@ import { Round } from "../../schema/ico/Round";
 
 const PresaleBox = () => {
   const { connection } = useConnection();
-  const { connected, publicKey, sendTransaction, signTransaction } =
+  const { connected, publicKey, sendTransaction } =
     useWallet();
   const [, setUsdtAta] = useState<PublicKey | null>(null);
   const [tokenAta, setTokenAta] = useState<PublicKey | null>(null);
