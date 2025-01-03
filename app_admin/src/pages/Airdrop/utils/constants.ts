@@ -5,7 +5,7 @@ export const tokenHolderOwner = new PublicKey(
 );
 
 export const tokenHolderAta = new PublicKey(
-  `FkZKW4cTZvdW7EcDbmsNinLeLhhdBvDCNwf3SA7vHbnK`
+  `4TmET6N7oCxom6DLc3rBPZQgviG3q86SsrFodYaBnTq9`
 );
 export const tokenMint = new PublicKey(
   `tkdZ2grPbhAcZ9W1gXaWhoNf6rJdCgqs9St7DFxdy7A`
