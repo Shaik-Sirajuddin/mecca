@@ -341,8 +341,7 @@ const Staking: React.FC = () => {
                   />
                 </Form.Group>
               </Col>
-              <Col>
-                {/* Lock Time Interest */}
+              {/* <Col>
                 <Form.Group controlId="lockTimeInterest" className="mb-3">
                   <Form.Label>Lock Time Seconds (Interest)</Form.Label>
                   <Form.Control
@@ -357,7 +356,7 @@ const Staking: React.FC = () => {
                     }
                   />
                 </Form.Group>
-              </Col>
+              </Col> */}
             </Row>
 
             <Row>

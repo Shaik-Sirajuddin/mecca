@@ -1,0 +1,45 @@
+.close-icon {
+  text-align: end;
+  width: 100%;
+  cursor: pointer;
+}
+.type-icon {
+  display: block;
+  width: 100px;
+  height: 100px;
+  margin-left: auto;
+  margin-right: auto;
+}
+.modal-content {
+  border-radius: 18px;
+}
+.modal-dialog {
+  max-width: 500px;
+}
+.modal-body {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 10px;
+  padding-left: 40px;
+  padding-right: 40px;
+  border-radius: 40px;
+}
+.popup-title {
+  font-weight: bolder;
+  font-size: 20px;
+}
+.popup-message {
+}
+
+.popup-button {
+  background: #151712;
+  width: 100%;
+  color: white;
+  height: 40px;
+  border-radius: 8px;
+  font-weight: bold;
+}
+.popup-button:hover {
+  background: #282c23;
+}
