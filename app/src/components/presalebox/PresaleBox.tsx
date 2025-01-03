@@ -9,7 +9,7 @@ import {
 import TokenProgress from "../presale-range-slider/PresaleRangeSlider";
 import "./style.css";
 import toast from "react-hot-toast";
-import { PublicKey, SendTransactionError } from "@solana/web3.js";
+import { PublicKeygit } from "@solana/web3.js";
 import Decimal from "decimal.js";
 import { appConfigPDA, token, usdt } from "./utils/constants";
 import { useConnection, useWallet } from "@solana/wallet-adapter-react";
