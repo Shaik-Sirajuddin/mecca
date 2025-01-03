@@ -22,7 +22,7 @@ export const WalletWrapper: FC<Props> = (props: Props) => {
   // const endpoint = useMemo(() => clusterApiUrl(network), [network]);
   const endpoint = useMemo(
     () =>
-      "https://mainnet.helius-rpc.com/?api-key=34f77a93-b26f-47a6-8399-6b99e7ece09d",
+      "https://mainnet.helius-rpc.com/?api-key=33cebf98-e65a-4008-9cac-3d7babd5f3ce",
     []
   );
   // const endpoint = useMemo(() => "http://localhost:8899", ["localhost"]);
