@@ -248,7 +248,7 @@ const AirdropPeriod = () => {
                     className="btn-sky text-xl"
                   />
                   Receive
-                </button>
+                </button> 
               </div>
             </form>
           </div>
