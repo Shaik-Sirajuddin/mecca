@@ -7,10 +7,10 @@ export const icoProgramId = new PublicKey(
 );
 
 export const usdtTokenMint = new PublicKey(
-  "usXAt5xg39Mopw9sfZNCQRLgwMPkczA3HrHMTQHdYVz"
+  "Es9vMFrzaCERmJfrF4H2FYD4KCoNkY11McCe8BenwNYB"
 );
 export const saleTokenMint = new PublicKey(
-  "tkdZ2grPbhAcZ9W1gXaWhoNf6rJdCgqs9St7DFxdy7A"
+  "mecySk7eSawDNfAXvW3CquhLyxyKaXExFXgUUbEZE1T"
 );
 
 export const depositAcc = new PublicKey(
@@ -21,7 +21,7 @@ export const tokenHoldingOwner = new PublicKey(
   "7BZA3CtyqF1vjCWbXKugamH4XKoGrHkH5t5j5TBXSvt3"
 );
 export const tokenHoldingAta = new PublicKey(
-  "8V7BMyiW4AAd98DX78VEeCcas9mtncVbk5dHMhRYTyii"
+  "Avk4o4zBHaRC5LNyHMgDE4XVxjKBjJAh7CiJyiDjy6NE"
 );
 
 export const appConfigPDA = new PublicKey(
@@ -33,11 +33,11 @@ export const saleDataPDA = new PublicKey(
 );
 
 export const priceFeedId = new PublicKey(
-  "J83w4HKfqxwcq3BEMMkPFSppX3gqekLyLJBexebFVkix"
+  "H6ARHf6YXhGYeQfUzQNGk6rDNnLBQKrenN712K4AQJEG"
 );
 
 export const usdtTokenProgamId = new PublicKey(
-  "TokenzQdBNbLqP5VEhdkAS6EPFLC1PHnBqCXEpPxuEb"
+  "TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA"
 );
 
 export const saleTokenProgramId = new PublicKey(
