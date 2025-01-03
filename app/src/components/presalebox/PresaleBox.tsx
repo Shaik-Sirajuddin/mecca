@@ -9,7 +9,7 @@ import {
 import TokenProgress from "../presale-range-slider/PresaleRangeSlider";
 import "./style.css";
 import toast from "react-hot-toast";
-import { PublicKeygit } from "@solana/web3.js";
+import { PublicKey } from "@solana/web3.js";
 import Decimal from "decimal.js";
 import { appConfigPDA, token, usdt } from "./utils/constants";
 import { useConnection, useWallet } from "@solana/wallet-adapter-react";
@@ -25,7 +25,8 @@ import { Round } from "../../schema/ico/Round";
 
 const PresaleBox = () => {
   const { connection } = useConnection();
-  const { connected, publicKey, sendTransaction } = useWallet();
+  const { connected, publicKey, sendTransaction } =
+    useWallet();
   const [, setUsdtAta] = useState<PublicKey | null>(null);
   const [tokenAta, setTokenAta] = useState<PublicKey | null>(null);
 
@@ -580,7 +581,7 @@ const PresaleBox = () => {
 
                 <div className="inputs-wrap">
                   <div className="w-100">
-                    <div className="d-flex justify-content-between align-items-center mb-1">
+                  <div className="d-flex justify-content-between align-items-center mb-1">
                       <label htmlFor="mecca-pay">MECCA You receive</label>
 
                       <button
@@ -596,7 +597,6 @@ const PresaleBox = () => {
                         MAX
                       </button>
                     </div>
-
                     <div className="input-mecca-container">
                       <input
                         type="text"
@@ -609,7 +609,7 @@ const PresaleBox = () => {
                           updateIfValid(event.target.value, setReceivableToken);
                         }}
                       />
-
+                
                       <img
                         src={`/wp-includes/images/mecca-logo.png`}
                         alt=""
