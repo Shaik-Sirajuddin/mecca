@@ -25,8 +25,7 @@ import { Round } from "../../schema/ico/Round";
 
 const PresaleBox = () => {
   const { connection } = useConnection();
-  const { connected, publicKey, sendTransaction } =
-    useWallet();
+  const { connected, publicKey, sendTransaction } = useWallet();
   const [, setUsdtAta] = useState<PublicKey | null>(null);
   const [tokenAta, setTokenAta] = useState<PublicKey | null>(null);
 
@@ -581,19 +580,9 @@ const PresaleBox = () => {
 
                 <div className="inputs-wrap">
                   <div className="w-100">
-                    <label htmlFor="mecca-pay">MECCA You receive</label>
-                    <div className="input-mecca-container">
-                      <input
-                        type="text"
-                        value={receivableToken}
-                        placeholder=""
-                        name="mecca-pay"
-                        id="mecca-receive"
-                        className="input-mecca mecca-receive"
-                        onChange={(event) => {
-                          updateIfValid(event.target.value, setReceivableToken);
-                        }}
-                      />
+                    <div className="d-flex justify-content-between align-items-center mb-1">
+                      <label htmlFor="mecca-pay">MECCA You receive</label>
+
                       <button
                         type="button"
                         className="max-input-mecca-pay max-btn"
@@ -606,6 +595,21 @@ const PresaleBox = () => {
                       >
                         MAX
                       </button>
+                    </div>
+
+                    <div className="input-mecca-container">
+                      <input
+                        type="text"
+                        value={receivableToken}
+                        placeholder=""
+                        name="mecca-pay"
+                        id="mecca-receive"
+                        className="input-mecca mecca-receive"
+                        onChange={(event) => {
+                          updateIfValid(event.target.value, setReceivableToken);
+                        }}
+                      />
+
                       <img
                         src={`/wp-includes/images/mecca-logo.png`}
                         alt=""
