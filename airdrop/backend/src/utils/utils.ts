@@ -1,4 +1,5 @@
 import Decimal from "decimal.js";
+import { Request } from "express";
 
 export const deci = (value: Decimal.Value) => {
   try {
@@ -50,4 +51,22 @@ export function getDayStartAndEnd(date: Date) {
   endOfDay.setHours(23, 59, 59, 999);
 
   return { startOfDay, endOfDay };
+}
+
+
+export const getIPFromRequest = (req:Request) => {
+  let ipHeader = req.headers['x-forwarded-for']
+
+  if(!ipHeader){
+    return ''
+  }
+
+  if(Array.isArray(ipHeader)){
+    if(ipHeader.length > 0){
+      return ipHeader[0]
+    }
+    return ''
+  }
+
+  return ipHeader
 }

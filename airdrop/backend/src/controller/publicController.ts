@@ -1,7 +1,7 @@
 import { Request, Response } from "express";
 import { responseHandler } from "../utils/helper";
 import { PublicKey } from "@solana/web3.js";
-import { deciNZ, getStartOfDayUTC } from "../utils/utils";
+import { deciNZ, getIPFromRequest, getStartOfDayUTC } from "../utils/utils";
 import { getBalanceUser, transferTokens } from "../web3";
 import { token } from "../constants";
 import AidropRequest from "../models/AirdropRequest";
@@ -12,7 +12,8 @@ import Decimal from "decimal.js";
 export const claimAirdrop = async (req: Request, res: Response) => {
   try {
     let { user: _pubkey } = req.body;
-    let userIp = req.ip ?? "";
+    let userIp = getIPFromRequest(req)
+    console.log(userIp)
     let pubkey = new PublicKey(_pubkey);
 
     let config = (await AirdropConfig.findOne({ where: {} }))!;
