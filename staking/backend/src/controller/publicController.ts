@@ -29,18 +29,18 @@ export const fetchChartData = async (req: Request, res: Response) => {
     let parsedStats: any[] = [];
 
     let reqAdditional = 7 - dailyStats.length;
-    let startDate =
-      dailyStats.length > 0
-        ? dailyStats[0].dataValues.date
-        : getStartOfDayUTC();
-    while (reqAdditional > 0) {
-      parsedStats.push({
-        date: startDate,
-        stakedAmount: "0",
-      });
-      reqAdditional--;
-      startDate = new Date(startDate.getTime() - 86400 * 1000);
-    }
+    // let startDate =
+    //   dailyStats.length > 0
+    //     ? dailyStats[0].dataValues.date
+    //     : getStartOfDayUTC();
+    // while (reqAdditional > 0) {
+    //   parsedStats.push({
+    //     date: startDate,
+    //     stakedAmount: "0",
+    //   });
+    //   reqAdditional--;
+    //   startDate = new Date(startDate.getTime() - 86400 * 1000);
+    // }
     parsedStats = parsedStats.reverse();
     dailyStats.forEach((item) => {
       parsedStats.push({
