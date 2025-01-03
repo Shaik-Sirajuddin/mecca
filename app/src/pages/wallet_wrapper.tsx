@@ -10,7 +10,6 @@ import { WalletModalProvider } from "@solana/wallet-adapter-react-ui";
 
 // Default styles that can be overridden by your app
 import "@solana/wallet-adapter-react-ui/styles.css";
-import { clusterApiUrl } from "@solana/web3.js";
 
 type Props = {
   child: React.ReactNode;
@@ -20,8 +19,12 @@ export const WalletWrapper: FC<Props> = (props: Props) => {
   const network = WalletAdapterNetwork.Mainnet;
 
   // You can also provide a custom RPC endpoint.
-    const endpoint = useMemo(() => clusterApiUrl(network), [network]);
-  // const endpoint = useMemo(() => "http://localhost:8899", ["localhost"]);
+  // const endpoint = useMemo(() => clusterApiUrl(network), [network]);
+  const endpoint = useMemo(
+    () =>
+      "https://mainnet.helius-rpc.com/?api-key=34f77a93-b26f-47a6-8399-6b99e7ece09d",
+    []
+  );
 
   const wallets = useMemo(
     () => [new PhantomWalletAdapter()],
