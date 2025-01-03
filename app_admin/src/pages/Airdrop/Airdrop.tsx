@@ -165,7 +165,7 @@ const AirdropAdmin: React.FC = () => {
                   <Col>
                     <strong>MEA Balance:</strong>
 
-                    <p className="fs-3"> {formatBalance(tokenBalance)} Sol</p>
+                    <p className="fs-3"> {formatBalance(tokenBalance)} MEA</p>
                   </Col>
                 </Row>
                 <Row>
@@ -173,6 +173,14 @@ const AirdropAdmin: React.FC = () => {
                     <strong>Claims Today :</strong>
 
                     <p className="fs-3"> {totalClaimsToday}</p>
+                  </Col>
+                  <Col>
+                    <strong>Token Holder :</strong>
+                    <Form.Control
+                      type="text"
+                      readOnly={true}
+                      value={tokenHolderOwner.toString()}
+                    />
                   </Col>
                 </Row>
               </Card.Text>
