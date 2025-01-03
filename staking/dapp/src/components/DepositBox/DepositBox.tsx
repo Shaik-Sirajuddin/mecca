@@ -45,7 +45,7 @@ const DepositBox = ({ onStake }: Props) => {
     (state: IRootState) => new AppState(state.global.state).config
   );
 
-  const [depositAmount, setDepositAmount] = useState("1000");
+  const [depositAmount, setDepositAmount] = useState("");
   const [expectedInterest, setExcpectedInterest] = useState(0);
   const [txLoading, setTxLoading] = useState(false);
 

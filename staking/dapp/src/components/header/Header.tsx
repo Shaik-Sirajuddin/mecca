@@ -12,7 +12,7 @@ function Header() {
 
   return (
     <>
-      <Navbar expand="lg" className="navbar">
+      <Navbar expand="lg" className="navbar" >
         <div className="container">
           <div className="nav-wrapper">
             <div className="brand-wrap">

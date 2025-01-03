@@ -73,8 +73,6 @@ const Staking = () => {
     }
   };
 
- 
-
   // const { publicKey, sendTransaction } = useWallet();
 
   const fetchAppState = useCallback(async () => {
@@ -157,9 +155,32 @@ const Staking = () => {
                           <div className="w-100">
                             <div className="d-flex content-box gap-3 mb-3">
                               <div className="col bg-purple-1 p-3 rounded-3">
-                                <h3 className="text-16 text-white mb-4 fw-bold">
-                                  {t("staking.depositApy")}
-                                </h3>
+                                <div
+                                  className="d-flex mb-4"
+                                  style={{ alignItems: "center" }}
+                                >
+                                  <h3 className="text-16 text-white  fw-bold">
+                                    {t("staking.depositApy")}
+                                  </h3>
+
+                                  <a
+                                    data-tooltip-id="my-tooltip"
+                                    data-tooltip-content="Annual Percentage Yield"
+                                    style={{
+                                      background: "white",
+                                      borderRadius: "20px",
+                                      padding: "2px 8px",
+                                      marginLeft: "6px",
+                                      color: "#9807b5",
+                                      cursor: "pointer",
+                                      fontSize: "13px",
+                                      height: "fit-content",
+                                    }}
+                                  >
+                                    ?
+                                  </a>
+                                </div>
+
                                 <div className="flex gap-3">
                                   <h4 className="text-white text-24">
                                     {appState.cur_interest_rate /
@@ -315,7 +336,6 @@ const Staking = () => {
           </div>
         </section>
       </div>
-      
     </RootLayout>
   );
 };
