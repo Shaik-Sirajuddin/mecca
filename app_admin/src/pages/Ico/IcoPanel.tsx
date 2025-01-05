@@ -221,7 +221,7 @@ const AdminICOPage: React.FC = () => {
         <Col>
           <p>
             <strong>SOL Raised:</strong>{" "}
-            <p className="fs-3"> {formatBalance(appConfig.sol_raised)}</p>
+            <p className="fs-3"> {formatBalance(appConfig.sol_raised , 9)}</p>
           </p>
         </Col>
         <Col>
