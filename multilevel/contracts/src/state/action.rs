@@ -1,6 +1,5 @@
 use borsh::{BorshDeserialize, BorshSerialize};
 
-
 #[derive(BorshSerialize, BorshDeserialize)]
 pub enum Action {
     JOIN,

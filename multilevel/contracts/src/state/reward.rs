@@ -1,10 +1,9 @@
 use borsh::{BorshDeserialize, BorshSerialize};
 use solana_program::pubkey::Pubkey;
 
-
 #[derive(BorshSerialize, BorshDeserialize)]
 pub struct Reward {
-    pub referee: Pubkey,
+    pub user: Pubkey,
     pub invested_amount: u64, // amount invested during enroll or upgrade
     pub level: u8,
     pub plan_id: u8,
