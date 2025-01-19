@@ -1,0 +1,9 @@
+sudo nano /etc/systemd/system/beluga_game.service
+
+ALTER USER 'root'@'localhost' IDENTIFIED WITH mysql_native_password BY 'rladldkjsad';
+CREATE USER 'beluga'@'localhost' IDENTIFIED WITH mysql_native_password BY 'akljdfskljdfs';
+
+GRANT PRIVILEGE ON beluga_game.* TO 'beluga'@'localhost';
+
+
+install mysql , redis , update env with bot token , e.t.c
