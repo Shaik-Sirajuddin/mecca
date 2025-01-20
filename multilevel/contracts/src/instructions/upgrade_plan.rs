@@ -15,15 +15,49 @@ use crate::state::{
     user::{ReferralDistributionState, UpgradeDeduction, UserData, UserStore},
 };
 
+use super::pda_validator::{validate_app_state, validate_user_data_acc, validate_user_store_acc};
+
 #[derive(BorshSerialize, BorshDeserialize)]
 pub struct UpgradeInstruction {
     pub plan_id: u8,
+}
+fn validate_accounts(program_id: &Pubkey, accounts: &[AccountInfo]) -> ProgramResult {
+    let accounts_iter = &mut accounts.iter();
+    let user_acc = next_account_info(accounts_iter)?;
+    let user_data_acc = next_account_info(accounts_iter)?;
+    let user_store_acc = next_account_info(accounts_iter)?;
+
+    let app_state_acc = next_account_info(accounts_iter)?;
+
+    let mint_account = next_account_info(accounts_iter)?;
+    let _user_token_account = next_account_info(accounts_iter)?;
+    let _app_token_account = next_account_info(accounts_iter)?;
+    let app_token_owner = next_account_info(accounts_iter)?;
+
+    validate_app_state(program_id, app_state_acc.key)?;
+    validate_user_data_acc(program_id, user_acc.key, user_data_acc.key)?;
+    validate_user_store_acc(program_id, user_acc.key, user_store_acc.key)?;
+
+    assert!(
+        *mint_account.key == Pubkey::from_str_const(TokenStore::TOKEN_MINT),
+        "Mismatched mint account"
+    );
+    let (derived_app_token_owner, _) =
+        Pubkey::find_program_address(&[TokenStore::SEED_PREFIX_HOLDER.as_bytes()], program_id);
+
+    assert!(
+        *app_token_owner.key == derived_app_token_owner,
+        "Mismatched app token owner account"
+    );
+
+    Ok(())
 }
 pub fn upgrade_plan(
     _program_id: &Pubkey,
     accounts: &[AccountInfo],
     instruction_data: &[u8],
 ) -> ProgramResult {
+    validate_accounts(_program_id, accounts)?;
     let accounts_iter = &mut accounts.iter();
     let user_acc = next_account_info(accounts_iter)?;
     let user_data_acc = next_account_info(accounts_iter)?;
@@ -60,10 +94,17 @@ pub fn upgrade_plan(
     let additional_invest_amount =
         plan_to_upgrade.investment_required - current_plan.investment_required;
 
-    user_data.upgrade_deduction = UpgradeDeduction {
+    let upgrade_deduction = UpgradeDeduction {
         daily_amount: current_plan.daily_reward,
         days: (user_data.acc_daily_reward / current_plan.daily_reward) as u32,
     };
+
+    if user_data.upgrade_deduction[0].days == 0 {
+        user_data.upgrade_deduction[0] = upgrade_deduction;
+    } else {
+        user_data.upgrade_deduction[1] = upgrade_deduction;
+    }
+
     user_data.accumulated.daily_reward += user_data.acc_daily_reward;
     user_data.accumulated.fee += user_data.acc_fee;
     user_data.accumulated.referral_reward += user_data.referral_reward;
@@ -113,3 +154,5 @@ pub fn upgrade_plan(
 
     Ok(())
 }
+
+// + 1 return

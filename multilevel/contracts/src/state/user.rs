@@ -45,7 +45,7 @@ pub struct UserData {
     pub plan_id: u8,
     pub referrer: Pubkey,
     pub referral_distribution: ReferralDistributionState,
-    pub upgrade_deduction: UpgradeDeduction,
+    pub upgrade_deduction: [UpgradeDeduction; 2],
     pub accumulated: Accumulated,
 }
 
@@ -78,10 +78,16 @@ impl UserData {
                 last_level: 0,
                 invested_amount: plan.investment_required,
             },
-            upgrade_deduction: UpgradeDeduction {
-                daily_amount: 0,
-                days: 0,
-            },
+            upgrade_deduction: [
+                UpgradeDeduction {
+                    daily_amount: 0,
+                    days: 0,
+                },
+                UpgradeDeduction {
+                    daily_amount: 0,
+                    days: 0,
+                },
+            ],
             accumulated: Accumulated {
                 daily_reward: 0,
                 fee: 0,
@@ -94,12 +100,25 @@ impl UserData {
         self.serialize(&mut &mut user_data_acc.try_borrow_mut_data()?[..])?;
         Ok(())
     }
-
+    fn apply_upgrade_deductions(
+        &mut self,
+        index: usize,
+        mut unaccounted_days: u64,
+        plan: &Plan,
+    ) -> u64 {
+        let upgrade_deduction = &mut self.upgrade_deduction[index];
+        let reduced_reward_days = (upgrade_deduction.days as u64).min(unaccounted_days);
+        upgrade_deduction.days -= reduced_reward_days as u32;
+        self.acc_daily_reward +=
+            reduced_reward_days * (plan.daily_reward - upgrade_deduction.daily_amount);
+        unaccounted_days -= reduced_reward_days;
+        return unaccounted_days;
+    }
     /**
      * Charge fee and provide daily reward until specified time if applicable
      */
     pub fn reward(&mut self, time: u64, app_state: &AppState) {
-        if !self.is_plan_active {
+        if !self.is_plan_active || !self.referral_distribution.completed {
             return;
         }
         let plan = app_state.get_plan(self.plan_id).unwrap();
@@ -116,17 +135,9 @@ impl UserData {
             account_at = self.last_accounted_time + (86400 * unaccounted_days);
 
             //reward considering upgrade decutions
-            let reduced_reward_days = (self.upgrade_deduction.days as u64).min(unaccounted_days);
-            let normal_reward_days = if unaccounted_days > self.upgrade_deduction.days as u64 {
-                unaccounted_days - self.upgrade_deduction.days as u64
-            } else {
-                0
-            };
+            let mut normal_reward_days = self.apply_upgrade_deductions(0, unaccounted_days, plan);
+            normal_reward_days = self.apply_upgrade_deductions(1, normal_reward_days, plan);
 
-            self.upgrade_deduction.days -= reduced_reward_days as u32;
-
-            self.acc_daily_reward +=
-                reduced_reward_days * (plan.daily_reward - self.upgrade_deduction.daily_amount);
             self.acc_daily_reward += normal_reward_days * plan.daily_reward;
             self.acc_fee += app_state.daily_fee * unaccounted_days;
             self.last_accounted_time = account_at;

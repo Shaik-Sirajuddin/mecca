@@ -7,27 +7,32 @@ use solana_program::{
     sysvar::Sysvar,
 };
 
-use crate::state::{
-    app_state::AppState,
-    reward::Reward,
-    user::{UserData, UserStore},
+use crate::{
+    instructions::pda_validator::validate_app_state,
+    state::{
+        app_state::AppState,
+        reward::Reward,
+        user::{UserData, UserStore},
+    },
 };
-
-pub fn distribute_referral_rewards(_program_id: &Pubkey, accounts: &[AccountInfo]) -> ProgramResult {
+//the function should be called for users in order of first plan join by oracle
+pub fn distribute_referral_rewards(program_id: &Pubkey, accounts: &[AccountInfo]) -> ProgramResult {
     let accounts_iter = &mut accounts.iter();
     let payer_acc = next_account_info(accounts_iter)?;
 
     let user_data_acc = next_account_info(accounts_iter)?;
-    let previous_disributed_user_acc = next_account_info(accounts_iter)?;
+    let previous_distributed_user_acc = next_account_info(accounts_iter)?;
 
     let app_state_acc = next_account_info(accounts_iter)?;
     let system_program = next_account_info(accounts_iter)?;
+
+    validate_app_state(program_id, app_state_acc.key)?;
 
     let app_state = AppState::try_from_slice(&app_state_acc.try_borrow_data().unwrap())?;
     let user_data = &mut UserData::try_from_slice(&user_data_acc.try_borrow_mut_data().unwrap())?;
 
     let mut previous_disributed_user =
-        &UserData::try_from_slice(&previous_disributed_user_acc.try_borrow_data().unwrap())?;
+        &UserData::try_from_slice(&previous_distributed_user_acc.try_borrow_data().unwrap())?;
 
     assert!(user_data.is_plan_active, "User not enrolled in plan");
     assert!(

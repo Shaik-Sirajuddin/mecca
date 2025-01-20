@@ -15,20 +15,14 @@ use crate::state::{
     user::{UserData, UserStore},
 };
 
-use super::pda_validator::{
-    validate_app_state, validate_app_store_acc, validate_user_data_acc, validate_user_store_acc,
-};
+use super::pda_validator::{validate_app_state, validate_user_data_acc, validate_user_store_acc};
 
 #[derive(BorshSerialize, BorshDeserialize)]
 pub struct WithdrawInstruction {
     pub amount: u64,
 }
 
-pub fn validate_accounts(
-    program_id: &Pubkey,
-    accounts: &[AccountInfo],
-    instruction_data: &[u8],
-) -> ProgramResult {
+pub fn validate_accounts(program_id: &Pubkey, accounts: &[AccountInfo]) -> ProgramResult {
     let accounts_iter = &mut accounts.iter();
     let user_acc = next_account_info(accounts_iter)?;
 
@@ -57,7 +51,6 @@ pub fn validate_accounts(
         "Mismatched app token owner account"
     );
 
-
     Ok(())
 }
 pub fn withdraw(
@@ -65,7 +58,7 @@ pub fn withdraw(
     accounts: &[AccountInfo],
     instruction_data: &[u8],
 ) -> ProgramResult {
-    validate_accounts(program_id, accounts, instruction_data)?;
+    validate_accounts(program_id, accounts)?;
     let accounts_iter = &mut accounts.iter();
     let user_acc = next_account_info(accounts_iter)?;
 

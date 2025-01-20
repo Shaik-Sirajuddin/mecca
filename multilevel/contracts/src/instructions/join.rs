@@ -120,8 +120,9 @@ pub fn join(
             referrer_data_acc.key,
         )?;
 
-        //check if referrer is valid
+        //check if referrer already has an account created
         //will throw an error if user data account is not created
+        //TODO : test 
         UserData::try_from_slice(&referrer_data_acc.try_borrow_data().unwrap())?;
     }
 
@@ -140,7 +141,7 @@ pub fn join(
                 .referral_id_map
                 .contains_key(join_instruction.user_id.as_str())
                 == false,
-            "User with Id already exists"
+            "User with id already exists"
         );
         UserData::new(
             &join_instruction.user_id,
