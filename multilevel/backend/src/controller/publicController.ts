@@ -2,8 +2,10 @@ import { Request, Response } from "express";
 import { responseHandler } from "../utils/helper";
 import { PublicKey } from "@solana/web3.js";
 import queueManager from "../utils/distributeQueue";
+import { storeUser } from "../services/redisStore";
 
-export const distribute = (req: Request, res: Response) => {
+//called when user joins a new plan or upgrades
+export const join = async (req: Request, res: Response) => {
   try {
     let { address } = req.body;
     if (!address) {
@@ -16,6 +18,7 @@ export const distribute = (req: Request, res: Response) => {
     if (!queueManager.verifyAndAdd(userPubKey)) {
       throw "User is invalid or already distributed";
     }
+    await storeUser(userPubKey);
     responseHandler.success(res, "User Queued for distribution", {});
   } catch (error) {
     console.log(error);

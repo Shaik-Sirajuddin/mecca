@@ -2,5 +2,5 @@ import { Router } from "express";
 import * as publicController from "../controller/publicController";
 const publicRouter = Router();
 
-publicRouter.post("/distribute", publicController.distribute);
+publicRouter.post("/join", publicController.join);
 export default publicRouter;

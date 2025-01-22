@@ -12,3 +12,7 @@ export const appStateId = new PublicKey(
 export const appStoreId = new PublicKey(
   "8w5hoZkYJq5WEPHE5BMRsWV6v3b9sigAEaS5uRMjPc4U"
 );
+
+export const payerAcc = new PublicKey(
+  "8w5hoZkYJq5WEPHE5BMRsWV6v3b9sigAEaS5uRMjPc4U"
+);
