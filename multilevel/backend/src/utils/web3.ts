@@ -3,15 +3,27 @@ import {
   Connection,
   Keypair,
   PublicKey,
-  sendAndConfirmRawTransaction,
   sendAndConfirmTransaction,
   Transaction,
   TransactionInstruction,
 } from "@solana/web3.js";
 import { multilevelProgramId, rpcUrl } from "../constants";
 import { secretKey } from "../key";
+import { UserData } from "../schema/user_data";
+import { UserStore } from "../schema/user_store";
 
 const wallet = Keypair.fromSecretKey(secretKey);
+
+export const fetchUserDataFromNode = async (user: PublicKey) => {
+  let userDataAcc = getUserDataAcc(user);
+  let accountInfo = await connection.getAccountInfo(userDataAcc);
+  return new UserData(UserData.schema.decode(accountInfo?.data));
+};
+export const fetchUserStoreFromNode = async (user: PublicKey) => {
+  let userStoreAcc = getUserStoreAcc(user);
+  let accountInfo = await connection.getAccountInfo(userStoreAcc);
+  return new UserStore(UserStore.schema.decode(accountInfo?.data));
+};
 export const getUserDataAcc = (address: PublicKey) => {
   let [pda] = PublicKey.findProgramAddressSync(
     [Buffer.from("user-data-"), address.toBuffer()],
@@ -37,7 +49,7 @@ export const sendDistributeTransaction = async (accounts: AccountMeta[]) => {
     });
     let tx = new Transaction();
     tx.add(instruction);
-    await sendAndConfirmTransaction(connection, tx, [wallet]);
+    return await sendAndConfirmTransaction(connection, tx, [wallet]);
   } catch (error) {
     console.log(error);
   }

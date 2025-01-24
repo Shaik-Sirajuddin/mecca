@@ -38,7 +38,7 @@ const queueManager = {
     return true;
   },
   top: () => {
-    if (queue.length == 0) {
+    if (queue.length === 0) {
       return undefined;
     }
     return queue[queue.length - 1];

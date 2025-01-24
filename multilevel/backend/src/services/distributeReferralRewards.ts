@@ -8,11 +8,11 @@ import { UserData } from "../schema/user_data";
 import queueManager from "../utils/distributeQueue";
 import {
   connection,
+  fetchUserDataFromNode,
   getUserDataAcc,
   getUserStoreAcc,
   sendDistributeTransaction,
 } from "../utils/web3";
-import { getUserData, storeUserData } from "./redisStore";
 import {
   appStateId,
   appStoreId,
@@ -20,18 +20,15 @@ import {
   payerAcc,
 } from "../constants";
 import { sleep } from "../utils/utils";
+import { getUserData, storeUserData } from "../database/user";
 
 let distributing = false;
 
 const distributeRewardsOfUser = async (user: PublicKey) => {
   try {
-    let userDataAcc = getUserDataAcc(user);
-    let userDataAccount = await connection.getAccountInfo(
-      userDataAcc,
-      "confirmed"
-    );
-    let deserializedData = UserData.schema.decode(userDataAccount?.data);
-    let userData = new UserData(deserializedData);
+    let userDataAcc = getUserDataAcc(user)
+    // let userData = await getUserData(user)
+    let userData = await fetchUserDataFromNode(user)
     storeUserData(user, userData);
     if (userData.referral_distribution.completed) return true;
     //TODO : queue stuck at user , in case a user distribution fails
@@ -39,7 +36,9 @@ const distributeRewardsOfUser = async (user: PublicKey) => {
     let referrerAccounts: AccountMeta[] = [];
     let prevDistributed = userData.referral_distribution.last_distributed_user;
     for (let i = 0; i < 10; i++) {
-      let prevUserDataAccount = await getUserData(prevDistributed);
+      let prevUserDataAccount = new UserData(
+        await getUserData(prevDistributed)
+      );
       if (prevUserDataAccount.referrer === prevDistributed) break;
       let referrerDataAcc = getUserDataAcc(prevUserDataAccount.referrer);
       let referrerStoreAcc = getUserStoreAcc(prevUserDataAccount.referrer);
@@ -69,7 +68,9 @@ const distributeRewardsOfUser = async (user: PublicKey) => {
         isWritable: true,
       },
       {
-        pubkey: userData.referral_distribution.last_distributed_user,
+        pubkey: getUserDataAcc(
+          userData.referral_distribution.last_distributed_user
+        ),
         isSigner: false,
         isWritable: false,
       },
@@ -84,9 +85,10 @@ const distributeRewardsOfUser = async (user: PublicKey) => {
         isWritable: false,
       },
     ];
-    await sendDistributeTransaction(
+    let res = await sendDistributeTransaction(
       instruction_accounts.concat(...referrerAccounts)
     );
+    console.log(res);
     await sleep(2000);
     await distributeRewardsOfUser(user);
   } catch (error) {
@@ -96,11 +98,16 @@ const distributeRewardsOfUser = async (user: PublicKey) => {
 
 export const distributeReferralRewards = async () => {
   try {
+    await distributeRewardsOfUser(
+      new PublicKey("AHY7Sqf5rznv6uxpWUVaetwapPbCrEjgSViGNvSanEcC")
+    );
+    return;
     if (distributing) return;
     distributing = true;
-    let user = queueManager.pop()?.address;
+    let user = queueManager.top()?.address;
+    console.log("this", user);
     if (!user) return;
-    await distributeRewardsOfUser(user);
+    // await distributeRewardsOfUser(user);
   } catch (error) {
     console.log(error);
   } finally {
