@@ -25,6 +25,7 @@ import { UserData } from "../schema/user_data";
 import { AppState, AppStateSchema } from "../schema/app_state";
 import { WithdrawInstructionSchema } from "../schema/instructions/withdraw_instruction";
 import Decimal from "decimal.js";
+import { UpgradeInstructionSchema } from "../schema/instructions/upgrade_instruction";
 
 export const fetchUserData = async (
   dataAcc: PublicKey,
@@ -158,9 +159,9 @@ export const getJoinTransaction = (
 export const getWithdrawTransaction = (user: PublicKey, amount: Decimal) => {
   let instruction_data = Buffer.alloc(100);
 
-  console.log("this" , amount.toString())
+  console.log("this", amount.toString());
   WithdrawInstructionSchema.encode(
-    { amount:new BN(amount.toString())},
+    { amount: new BN(amount.toString()) },
     instruction_data
   );
   instruction_data = instruction_data.subarray(
@@ -224,6 +225,87 @@ export const getWithdrawTransaction = (user: PublicKey, amount: Decimal) => {
     programId: new PublicKey(multilevelProgramId),
     data: Buffer.concat([
       Buffer.from(new Uint8Array([InstructionID.Withdraw])),
+      instruction_data,
+    ]),
+  });
+
+  const tx = new Transaction();
+  tx.add(instruction);
+  return tx;
+};
+
+export const getUpgradeTransaction = (
+  user: PublicKey,
+  plan: PlanID
+) => {
+  let instruction_data = Buffer.alloc(100);
+
+  UpgradeInstructionSchema.encode(
+    { plan_id: plan.toFixed(0) },
+    instruction_data
+  );
+  instruction_data = instruction_data.subarray(
+    0,
+    UpgradeInstructionSchema.getSpan(instruction_data)
+  );
+
+  const instruction = new TransactionInstruction({
+    keys: [
+      {
+        pubkey: user,
+        isSigner: true,
+        isWritable: true,
+      },
+
+      {
+        pubkey: getUserDataAcc(user),
+        isSigner: false,
+        isWritable: true,
+      },
+      {
+        pubkey: getUserStoreAcc(user),
+        isSigner: false,
+        isWritable: true,
+      },
+      {
+        pubkey: appStateAcc,
+        isSigner: false,
+        isWritable: false,
+      },
+      {
+        pubkey: tokenMint,
+        isSigner: false,
+        isWritable: false,
+      },
+      {
+        pubkey: getATA(user),
+        isSigner: false,
+        isWritable: true,
+      },
+      {
+        pubkey: tokenHolderATA,
+        isSigner: false,
+        isWritable: true,
+      },
+      {
+        pubkey: tokenHolderOwner,
+        isSigner: false,
+        isWritable: true,
+      },
+      {
+        pubkey: TOKEN_2022_PROGRAM_ID,
+        isSigner: false,
+        isWritable: false,
+      },
+      {
+        pubkey: SystemProgram.programId,
+        isSigner: false,
+        isWritable: false,
+      },
+    ],
+    programId: new PublicKey(multilevelProgramId),
+    data: Buffer.concat([
+      Buffer.from(new Uint8Array([InstructionID.Upgrade])),
       instruction_data,
     ]),
   });

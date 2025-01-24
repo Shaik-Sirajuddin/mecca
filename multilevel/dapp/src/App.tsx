@@ -4,6 +4,7 @@ import {
   fetchAppState,
   fetchUserData,
   getJoinTransaction,
+  getUpgradeTransaction,
   getUserDataAcc,
   getWithdrawTransaction,
 } from "./utils/web3";
@@ -48,6 +49,28 @@ function App() {
     }
   };
 
+  const upgrade = async () => {
+    try {
+      if (!publicKey) return;
+      const tx = getUpgradeTransaction(publicKey, PlanID.B);
+
+      const { blockhash } = await connection.getLatestBlockhash();
+      tx.recentBlockhash = blockhash;
+      tx.feePayer = publicKey;
+
+      const signedTx = await signTransaction!(tx);
+      const broadcastResponse = await connection.sendRawTransaction(
+        signedTx.serialize()
+      );
+      console.log(broadcastResponse);
+    } catch (error) {
+      if (error instanceof SendTransactionError) {
+        console.log(await error.getLogs(connection));
+      }
+      console.log(error);
+    }
+  };
+
   const withdraw = async () => {
     if (!publicKey) return;
     const tx = getWithdrawTransaction(publicKey, new Decimal(1000000));
@@ -65,7 +88,7 @@ function App() {
   const fetchUser = async () => {
     if (!publicKey) return;
     const userDataAcc = getUserDataAcc(publicKey);
-    const userData = await fetchUserData(userDataAcc, connection);
+    const userData = await fetchUserData(userDataAcc, connection);  
     setUserData(userData);
     const appState = await fetchAppState(connection);
     setAppState(appState);
@@ -73,9 +96,10 @@ function App() {
 
   const logUserData = async () => {
     console.log(userData.availableForWithdraw(appState).toString());
-    // console.log(userData.enrolled_at.toString());
-    // console.log(userData.acc_fee.toString());
-    // console.log(userData.acc_daily_reward.toString());
+    console.log(userData.enrolled_at.toString());
+    console.log(userData.acc_fee.toString());
+    console.log(userData.acc_daily_reward.toString());
+    console.log(userData.accumulated.daily_reward.toString())
   };
   return (
     <>
@@ -83,6 +107,7 @@ function App() {
       <button onClick={fetchUser}>Enroll Plan A</button>
       <button onClick={logUserData}>Log user data</button>
       <button onClick={withdraw}>Withdraw</button>
+      <button onClick={upgrade}>Upgrade</button>
     </>
   );
 }
