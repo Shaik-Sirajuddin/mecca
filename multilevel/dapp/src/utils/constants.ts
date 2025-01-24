@@ -1,5 +1,6 @@
 import { PublicKey } from "@solana/web3.js";
 
+export const baseUrl = `http://localhost:3020`;
 export const multilevelProgramId = new PublicKey(
   "2epf4awb1hw6FkEHbr5EuvDjsQ86msw9Yu9LEaxD29Sg"
 );
@@ -21,5 +22,5 @@ export const tokenHolderOwner = new PublicKey(
 );
 
 export const tokenHolderATA = new PublicKey(
-  "6C9AgALPQN96bLutG5hBDXYrWgTD51BcZX2fi9mJWskh"
+  "sgq3kEZrx73HJKE4JDFgjPNnTjFbXYMuqbTaFZHQVvQ"
 );
