@@ -66,7 +66,7 @@ pub fn upgrade_plan(
     let app_state_acc = next_account_info(accounts_iter)?;
 
     let mint_account = next_account_info(accounts_iter)?;
-    let user_token_account = next_account_info(accounts_iter)?;
+    let user_token_account = next_account_info(accounts_iter)?; 
     let app_token_account = next_account_info(accounts_iter)?;
     let app_token_owner = next_account_info(accounts_iter)?;
     let token_program = next_account_info(accounts_iter)?;

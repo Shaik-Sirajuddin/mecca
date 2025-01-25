@@ -3,6 +3,7 @@ use solana_program::{
     account_info::{next_account_info, AccountInfo},
     clock::Clock,
     entrypoint::ProgramResult,
+    msg,
     program::{invoke, invoke_signed},
     pubkey::Pubkey,
     rent::Rent,
@@ -112,6 +113,7 @@ pub fn join(
 
     assert!(app_state.paused == false, "New enrollments are paused");
 
+    msg!("Reached here");
     if join_instruction.referrer != *payer_acc.key {
         //check if referrer data account provided match the provided referrer
         validate_user_data_acc(
@@ -122,13 +124,13 @@ pub fn join(
 
         //check if referrer already has an account created
         //will throw an error if user data account is not created
-        //TODO : test 
+        //TODO : test
         UserData::try_from_slice(&referrer_data_acc.try_borrow_data().unwrap())?;
     }
 
     let plan = app_state.get_plan(join_instruction.plan_id).unwrap();
     //check if user data account already exists
-    let new_user = !(user_data_acc.lamports() == 0 || *user_data_acc.owner == system_program::ID);
+    let new_user = user_data_acc.lamports() == 0 || *user_data_acc.owner == system_program::ID;
 
     let cur_time = Clock::get().unwrap().unix_timestamp as u64;
     let user_data = if new_user {
@@ -257,6 +259,7 @@ pub fn join(
     user_store.realloc_and_save(&[payer_acc, user_store_acc, system_program])?;
 
     //transfer tokens from user
+    msg!("Token Program {}" , token_program.key.to_string());
     invoke(
         &spl_token_2022::instruction::transfer_checked(
             token_program.key,

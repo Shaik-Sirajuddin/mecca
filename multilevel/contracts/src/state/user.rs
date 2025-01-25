@@ -149,10 +149,12 @@ impl UserData {
     }
 
     pub fn get_withdrawable_amount(&self) -> u64 {
-        self.acc_daily_reward + self.referral_reward - self.acc_fee - self.withdrawn_amount
+        //todo possible overflow
+        self.acc_daily_reward + self.referral_reward - self.acc_fee
             + self.accumulated.daily_reward
             + self.accumulated.referral_reward
             - self.accumulated.fee
+            - self.withdrawn_amount
     }
 
     pub fn get_receivable_reward_percentage(
