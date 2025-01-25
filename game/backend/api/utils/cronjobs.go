@@ -7,7 +7,6 @@ import (
 	"fmt"
 	"time"
 
-
 	"github.com/robfig/cron/v3"
 	"gorm.io/gorm"
 )
@@ -62,7 +61,7 @@ func queueWithdrawl() {
 
 	println("Processing withdrawl ", withdraw.ID)
 
-	result, hash := Transfer(withdraw.Address, withdraw.Amount.String())
+	result, hash := TransferSPLTokens(withdraw.Address, withdraw.Amount.String())
 
 	tx := db.DB.Begin()
 

@@ -7,7 +7,14 @@ import (
 	"log"
 	"os"
 	"strings"
+	"time"
 
+	"github.com/gagliardetto/solana-go"
+	associatedtokenaccount "github.com/gagliardetto/solana-go/programs/associated-token-account"
+	"github.com/gagliardetto/solana-go/programs/token"
+	"github.com/gagliardetto/solana-go/rpc"
+	confirm "github.com/gagliardetto/solana-go/rpc/sendAndConfirmTransaction"
+	"github.com/gagliardetto/solana-go/rpc/ws"
 	"github.com/shopspring/decimal"
 	"github.com/xssnick/tonutils-go/address"
 	"github.com/xssnick/tonutils-go/liteclient"
@@ -15,6 +22,7 @@ import (
 	"github.com/xssnick/tonutils-go/ton"
 	"github.com/xssnick/tonutils-go/ton/jetton"
 	"github.com/xssnick/tonutils-go/ton/wallet"
+	"golang.org/x/time/rate"
 )
 
 /*
@@ -119,4 +127,136 @@ func Transfer(toAddr string, amount string) (bool, string) {
 	}
 	log.Println("transaction confirmed, hash:", hex.EncodeToString(tx.Hash))
 	return true, hex.EncodeToString(tx.Hash)
+}
+
+func TransferSPLTokens(toAddr string, amount string) (bool, string) {
+
+	defer func() {
+		if r := recover(); r != nil {
+			fmt.Println("Recovered from panic:", r)
+		}
+	}()
+
+	cluster := rpc.DevNet
+
+	rpcClient := rpc.NewWithCustomRPCClient(rpc.NewWithLimiter(
+		cluster.RPC,
+		rate.Every(time.Second), // time frame
+		10,                      // limit of requests per time frame
+	))
+
+	// Create a new WS client (used for confirming transactions)
+	wsClient, err := ws.Connect(context.Background(), rpc.DevNet_WS)
+	if err != nil {
+		return false, ""
+	}
+
+	privateKey, err := solana.PrivateKeyFromSolanaKeygenFile("./key.json")
+	if err != nil {
+		return false, ""
+	}
+
+	toPubKey := solana.MustPublicKeyFromBase58(toAddr)
+	amountToTransfer := decimal.RequireFromString(amount).Mul(decimal.RequireFromString("1000000")).Floor()
+
+	//fatal error if key not found
+	tokenMint := solana.MustPublicKeyFromBase58(os.Getenv("TOKEN_MINT"))
+	holderATA := solana.MustPublicKeyFromBase58(os.Getenv("HOLDER_ATA"))
+	userATA, _, err := solana.FindProgramAddress([][]byte{
+		toPubKey[:],
+		solana.Token2022ProgramID[:],
+		tokenMint[:],
+	}, solana.SPLAssociatedTokenAccountProgramID)
+
+	if err != nil {
+		println("this")
+		return false, ""
+	}
+
+	balResult, err := rpcClient.GetTokenAccountBalance(context.TODO(), holderATA, rpc.CommitmentConfirmed)
+
+	if err != nil {
+		return false, ""
+	}
+
+	balance := decimal.RequireFromString(balResult.Value.Amount)
+	//6 decimals for mecca token
+
+	if balance.LessThan(amountToTransfer) {
+		//insufficient token amount to transfer
+		return false, ""
+	}
+
+	tx := solana.NewTransactionBuilder()
+
+	userATAInfo, err := rpcClient.GetAccountInfo(context.Background(), userATA)
+	_ = userATAInfo
+
+	if err != nil && err.Error() != "not found" {
+		println(err.Error())
+		println("here", userATA.String())
+		return false, ""
+	}
+
+	if err != nil && err.Error() == "not found" {
+		// user token account not created
+		tx.AddInstruction(associatedtokenaccount.NewCreateInstruction(privateKey.PublicKey(), toPubKey, tokenMint).Build())
+	}
+
+	token.SetProgramID(solana.Token2022ProgramID)
+	transferInstructionBuilder := token.NewTransferCheckedInstructionBuilder()
+	transferInstructionBuilder.
+		SetAmount(amountToTransfer.BigInt().Uint64()).
+		SetDecimals(6).
+		SetSourceAccount(holderATA).
+		SetMintAccount(tokenMint).
+		SetDestinationAccount(userATA).
+		SetOwnerAccount(privateKey.PublicKey(), privateKey.PublicKey())
+
+	// (amountToTransfer.BigInt().Uint64(), 6, holderATA, tokenMint, userATA, holderATA, []solana.PublicKey{privateKey.PublicKey()})
+
+	tx.AddInstruction(transferInstructionBuilder.Build())
+	tx.SetFeePayer(privateKey.PublicKey())
+
+	recent, err := rpcClient.GetLatestBlockhash(context.TODO(), rpc.CommitmentFinalized)
+	if err != nil {
+		return false, ""
+	}
+
+	tx.SetRecentBlockHash(recent.Value.Blockhash)
+
+	builtTX, err := tx.Build()
+
+	if err != nil {
+		return false, ""
+	}
+
+	_, err = builtTX.Sign(
+		func(key solana.PublicKey) *solana.PrivateKey {
+			if privateKey.PublicKey().Equals(key) {
+				return &privateKey
+			}
+			return nil
+		},
+	)
+
+	if err != nil {
+		return false, ""
+	}
+
+	sig, err := confirm.SendAndConfirmTransaction(
+		context.TODO(),
+		rpcClient,
+		wsClient,
+		builtTX,
+	)
+
+	println("nice")
+
+	if err != nil {
+		println(err.Error())
+		return false, ""
+	}
+
+	return true, sig.String()
 }
