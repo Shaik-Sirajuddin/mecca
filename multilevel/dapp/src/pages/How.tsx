@@ -11,7 +11,11 @@ const How = () => {
     </Helmet>
 
       <div className='w-full'>
-           <section className='w-full relative md:min-h-[600px] lg:min-h-[753px] bg-[url(mecca-banner-bg.png)] bg-cover bg-center bg-no-repeat lg:pb-6 pb-16 pt-32 lg:pt-[254px]'>
+              {/* Start TeamBee Changes */}
+           <section className='w-full relative md:min-h-[600px] lg:min-h-[800px] lg:pb-6 pb-16 pt-32 lg:pt-[254px]'>
+           <div className="w-full h-screen absolute top-0 left-0 bg-black5/50"></div>
+            <video src="how-bg.mp4" className='w-screen top-0 left-0 bg-cover -z-10 object-cover h-screen absolute' loop muted autoPlay></video>
+             {/* End TeamBee Changes */}
             <div className="w-full max-w-[1152px] mx-auto px-10 relative z-20">
             <div className="w-full text-center">
               <div className="inline-flex items-center justify-center">
@@ -23,10 +27,10 @@ const How = () => {
               <p className='text-base font-semibold leading-6 text-white max-w-[974px] mx-auto mt-2'>The moment you join the pool, you'll experience more than just rewards. MECCA CRYPTO will transform your efforts into the assets of the future and make the new economic possibilities of blockchain technology a reality. Usher in a new era of the digital economy with MECCA CRYPTO.</p>
             </div>
             </div>
-            <div className="w-full bg-xl-gradient absolute h-[185px] z-10 -bottom-1"></div>
+            <div className="w-full bg-xl-gradient absolute h-[185px] z-10 -bottom-6"></div>
             </section>
-    
-            <section className='w-full relative bg-black5 bg-cover bg-no-repeat bg-center md:pb-10'>
+          {/* Start TeamBee Changes: bg-black4 to bg-black5 */}
+            <section className='w-full relative bg-black5 bg-cover bg-no-repeat bg-center pt-10 md:pb-10'>
             <div className="w-full max-w-[1152px] mx-auto px-5">
                 <div className="mb-7">
                   <h2 className='text-2xl text-magenta1 font-semibold text-center mb-3 uppercase'>STAGE STRUCTURE</h2>
@@ -56,7 +60,7 @@ const How = () => {
 
               </div>
             </section>
-
+ {/* Start TeamBee Changes: bg-black4 to bg-black5 */}
             <section className='bg-black5 md:py-10 pt-20'>
             <div className="w-full max-w-[1152px] mx-auto px-5">
             <h2 className='text-2xl text-magenta1 font-semibold text-center pb-14 uppercase'>REWARD TYPES</h2>
@@ -257,7 +261,7 @@ const How = () => {
               </div>
             </section>
 
-
+ {/* Start TeamBee Changes: bg-black4 to bg-black5 */}
             <section className='w-full bg-black5 pb-20 lg:pb-[132px]'>
             <div className="w-full max-w-[1152px] mx-auto px-5">
             <h2 className='text-2xl text-magenta1 pb-16 font-semibold text-center uppercase'>FREQUENTLY ASKED QUESTIONS</h2>

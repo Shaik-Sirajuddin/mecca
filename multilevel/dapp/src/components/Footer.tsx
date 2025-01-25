@@ -146,8 +146,8 @@ export const Footer = () => {
             </li>
           </ul>
         </div>
-
-        <a href="#" className="w-10 h-10 flex items-center absolute md:right-0 right-5 bottom-11 md:bottom-20 justify-center bg-magenta1 rounded">
+    {/* Start TeamBee Changes: hover:bg-color  */}
+        <a href="#" className="w-10 h-10 flex items-center absolute md:right-0 right-5 transition-all duration-300 hover:bg-magenta2 bottom-11 md:bottom-20 justify-center bg-magenta1 rounded">
         <svg
             width={20}
             height={20}
