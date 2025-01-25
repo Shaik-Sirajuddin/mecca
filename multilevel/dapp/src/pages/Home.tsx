@@ -1,12 +1,13 @@
 import { Helmet } from "react-helmet-async";
 import { ConcentrixChart } from "../components/ConcentrixChart";
-import { useState } from "react";
+import { useMemo, useState } from "react";
 import { useConnection, useWallet } from "@solana/wallet-adapter-react";
-import { AppState } from "../schema/app_state";
-import { UserData } from "../schema/user_data";
 import { getJoinTransaction, getUpgradeTransaction } from "../utils/web3";
 import { PlanID } from "../enums/plan";
 import { SendTransactionError } from "@solana/web3.js";
+import { useSelector } from "react-redux";
+import { IRootState } from "../app/store";
+import { UserData } from "../schema/user_data";
 
 const chartData = [
   {
@@ -37,8 +38,15 @@ const chartData = [
 const Home = () => {
   const { connection } = useConnection();
   const { publicKey, signTransaction } = useWallet();
-  const [userData, setUserData] = useState<UserData>(UserData.dummy());
-  const [appState, setAppState] = useState<AppState>(AppState.dummy());
+  const userDataRaw = useSelector((state: IRootState) => state.user.data);
+  // Use useMemo to memoize the result of UserData.fromJSON
+  const userData = useMemo(() => {
+    return UserData.fromJSON(userDataRaw);
+  }, [userDataRaw]); // Only recompute when userData changes
+
+  const userPDAExists = useSelector(
+    (state: IRootState) => state.user.dataAccExists
+  );
 
   const [StageTabs, setStageTabs] = useState("state-a");
   let chartIndex = 0;
@@ -62,7 +70,7 @@ const Home = () => {
   const upgrade = async () => {
     try {
       if (!publicKey) return;
-      const tx = getUpgradeTransaction(publicKey, PlanID.B);
+      const tx = getUpgradeTransaction(publicKey, PlanID.C);
 
       const { blockhash } = await connection.getLatestBlockhash();
       tx.recentBlockhash = blockhash;
@@ -108,6 +116,15 @@ const Home = () => {
     }
   };
 
+  const handleEnrollClick = () => {
+    if (userPDAExists) {
+      //check whethere user can upgrade
+      upgrade();
+    } else {
+      enroll();
+    }
+  };
+
   return (
     <>
       <Helmet>
@@ -149,6 +166,7 @@ const Home = () => {
                 <ul className="flex items-center md:gap-4 gap-2">
                   <li>
                     <button
+                      type="button"
                       onClick={() => handleTab("state-a")}
                       className="md:text-xs text-[10px] md:h-9 text-center disabled:text-gray1 text-white font-semibold inline-flex items-center justify-center uppercase"
                     >
@@ -170,6 +188,7 @@ const Home = () => {
                   </li>
                   <li>
                     <button
+                      type="button"
                       onClick={() => handleTab("state-b")}
                       className="md:text-xs text-[10px] md:h-9 text-center disabled:text-gray1 text-white font-semibold inline-flex items-center justify-center uppercase"
                     >
@@ -209,6 +228,7 @@ const Home = () => {
                   </li>
                   <li>
                     <button
+                      type="button"
                       onClick={() => handleTab("state-c")}
                       className="md:text-xs text-[10px] md:h-9 text-center disabled:text-gray1 text-white font-semibold inline-flex items-center justify-center uppercase"
                     >
@@ -285,8 +305,9 @@ const Home = () => {
                     </div>
 
                     <button
-                      type="submit"
+                      type="button"
                       className="text-base relative flex items-center justify-center text-center w-full mt-6 uppercase text-white font-semibold"
+                      onClick={handleEnrollClick}
                     >
                       <svg
                         width="100%"
@@ -301,7 +322,9 @@ const Home = () => {
                         />
                       </svg>
 
-                      <span className="absolute">JOIN & UPDATE</span>
+                      <span className="absolute">
+                        {userPDAExists ? "Upgrade" : "Join"}
+                      </span>
                     </button>
                   </form>
 

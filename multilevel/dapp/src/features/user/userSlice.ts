@@ -1,10 +1,11 @@
 import { createSlice } from "@reduxjs/toolkit";
+import { UserData } from "../../schema/user_data";
 
 export const userSlice = createSlice({
   name: "user",
   initialState: {
     dataAccountId: "",
-    data: {},
+    data: UserData.dummy().toJSON(),
     dataAccExists: false,
     ataExists: false,
     tokenBalance: "0",
