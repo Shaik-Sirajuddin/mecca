@@ -1,5 +1,0 @@
-{
-	"dependencies": {
-		"borsh": "link:@types/coral-xyz/borsh"
-	}
-}
