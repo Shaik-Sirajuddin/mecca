@@ -1,74 +1,94 @@
+import { useSelector } from "react-redux";
+import { PlanID } from "../enums/plan";
+import { IRootState } from "../app/store";
+import { useMemo } from "react";
+import { AppState } from "../schema/app_state";
+
 interface Props {
-  stage: string;
-  chartData: chartData; 
+  plan_id: PlanID;
 }
 
-interface chartData {
-  title: string;
-  stage: string;
-  level: string;
-}
+export const ConcentrixChart = ({ plan_id }: Props) => {
+  const appStateRaw = useSelector((state: IRootState) => state.global.state);
+  const plan = useMemo(() => {
+    return AppState.fromJSON(appStateRaw).getPlan(plan_id)!;
+  }, [appStateRaw, plan_id]);
 
-export const ConcentrixChart = ({ chartData }: Props) => {
-  if (!chartData) {
-    return <p className="text-gray2 text-sm text-center">No chart data available</p>;
-  }
+  const getMaxFillLevel = () => {
+    switch (plan_id) {
+      case PlanID.A:
+        return 10;
+      case PlanID.B:
+        return 20;
+      case PlanID.C:
+        return 30;
+      default:
+        return 0;
+    }
+  };
 
+  const maxFillLevel = getMaxFillLevel();
   return (
     <div>
       <h5 className="text-magenta1 text-xs uppercase font-semibold my-3">
-        {chartData.stage}
+        STAGE-{String.fromCharCode(65 + plan_id)} REVENUE
       </h5>
       <div className="flex items-center justify-center px-5 py-3 md:w-[300px] md:h-[300px] mx-auto">
         <div className="circle-wrap">
           <div className="_20-30">
-            <div className="_30"></div>
-            <div className="_29"></div>
-            <div className="_28"></div>
-            <div className="_27"></div>
-            <div className="_26"></div>
-            <div className="_25"></div>
-            <div className="_24"></div>
-            <div className="_23"></div>
-            <div className="_22"></div>
-            <div className="_21"></div>
-            <div className="level-30">
+            {[...Array(10)].map((_, idx) => {
+              const level = 30 - idx;
+              return (
+                <div
+                  key={level}
+                  className={`_${level} ${
+                    level <= maxFillLevel ? "c-fill" : ""
+                  }`}
+                ></div>
+              );
+            })}
+            <div
+              className={`level-30 ${maxFillLevel >= 30 ? "fill-text" : ""}`}
+            >
               <div className="level-21-30">Level 21 -30</div>
-              <div className="_302">30%</div>
+              <div className="_302">{plan.deep_referral_percentage}%</div>
             </div>
           </div>
           <div className="_11-20">
-            <div className="_19 c-fill"></div>
-            <div className="_18 c-fill"></div>
-            <div className="_17 c-fill"></div>
-            <div className="_16 c-fill"></div>
-            <div className="_15 c-fill"></div>
-            <div className="_14 c-fill"></div>
-            <div className="_13 c-fill"></div>
-            <div className="_12 c-fill"></div>
-            <div className="_11 c-fill"></div>
-            <div className="level-20 fill-text">
+            {[...Array(10)].map((_, idx) => {
+              const level = 20 - idx;
+              return (
+                <div
+                  key={level}
+                  className={`_${level} ${
+                    level <= maxFillLevel ? "c-fill" : ""
+                  }`}
+                ></div>
+              );
+            })}
+            <div
+              className={`level-20 ${maxFillLevel >= 20 ? "fill-text" : ""}`}
+            >
               <div className="level-11-20">Level 11 -20</div>
-              <div className="_20">20%</div>
+              <div className="_20">{plan.active_referral_percentage}%</div>
             </div>
           </div>
           <div className="_1-10">
-            <div className="_10 c-fill"></div>
-            <div className="_9 c-fill"></div>
-            <div className="_8 c-fill"></div>
-            <div className="_7 c-fill"></div>
-            <div className="_6 c-fill"></div>
-            <div className="_5 c-fill"></div>
-            <div className="_4 c-fill"></div>
-            <div className="_3 c-fill"></div>
-            <div className="_2 c-fill"></div>
-            <div className="_1 c-fill"></div>
-
+            {[...Array(10)].map((_, idx) => {
+              const level = 10 - idx;
+              return (
+                <div
+                  key={level}
+                  className={`_${level} ${
+                    level <= maxFillLevel ? "c-fill" : ""
+                  }`}
+                ></div>
+              );
+            })}
             <div className="level-10 fill-text">
               <div className="level-7-10">Level 7 -10</div>
-              <div className="_102">10%</div>
+              <div className="_102">{plan.direct_referral_percentage}%</div>
             </div>
-
             <div className="center-dot"></div>
           </div>
         </div>

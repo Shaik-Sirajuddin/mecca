@@ -1,6 +1,16 @@
+import { useMemo } from "react";
 import { Helmet } from "react-helmet-async";
+import { useSelector } from "react-redux";
+import { UserData } from "../schema/user_data";
+import { IRootState } from "../app/store";
 
 const Dashboard = () => {
+  const userDataRaw = useSelector((state: IRootState) => state.user.data);
+  // Use useMemo to memoize the result of UserData.fromJSON
+  const userData = useMemo(() => {
+    return UserData.fromJSON(userDataRaw);
+  }, [userDataRaw]); // Only recomput
+
   return (
     <>
       <Helmet>

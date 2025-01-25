@@ -10,6 +10,7 @@ import NotFoundPage from "./pages/404";
 import { useEffect } from "react";
 import {
   fetchAppState,
+  fetchAppStore,
   fetchUserData,
   getATA,
   getTokenBalance,
@@ -24,7 +25,7 @@ import {
   setUserDataAccountId,
   setUserPdaExists,
 } from "./features/user/userSlice";
-import { setAppState } from "./features/global/globalSlice";
+import { setAppState, setAppStore } from "./features/global/globalSlice";
 
 const App = () => {
   const { connection } = useConnection();
@@ -34,6 +35,9 @@ const App = () => {
   const syncAppState = async () => {
     const appState = await fetchAppState(connection);
     dispatch(setAppState(appState.toJSON()));
+
+    const appStore = await fetchAppStore(connection);
+    dispatch(setAppStore(appStore.toJSON()));
   };
   const syncUserData = async () => {
     if (!publicKey) return;

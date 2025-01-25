@@ -27,7 +27,16 @@ import { AppState, AppStateSchema } from "../schema/app_state";
 import { WithdrawInstructionSchema } from "../schema/instructions/withdraw_instruction";
 import Decimal from "decimal.js";
 import { UpgradeInstructionSchema } from "../schema/instructions/upgrade_instruction";
+import { AppStore, AppStoreSchema } from "../schema/app_store";
 
+export const isValidPublicKey = (value: string) => {
+  try {
+    new PublicKey(value);
+    return true;
+  } catch {
+    return false;
+  }
+};
 export const fetchUserData = async (
   dataAcc: PublicKey,
   connection: Connection
@@ -39,6 +48,10 @@ export const fetchUserData = async (
     console.log("Fetch user data error : ", error);
     return null;
   }
+};
+export const fetchAppStore = async (connection: Connection) => {
+  const appStoreInfo = await connection.getAccountInfo(appStoreAcc);
+  return new AppStore(AppStoreSchema.decode(appStoreInfo?.data));
 };
 
 export const fetchAppState = async (connection: Connection) => {
@@ -73,7 +86,7 @@ export const getATA = (user: PublicKey) => {
 
 export const getTokenBalance = async (
   connection: Connection,
-  userAta: PublicKey,
+  userAta: PublicKey
 ) => {
   try {
     const account = await getAccount(

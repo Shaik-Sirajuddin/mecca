@@ -2,12 +2,20 @@ import { Helmet } from "react-helmet-async";
 import { ConcentrixChart } from "../components/ConcentrixChart";
 import { useMemo, useState } from "react";
 import { useConnection, useWallet } from "@solana/wallet-adapter-react";
-import { getJoinTransaction, getUpgradeTransaction } from "../utils/web3";
+import {
+  getJoinTransaction,
+  getUpgradeTransaction,
+  isValidPublicKey,
+} from "../utils/web3";
 import { PlanID } from "../enums/plan";
-import { SendTransactionError } from "@solana/web3.js";
+import { PublicKey, SendTransactionError } from "@solana/web3.js";
 import { useSelector } from "react-redux";
 import { IRootState } from "../app/store";
 import { UserData } from "../schema/user_data";
+import { AppStore } from "../schema/app_store";
+import { AppState } from "../schema/app_state";
+import { formatBalance } from "../utils/utils";
+import { splToken } from "../utils/constants";
 
 const chartData = [
   {
@@ -38,6 +46,7 @@ const chartData = [
 const Home = () => {
   const { connection } = useConnection();
   const { publicKey, signTransaction } = useWallet();
+  const [inviteCode, setInvideCode] = useState("");
   const userDataRaw = useSelector((state: IRootState) => state.user.data);
   // Use useMemo to memoize the result of UserData.fromJSON
   const userData = useMemo(() => {
@@ -47,24 +56,21 @@ const Home = () => {
   const userPDAExists = useSelector(
     (state: IRootState) => state.user.dataAccExists
   );
+  const appStoreRaw = useSelector((state: IRootState) => state.global.store);
+  const appStateRaw = useSelector((state: IRootState) => state.global.state);
 
-  const [StageTabs, setStageTabs] = useState("state-a");
-  let chartIndex = 0;
+  const appStore = useMemo(() => {
+    return AppStore.fromJSON(appStoreRaw);
+  }, [appStoreRaw]);
 
-  function handleTab(tab: string) {
-    setStageTabs(tab);
-  }
+  const appState = useMemo(() => {
+    return AppState.fromJSON(appStateRaw);
+  }, [appStateRaw]);
 
-  switch (StageTabs) {
-    case "state-a":
-      chartIndex = 0;
-      break;
-    case "state-b":
-      chartIndex = 1;
-      break;
-    case "state-c":
-      chartIndex = 2;
-      break;
+  const [selectedPlan, setSelectedPlan] = useState(PlanID.A);
+
+  function handlePlanSwitch(planId: PlanID) {
+    setSelectedPlan(planId);
   }
 
   const upgrade = async () => {
@@ -89,16 +95,32 @@ const Home = () => {
     }
   };
 
+  const parseReferrerInput = () => {
+    if (!inviteCode) {
+      //user user address
+      return publicKey;
+    }
+    if (!isValidPublicKey(inviteCode)) {
+      const parsedAddress = appStore.referral_id_map.get(inviteCode);
+      if (!parsedAddress) {
+        //invalid invite code
+        return undefined;
+      }
+      return parsedAddress;
+    }
+    return new PublicKey(inviteCode);
+  };
   const enroll = async () => {
     try {
       if (!publicKey) return;
+      const referrerAddress = parseReferrerInput();
+      if (!referrerAddress) return;
       const tx = getJoinTransaction(
         publicKey,
-        publicKey,
+        referrerAddress,
         PlanID.A,
         "MC00000001"
       );
-
       const { blockhash } = await connection.getLatestBlockhash();
       tx.recentBlockhash = blockhash;
       tx.feePayer = publicKey;
@@ -167,7 +189,7 @@ const Home = () => {
                   <li>
                     <button
                       type="button"
-                      onClick={() => handleTab("state-a")}
+                      onClick={() => handlePlanSwitch(PlanID.A)}
                       className="md:text-xs text-[10px] md:h-9 text-center disabled:text-gray1 text-white font-semibold inline-flex items-center justify-center uppercase"
                     >
                       <svg
@@ -189,7 +211,7 @@ const Home = () => {
                   <li>
                     <button
                       type="button"
-                      onClick={() => handleTab("state-b")}
+                      onClick={() => handlePlanSwitch(PlanID.B)}
                       className="md:text-xs text-[10px] md:h-9 text-center disabled:text-gray1 text-white font-semibold inline-flex items-center justify-center uppercase"
                     >
                       <svg
@@ -229,7 +251,7 @@ const Home = () => {
                   <li>
                     <button
                       type="button"
-                      onClick={() => handleTab("state-c")}
+                      onClick={() => handlePlanSwitch(PlanID.C)}
                       className="md:text-xs text-[10px] md:h-9 text-center disabled:text-gray1 text-white font-semibold inline-flex items-center justify-center uppercase"
                     >
                       <svg
@@ -254,19 +276,16 @@ const Home = () => {
                 <div className="w-full">
                   <h5 className="text-magenta1 text-xs font-semibold my-3 uppercase">
                     STAGE -{" "}
-                    {StageTabs === "state-a"
-                      ? "A"
-                      : StageTabs === "state-b"
-                      ? "B"
-                      : "C"}
+                    {String.fromCharCode(
+                      65 + parseInt(selectedPlan.toString())
+                    )}
                   </h5>
                   <h2 className="text-2xl text-white font-semibold mb-5">
                     PARTICIPATION FEE :{" "}
-                    {StageTabs === "state-a"
-                      ? "10,000 MEA"
-                      : StageTabs === "state-b"
-                      ? "20,000 MEA"
-                      : "30,000 MEA"}
+                    {formatBalance(
+                      appState.getPlan(selectedPlan)!.investment_required
+                    )}{" "}
+                    {splToken.symbol}
                   </h2>
 
                   <form className="w-full" id="Invite-Form">
@@ -275,35 +294,20 @@ const Home = () => {
                         htmlFor="Invite"
                         className="text-xs text-white mb-2 block"
                       >
-                        Invite-in Code*
+                        Invite Code or Address
                       </label>
                       <input
                         name="Invite-Code"
                         id="Invite"
                         type="text"
-                        placeholder="Enter the Invite- in code"
+                        value={inviteCode}
+                        onChange={(e) => {
+                          setInvideCode(e.target.value);
+                        }}
+                        placeholder="Enter the Invite code or Address"
                         className="bg-black1 text-xs rounded border border-black2 w-full py-2.5 px-3 placeholder:text-gray1 text-white"
                       />
                     </div>
-                    <span className="text-xs uppercase text-white my-3 text-center mx-auto w-full block">
-                      OR
-                    </span>
-                    <div className="w-full">
-                      <label
-                        htmlFor="Invitation-Address"
-                        className="text-xs text-white mb-2 block"
-                      >
-                        Invitation Address*
-                      </label>
-                      <input
-                        name="Invitation-Address"
-                        id="Invitation-Address"
-                        type="text"
-                        placeholder="Enter the Invitation Address"
-                        className="bg-black1 text-xs rounded border border-black2 w-full py-2.5 px-3 placeholder:text-gray1 text-white"
-                      />
-                    </div>
-
                     <button
                       type="button"
                       className="text-base relative flex items-center justify-center text-center w-full mt-6 uppercase text-white font-semibold"
@@ -362,12 +366,7 @@ const Home = () => {
                 </div>
               </div>
               <div className="w-full md:px-9 px-4 md:py-7 py-6 backdrop-blur-md bg-[url(stage-b-bg.png)] bg-full bg-center bg-no-repeat h-[650px]">
-                <ConcentrixChart
-                  chartData={{
-                    ...chartData[chartIndex].chart[0],
-                  }}
-                  stage=""
-                />
+                <ConcentrixChart plan_id={selectedPlan} />
 
                 <div className="w-full">
                   <h4 className="text-white font-bold text-base mt-5 mb-3">
