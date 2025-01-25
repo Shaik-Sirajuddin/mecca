@@ -9,36 +9,43 @@ use solana_program::{
     sysvar::Sysvar,
 };
 
-use crate::state::app_state::AppState;
+use crate::state::{
+    app_config::AppConfig,
+    sale_data::SaleData,
+};
 
 pub fn init_state(
     program_id: &Pubkey,
     accounts: &[AccountInfo],
-    instruction_data: &[u8],
+    _instruction_data: &[u8],
 ) -> ProgramResult {
     let account_iter = &mut accounts.iter();
     let payer = next_account_info(account_iter)?;
-    let app_state_account = next_account_info(account_iter)?;
+    let sale_data_acc = next_account_info(account_iter)?;
+    let app_config_acc = next_account_info(account_iter)?;
     let system_program = next_account_info(account_iter)?;
 
     assert!(
-        *payer.key == Pubkey::from_str_const(AppState::OWNER),
+        *payer.key == Pubkey::from_str_const(AppConfig::OWNER),
         "Payer as owner not allowed"
     );
 
     assert!(
-        *app_state_account.key == Pubkey::from_str_const(AppState::PDA),
-        "Mismatched app state account pda"
+        *sale_data_acc.key == Pubkey::from_str_const(SaleData::PDA),
+        "Mismatched sale data account pda"
     );
 
     assert!(
-        app_state_account.data_is_empty(),
-        "State account is intialized"
+        *app_config_acc.key == Pubkey::from_str_const(AppConfig::PDA),
+        "Mismatched app config pda"
     );
 
-    let app_state = AppState::new(payer.key);
+    assert!(app_config_acc.data_is_empty(), "Sale config is intialized");
+    assert!(sale_data_acc.data_is_empty(), "Sale Data is intialized");
 
-    let space_required = to_vec(&app_state)?.len();
+    let sale_data = SaleData::new();
+
+    let space_required = to_vec(&sale_data)?.len();
 
     let rent_required = Rent::get()?.minimum_balance(space_required);
 
@@ -46,20 +53,40 @@ pub fn init_state(
     invoke_signed(
         &system_instruction::create_account(
             payer.key,
-            app_state_account.key,
+            sale_data_acc.key,
+            rent_required,
+            space_required as u64,
+            program_id,
+        ),
+        &[payer.clone(), sale_data_acc.clone(), system_program.clone()],
+        &[&[SaleData::SEED_PREFIX.as_bytes(), &[*SaleData::BUMP]]],
+    )?;
+
+    sale_data.serialize(&mut &mut sale_data_acc.try_borrow_mut_data()?[..])?;
+
+    let app_config = AppConfig::new(payer.key);
+    let space_required = to_vec(&app_config)?.len();
+
+    let rent_required = Rent::get()?.minimum_balance(space_required);
+
+    //create user pda account
+    invoke_signed(
+        &system_instruction::create_account(
+            payer.key,
+            app_config_acc.key,
             rent_required,
             space_required as u64,
             program_id,
         ),
         &[
             payer.clone(),
-            app_state_account.clone(),
+            app_config_acc.clone(),
             system_program.clone(),
         ],
-        &[&[AppState::SEED_PREFIX.as_bytes(), &[*AppState::BUMP]]],
+        &[&[AppConfig::SEED_PREFIX.as_bytes(), &[*AppConfig::BUMP]]],
     )?;
 
-    app_state.serialize(&mut &mut app_state_account.try_borrow_mut_data()?[..])?;
+    app_config.serialize(&mut &mut app_config_acc.try_borrow_mut_data()?[..])?;
 
     Ok(())
 }

@@ -1,8 +1,5 @@
-use borsh::{to_vec, BorshDeserialize, BorshSerialize};
-use solana_program::{
-    account_info::AccountInfo, entrypoint::ProgramResult, program::invoke, pubkey::Pubkey,
-    rent::Rent, system_instruction, sysvar::Sysvar,
-};
+use borsh::{BorshDeserialize, BorshSerialize};
+use solana_program::{account_info::AccountInfo, entrypoint::ProgramResult, pubkey::Pubkey};
 
 use super::{plan::Plan, token_store::TokenStore};
 
@@ -16,7 +13,7 @@ pub struct AppState {
 
 impl AppState {
     pub const SEED: &'static str = "app-state-";
-    pub const OWNER: &'static str = "";
+    pub const OWNER: &'static str = "9tFmeBvKhr3PhgdUYYSUuVZTzSrFDB5GzkD8H2DnmMhG";
 
     pub fn new(owner: &Pubkey) -> Self {
         AppState {
@@ -30,7 +27,7 @@ impl AppState {
                     deep_referral_percentage: 1,
                     direct_referral_percentage: 10,
                     validity_days: 2000,
-                    daily_reward: 2,
+                    daily_reward: 2 * 10u64.pow(*TokenStore::DECIMALS as u32),
                     max_level: 10,
                 },
                 Plan {
@@ -40,7 +37,7 @@ impl AppState {
                     deep_referral_percentage: 1,
                     direct_referral_percentage: 20,
                     validity_days: 2000,
-                    daily_reward: 10,
+                    daily_reward: 10 * 10u64.pow(*TokenStore::DECIMALS as u32),
                     max_level: 20,
                 },
                 Plan {
@@ -50,7 +47,7 @@ impl AppState {
                     deep_referral_percentage: 1,
                     direct_referral_percentage: 30,
                     validity_days: 2000,
-                    daily_reward: 30,
+                    daily_reward: 30 * 10u64.pow(*TokenStore::DECIMALS as u32),
                     max_level: 30,
                 },
             ],

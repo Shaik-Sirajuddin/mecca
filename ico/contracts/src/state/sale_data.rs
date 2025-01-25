@@ -13,24 +13,20 @@ pub struct Sale {
     pub paid_amount: u64,
     pub is_usdt: bool,
     pub user: Pubkey,
+    pub time: u64,
 }
 
 //TODO : split sales to store in another account , speeding up required data fetch
 #[derive(BorshSerialize, BorshDeserialize)]
-pub struct AppState {
-    pub tokens_sold: u64,
-    pub usdt_raised: u64,
-    pub sol_raised: u64,
-    pub owner: Pubkey,
+pub struct SaleData {
     pub sales: Vec<Sale>,
 }
 
-impl AppState {
-    pub const SEED_PREFIX: &'static str = "app-state";
+impl SaleData {
+    pub const SEED_PREFIX: &'static str = "sale-data";
     pub const BUMP: &'static u8 = &255;
     //appstate pda
-    pub const PDA: &'static str = "3YGG6YyGiyZnWEZeoxYbeNzXt2eVq3qeABbgBvLopaBn";
-    pub const OWNER: &'static str = "12VKkD7Rs9CxCkC3EJ8uwiuXBAKmRM4ANHjJoEKLFehu";
+    pub const PDA: &'static str = "7fSHz2oFtvTg2CCQDNpZ7uqhETmKgPygsXH2wKALfYHG";
 
     pub fn realloc_and_save(&self, accounts: &[&AccountInfo]) -> ProgramResult {
         let payer_account = accounts[0];
@@ -58,13 +54,7 @@ impl AppState {
         Ok(())
     }
 
-    pub fn new(owner: &Pubkey) -> Self {
-        AppState {
-            sales: vec![],
-            sol_raised: 0,
-            tokens_sold: 0,
-            usdt_raised: 0,
-            owner: owner.clone(),
-        }
+    pub fn new() -> Self {
+        SaleData { sales: vec![] }
     }
 }

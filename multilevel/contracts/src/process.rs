@@ -9,13 +9,22 @@ use solana_program::{
     sysvar::Sysvar,
 };
 
-use crate::state::{app_state::AppState, app_store::AppStore};
+use crate::{
+    instructions::{
+        distribute_referral_rewards::distribute_referral_rewards, join::join,
+        owner::update_state::update_state, upgrade_plan::upgrade_plan, withdraw::withdraw,
+    },
+    state::{app_state::AppState, app_store::AppStore},
+};
 
 #[derive(BorshSerialize, BorshDeserialize)]
 pub enum InstructionID {
-    JOIN,
-    UPGRADE,
-    WITDHRAW,
+    InitState,
+    Join,
+    Upgrade,
+    Withdraw,
+    Distribute,
+    UpdateState,
 }
 
 pub fn process_instruction(
@@ -26,9 +35,44 @@ pub fn process_instruction(
     let (instruction_id, instruction_data) = instruction_data.split_at(1);
     // init_appstate(program_id, accounts)
     let instruction_id = InstructionID::try_from_slice(instruction_id)?;
-    Ok(())
+
+    match instruction_id {
+        InstructionID::InitState => re_init_state(program_id, accounts, instruction_data),
+        InstructionID::Distribute => distribute_referral_rewards(program_id, accounts),
+        InstructionID::Join => join(program_id, accounts, instruction_data),
+        InstructionID::UpdateState => update_state(program_id, accounts, instruction_data),
+        InstructionID::Upgrade => upgrade_plan(program_id, accounts, instruction_data),
+        InstructionID::Withdraw => withdraw(program_id, accounts, instruction_data),
+    }
 }
 
+pub fn re_init_state(
+    program_id: &Pubkey,
+    accounts: &[AccountInfo],
+    _instruction_data: &[u8],
+) -> ProgramResult {
+    let accounts_iter = &mut accounts.iter();
+    let payer = next_account_info(accounts_iter)?;
+    let app_state_acc = next_account_info(accounts_iter)?;
+
+    assert!(
+        *payer.key == Pubkey::from_str_const(AppState::OWNER),
+        "Unauthorized"
+    );
+
+    let (derived_app_state_acc, _) =
+        Pubkey::find_program_address(&[AppState::SEED.as_bytes()], program_id);
+
+    assert!(
+        derived_app_state_acc == *app_state_acc.key,
+        "Mismatched app state acc"
+    );
+
+    let app_state = AppState::new(payer.key);
+    app_state.save(app_state_acc)?;
+
+    Ok(())
+}
 pub fn init_state(
     program_id: &Pubkey, //TODO : check if a user can send different program address than defined
     accounts: &[AccountInfo],
@@ -45,7 +89,7 @@ pub fn init_state(
         "Unauthorized"
     );
 
-    let (derived_app_state_acc, bump) =
+    let (derived_app_state_acc, app_state_bump) =
         Pubkey::find_program_address(&[AppState::SEED.as_bytes()], program_id);
 
     assert!(
@@ -53,7 +97,7 @@ pub fn init_state(
         "Mismatched app state acc"
     );
 
-    let (derived_app_store_acc, bump) =
+    let (derived_app_store_acc, app_store_bump) =
         Pubkey::find_program_address(&[AppStore::SEED.as_bytes()], program_id);
 
     assert!(
@@ -75,12 +119,12 @@ pub fn init_state(
             program_id,
         ),
         &[payer.clone(), app_state_acc.clone(), system_program.clone()],
-        &[&[AppState::SEED.as_bytes(), &[bump]]],
+        &[&[AppState::SEED.as_bytes(), &[app_state_bump]]],
     )?;
     app_state.save(app_state_acc)?;
 
     let app_store = AppStore::new();
-    let space_required = to_vec(&app_state)?.len();
+    let space_required = to_vec(&app_store)?.len();
     let rent_required = Rent::get()?.minimum_balance(space_required);
 
     //create app store pda
@@ -93,7 +137,7 @@ pub fn init_state(
             program_id,
         ),
         &[payer.clone(), app_store_acc.clone(), system_program.clone()],
-        &[&[AppStore::SEED.as_bytes(), &[bump]]],
+        &[&[AppStore::SEED.as_bytes(), &[app_store_bump]]],
     )?;
 
     app_store.serialize(&mut &mut app_store_acc.try_borrow_mut_data()?[..])?;
