@@ -26,11 +26,14 @@ let distributing = false;
 
 const distributeRewardsOfUser = async (user: PublicKey) => {
   try {
-    let userDataAcc = getUserDataAcc(user)
-    // let userData = await getUserData(user)
-    let userData = await fetchUserDataFromNode(user)
+    let userDataAcc = getUserDataAcc(user);
+    let userData = await getUserData(user);
     storeUserData(user, userData);
-    if (userData.referral_distribution.completed) return true;
+    console.log(userData.referral_distribution)
+    if (userData.referral_distribution.completed) {
+      console.log("distribution completed");
+      return true;
+    }
     //TODO : queue stuck at user , in case a user distribution fails
     //ideally a distribution shoudn't fail
     let referrerAccounts: AccountMeta[] = [];
@@ -85,10 +88,9 @@ const distributeRewardsOfUser = async (user: PublicKey) => {
         isWritable: false,
       },
     ];
-    let res = await sendDistributeTransaction(
+    await sendDistributeTransaction(
       instruction_accounts.concat(...referrerAccounts)
     );
-    console.log(res);
     await sleep(2000);
     await distributeRewardsOfUser(user);
   } catch (error) {
@@ -98,16 +100,11 @@ const distributeRewardsOfUser = async (user: PublicKey) => {
 
 export const distributeReferralRewards = async () => {
   try {
-    await distributeRewardsOfUser(
-      new PublicKey("AHY7Sqf5rznv6uxpWUVaetwapPbCrEjgSViGNvSanEcC")
-    );
-    return;
     if (distributing) return;
     distributing = true;
     let user = queueManager.top()?.address;
-    console.log("this", user);
     if (!user) return;
-    // await distributeRewardsOfUser(user);
+    await distributeRewardsOfUser(user);
   } catch (error) {
     console.log(error);
   } finally {

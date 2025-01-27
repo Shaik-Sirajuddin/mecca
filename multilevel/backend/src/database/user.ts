@@ -49,5 +49,6 @@ export const getUserData = async (user: PublicKey) => {
     userData = await fetchUserDataFromNode(user);
     storeUserData(user, userData);
   }
-  return userData as UserData;
+
+  return new UserData(userData);
 };
