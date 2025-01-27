@@ -35,7 +35,7 @@ export default {
       },
       backgroundImage:{
         "nav-active": "radial-gradient(50% 50% at 50% 50%, #FFFFFF 12.4%, rgba(255, 255, 255, 0) 95.9%)",
-        "xl-gradient": "linear-gradient(0deg, #080809 20%, rgba(21, 3, 12, 0) 100%)",
+        "xl-gradient": "linear-gradient(0deg, #080809 10%, rgba(21, 3, 12, 0) 100%)",
         "xxl-gradient": "radial-gradient(50% 50% at 50% 50%, #D107FB 0%, rgba(16, 16, 18, 0) 100%)",
       },
       backgroundSize: {

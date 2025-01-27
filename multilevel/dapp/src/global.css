@@ -23,6 +23,21 @@ input[type="number"] {
   }
 }
 
+/* Start TeamBee Changes */
+a,
+button {
+  @apply transition-all duration-200;
+}
+a span,
+button span {
+  @apply pointer-events-none;
+}
+a svg:hover,
+button svg:hover {
+  @apply saturate-150;
+}
+/* End TeamBee Changes */
+
 .circle-wrap,
 .circle-wrap * {
   box-sizing: border-box;

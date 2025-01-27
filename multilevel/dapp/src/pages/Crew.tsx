@@ -9,7 +9,7 @@ const Crew = () => {
         <meta property="og:title" content="A very important title"/>
     </Helmet>
 
-      <div className='w-full bg-black4 relative'>
+      <div className='w-full bg-black5 relative'>
         <div className="w-full max-w-[1162px] mx-auto absolute h-[623px] rounded-full blur-[200px] -top-[400px] left-1/2 -translate-x-1/2 bg-[#6E3359]"></div>
           
            <section className='w-full relative md:min-h-[600px] lg:min-h-[753px] bg-[url(3d-abstract-background.png)] bg-cover bg-center bg-no-repeat pb-28 pt-32 lg:pt-[254px]'>

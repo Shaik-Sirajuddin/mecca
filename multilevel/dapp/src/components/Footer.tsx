@@ -16,68 +16,114 @@ export const Footer = () => {
 
             <ul className="flex flex-col gap-3">
               <li>
-                <Link to="/" className="text-sm  lg:whitespace-nowrap font-bold font-dm-sans uppercase text-gray1 transition-all duration-200 hover:text-gray2">Home</Link>
+                <Link
+                  to="/"
+                  className="text-sm  lg:whitespace-nowrap font-bold font-dm-sans uppercase text-gray1 transition-all duration-200 hover:text-gray2"
+                >
+                  Home
+                </Link>
               </li>
               <li>
-                <Link to="/how" className="text-sm lg:whitespace-nowrap font-bold font-dm-sans uppercase text-gray1 transition-all duration-200 hover:text-gray2">HOW</Link>
+                <Link
+                  to="/how"
+                  className="text-sm lg:whitespace-nowrap font-bold font-dm-sans uppercase text-gray1 transition-all duration-200 hover:text-gray2"
+                >
+                  HOW
+                </Link>
               </li>
               <li>
-                <Link to="/dashboard" className="text-sm lg:whitespace-nowrap font-bold font-dm-sans uppercase text-gray1 transition-all duration-200 hover:text-gray2">DASHBOARD</Link>
+                <Link
+                  to="/dashboard"
+                  className="text-sm lg:whitespace-nowrap font-bold font-dm-sans uppercase text-gray1 transition-all duration-200 hover:text-gray2"
+                >
+                  DASHBOARD
+                </Link>
               </li>
               <li>
-                <Link to="/crew" className="text-sm lg:whitespace-nowrap font-bold font-dm-sans uppercase text-gray1 transition-all duration-200 hover:text-gray2">MY CREW</Link>
+                <Link
+                  to="/crew"
+                  className="text-sm lg:whitespace-nowrap font-bold font-dm-sans uppercase text-gray1 transition-all duration-200 hover:text-gray2"
+                >
+                  MY CREW
+                </Link>
               </li>
               <li>
-                <Link to="/organization-chart" className="text-sm lg:whitespace-nowrap font-bold font-dm-sans uppercase text-gray1 transition-all duration-200 hover:text-gray2">ORGANISATION CHART</Link>
+                <Link
+                  to="/organization-chart"
+                  className="text-sm lg:whitespace-nowrap font-bold font-dm-sans uppercase text-gray1 transition-all duration-200 hover:text-gray2"
+                >
+                  ORGANISATION CHART
+                </Link>
               </li>
             </ul>
           </div>
 
           <div className="md:w-1/3 flex flex-col md:border-r md:border-black3 md:px-5 xl:px-[86px] md:pt-9 xl:pt-[80px] md:pb-6 xl:pb-10">
-            <h3 className="text-gray2 text-xs mb-10 uppercase font-bold tracking-widest">contact</h3>
-            <p className="text-sm text-gray1 font-normal mb-3">43252 Borer Mountains</p>
-            <p className="text-sm text-gray1 font-normal mb-3">Zackerychester</p>
+            <h3 className="text-gray2 text-xs mb-10 uppercase font-bold tracking-widest">
+              contact
+            </h3>
+            <p className="text-sm text-gray1 font-normal mb-3">
+              43252 Borer Mountains
+            </p>
+            <p className="text-sm text-gray1 font-normal mb-3">
+              Zackerychester
+            </p>
             <p className="text-sm text-gray1 font-normal mb-3">Bahamas</p>
             <p className="text-sm text-gray1 font-normal mb-3">732-528-4945</p>
-
           </div>
 
           <div className="md:w-1/3 sm:w-1/2 sm:max-w-full max-w-[256px] flex flex-col xl:pl-[86px] md:pl-5 xl:pt-[80px] md:pt-9 md:pb-8 xl:pb-[66px]">
-          <h3 className="text-gray2 text-xs mb-10 uppercase font-bold tracking-widest">newsletter</h3>
-          <p className="text-gray2 text-sm leading-6 sm:pr-10">Subscribe our newsletter to get more free design course and resource</p>
-          <form id="news-letter-form" className="relative inline-flex items-center justify-end mt-5" >
-            <input
-              type="email"
-              id="email"
-              name="email"
-              className="border-black3 bg-transparent text-white text-sm rounded-full border-2 py-3 px-4 w-full focus:outline-none focus:border-gray2 placeholder:text-gray1"
-              placeholder="Your email address"
-            />
-            <button type="submit" className="bg-magenta1 absolute right-2 text-white text-xs font-bold w-8 h-8 flex items-center justify-center rounded-full"><svg
-            width={14}
-            height={9}
-            viewBox="0 0 14 9"
-            fill="none"
-            xmlns="http://www.w3.org/2000/svg"
-          >
-            <path
-              fillRule="evenodd"
-              clipRule="evenodd"
-              d="M9.09094 0.265207C9.49676 -0.109399 10.1294 -0.0840962 10.504 0.321722L13.7348 3.82168C14.0884 4.20474 14.0884 4.79518 13.7348 5.17824L10.504 8.67828C10.1294 9.08411 9.49677 9.10941 9.09095 8.73481C8.68513 8.36021 8.65982 7.72755 9.03442 7.32173L10.716 5.49997L0.999999 5.49997C0.447714 5.49997 -7.64154e-07 5.05225 -7.86799e-07 4.49997C-8.09444e-07 3.94768 0.447714 3.49997 0.999999 3.49997L10.716 3.49997L9.03443 1.67829C8.65982 1.27247 8.68513 0.639813 9.09094 0.265207Z"
-              fill="#FCFCFD"
-            />
-          </svg>
-          </button>
-          </form>
+            <h3 className="text-gray2 text-xs mb-10 uppercase font-bold tracking-widest">
+              newsletter
+            </h3>
+            <p className="text-gray2 text-sm leading-6 sm:pr-10">
+              Subscribe our newsletter to get more free design course and
+              resource
+            </p>
+            <form
+              id="news-letter-form"
+              className="relative inline-flex items-center justify-end mt-5"
+            >
+              <input
+                type="email"
+                id="email"
+                name="email"
+                className="border-black3 bg-transparent text-white text-sm rounded-full border-2 py-3 px-4 w-full focus:outline-none focus:border-gray2 placeholder:text-gray1"
+                placeholder="Your email address"
+              />
+              <button
+                type="submit"
+                className="bg-magenta1 absolute right-2 text-white text-xs font-bold w-8 h-8 flex items-center justify-center rounded-full"
+              >
+                <svg
+                  width={14}
+                  height={9}
+                  viewBox="0 0 14 9"
+                  fill="none"
+                  xmlns="http://www.w3.org/2000/svg"
+                >
+                  <path
+                    fillRule="evenodd"
+                    clipRule="evenodd"
+                    d="M9.09094 0.265207C9.49676 -0.109399 10.1294 -0.0840962 10.504 0.321722L13.7348 3.82168C14.0884 4.20474 14.0884 4.79518 13.7348 5.17824L10.504 8.67828C10.1294 9.08411 9.49677 9.10941 9.09095 8.73481C8.68513 8.36021 8.65982 7.72755 9.03442 7.32173L10.716 5.49997L0.999999 5.49997C0.447714 5.49997 -7.64154e-07 5.05225 -7.86799e-07 4.49997C-8.09444e-07 3.94768 0.447714 3.49997 0.999999 3.49997L10.716 3.49997L9.03443 1.67829C8.65982 1.27247 8.68513 0.639813 9.09094 0.265207Z"
+                    fill="#FCFCFD"
+                  />
+                </svg>
+              </button>
+            </form>
           </div>
-
         </div>
         <div className="w-full flex sm:flex-row flex-col items-start justify-between gap-3 sm:gap-8 sm:items-center py-6 relative md:mt-0 mt-[40px]">
-        <hr className="md:border-t md:border-black3 border-transparent absolute top-0 w-screen left-1/2 -translate-x-1/2" />
-          <p className="text-xs text-gray1 font-poppins pr-12">Copyright © 2021 UI8 LLC. All rights reserved</p>
+          <hr className="md:border-t md:border-black3 border-transparent absolute top-0 w-screen left-1/2 -translate-x-1/2" />
+          <p className="text-xs text-gray1 font-poppins pr-12">
+            Copyright © 2021 UI8 LLC. All rights reserved
+          </p>
           <ul className="flex items-center gap-6">
             <li>
-              <Link to="#" className="inline-flex items-center justify-center transition-all duration-200 hover:scale-125">
+              <Link
+                to="#"
+                className="inline-flex items-center justify-center transition-all duration-200 hover:scale-125"
+              >
                 <svg
                   width={20}
                   height={20}
@@ -99,7 +145,10 @@ export const Footer = () => {
               </Link>
             </li>
             <li>
-              <Link to="#" className="inline-flex items-center justify-center transition-all duration-200 hover:scale-125">
+              <Link
+                to="#"
+                className="inline-flex items-center justify-center transition-all duration-200 hover:scale-125"
+              >
                 <svg
                   width={20}
                   height={20}
@@ -117,7 +166,10 @@ export const Footer = () => {
               </Link>
             </li>
             <li>
-              <Link to="#" className="inline-flex items-center justify-center transition-all duration-200 hover:scale-125">
+              <Link
+                to="#"
+                className="inline-flex items-center justify-center transition-all duration-200 hover:scale-125"
+              >
                 <svg
                   width={20}
                   height={20}
@@ -147,8 +199,12 @@ export const Footer = () => {
           </ul>
         </div>
 
-        <a href="#" className="w-10 h-10 flex items-center absolute md:right-0 right-5 bottom-11 md:bottom-20 justify-center bg-magenta1 rounded">
-        <svg
+        {/* Start TeamBee Changes: hover:bg-color  */}
+        <a
+          href="#"
+          className="w-10 h-10 flex items-center absolute md:right-0 right-5 bottom-11 md:bottom-20 justify-center bg-magenta1 rounded transition-all duration-300 hover:bg-magenta2"
+        >
+          <svg
             width={20}
             height={20}
             viewBox="0 0 20 20"
@@ -177,7 +233,10 @@ export const Footer = () => {
                 width={1}
                 height={1}
               >
-                <use xlinkHref="#image0_369_141" transform="scale(0.00195312)" />
+                <use
+                  xlinkHref="#image0_369_141"
+                  transform="scale(0.00195312)"
+                />
               </pattern>
               <image
                 id="image0_369_141"
@@ -187,7 +246,6 @@ export const Footer = () => {
               />
             </defs>
           </svg>
-
         </a>
       </div>
     </footer>
