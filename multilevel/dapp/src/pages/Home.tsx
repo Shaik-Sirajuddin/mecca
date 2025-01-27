@@ -14,7 +14,7 @@ import { IRootState } from "../app/store";
 import { UserData } from "../schema/user_data";
 import { AppStore } from "../schema/app_store";
 import { AppState } from "../schema/app_state";
-import { formatBalance } from "../utils/utils";
+import { formatBalance, generateReferralCode } from "../utils/utils";
 import { splToken } from "../utils/constants";
 
 const Home = () => {
@@ -51,7 +51,7 @@ const Home = () => {
   const upgrade = async () => {
     try {
       if (!publicKey) return;
-      const tx = getUpgradeTransaction(publicKey, PlanID.C);
+      const tx = getUpgradeTransaction(publicKey, selectedPlan);
 
       const { blockhash } = await connection.getLatestBlockhash();
       tx.recentBlockhash = blockhash;
@@ -94,8 +94,8 @@ const Home = () => {
       const tx = getJoinTransaction(
         publicKey,
         referrerAddress,
-        PlanID.A,
-        "MC00000001"
+        selectedPlan,
+        generateReferralCode(appStore.referral_id_map)
       );
       const { blockhash } = await connection.getLatestBlockhash();
       tx.recentBlockhash = blockhash;

@@ -30,6 +30,7 @@ import {
 } from "./features/user/userSlice";
 import { setAppState, setAppStore } from "./features/global/globalSlice";
 import "./App.css";
+import { Toaster } from "react-hot-toast";
 
 const App = () => {
   const { connection } = useConnection();
@@ -82,6 +83,7 @@ const App = () => {
         <Route path="/organization-chart" element={<OrganizationChart />} />
         <Route path="/*" element={<NotFoundPage />} />
       </Routes>
+      <Toaster />
       <Footer />
     </main>
   );

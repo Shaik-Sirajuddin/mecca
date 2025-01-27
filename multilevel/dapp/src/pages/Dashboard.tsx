@@ -4,6 +4,7 @@ import { useSelector } from "react-redux";
 import { UserData } from "../schema/user_data";
 import { IRootState } from "../app/store";
 import {
+  copyToClipboard,
   deci,
   formatBalance,
   formatLocalDateString,
@@ -16,6 +17,7 @@ import { useConnection, useWallet } from "@solana/wallet-adapter-react";
 import Decimal from "decimal.js";
 import { SendTransactionError } from "@solana/web3.js";
 import { Plan } from "../schema/plan";
+import toast from "react-hot-toast";
 
 const Dashboard = () => {
   const { connection } = useConnection();
@@ -35,7 +37,7 @@ const Dashboard = () => {
 
   const withdraw = async () => {
     try {
-      setTxLoading(true)
+      setTxLoading(true);
       if (!publicKey) return;
       if (!withdrawAmount) {
         //TODO : modal
@@ -65,16 +67,26 @@ const Dashboard = () => {
         console.log(await error.getLogs(connection));
       }
       console.log(error);
-    }
-    finally{
-      setTxLoading(false)
+    } finally {
+      setTxLoading(false);
     }
   };
 
   const maxClick = () => {
     setWithdrawAmount(
-      userData.withdrawn_amount.div(10 ** splToken.decimals).toString()
+      userData
+        .availableForWithdraw(appState)
+        .div(10 ** splToken.decimals)
+        .toString()
     );
+  };
+
+  const performCopy = async (value: string) => {
+    if (await copyToClipboard(value)) {
+      toast.success("Copied to Clipoard");
+    } else {
+      toast.error("Failed to copy!");
+    }
   };
   return (
     <>
@@ -136,6 +148,9 @@ const Dashboard = () => {
                     <button
                       type="button"
                       className="text-xs font-semibold text-white inline-flex items-center justify-center"
+                      onClick={() => {
+                        performCopy(userData.id);
+                      }}
                     >
                       <svg
                         width={79}
@@ -159,6 +174,9 @@ const Dashboard = () => {
                     <button
                       type="button"
                       className="text-xs font-semibold text-white inline-flex items-center justify-center"
+                      onClick={() => {
+                        if (publicKey) performCopy(publicKey.toString());
+                      }}
                     >
                       <svg
                         width={79}

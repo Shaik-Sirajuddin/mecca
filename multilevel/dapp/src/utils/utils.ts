@@ -1,5 +1,6 @@
 import Decimal from "decimal.js";
 import { splToken } from "./constants";
+import { PublicKey } from "@solana/web3.js";
 
 export function isValidNumber(str: string) {
   const regex = /^-?\d+(\.\d+)?$|^-?\d+\.$/;
@@ -71,3 +72,55 @@ export function shortenAddress(address: string, chars = 4): string {
   const suffix = address.slice(-chars); // Last `chars`
   return `${prefix}...${suffix}`;
 }
+
+//includes of both min , max
+function randomInRange(min: number, max: number) {
+  const randomNum = Math.floor(Math.random() * (max - min + 1)) + min;
+  return randomNum.toString().padStart(8, "0"); // Ensure the result has 8 digits
+}
+export const generateReferralCode = (referralMap: Map<string, PublicKey>) => {
+  while (true) {
+    const referralId = "MC" + randomInRange(1, 99999999).padStart(8, "0");
+    if (!referralMap.has(referralId)) {
+      return referralId;
+    }
+  }
+};
+
+/**
+ * Copies the given text to the clipboard.
+ * @param text - The text to be copied to the clipboard.
+ * @returns A Promise that resolves when the text is successfully copied, or rejects with an error.
+ */
+export const copyToClipboard = async (text: string) => {
+  if (
+    navigator.clipboard &&
+    typeof navigator.clipboard.writeText === "function"
+  ) {
+    try {
+      await navigator.clipboard.writeText(text);
+      console.log("Text copied to clipboard:", text);
+      return true;
+    } catch (error) {
+      console.error("Failed to copy text to clipboard:", error);
+      return false;
+    }
+  } else {
+    // Fallback for browsers without clipboard API support
+    try {
+      const textArea = document.createElement("textarea");
+      textArea.value = text;
+      textArea.style.position = "fixed"; // Prevent scrolling to bottom
+      textArea.style.left = "-9999px"; // Hide the textarea
+      document.body.appendChild(textArea);
+      textArea.select();
+      document.execCommand("copy");
+      document.body.removeChild(textArea);
+      console.log("Text copied to clipboard (fallback):", text);
+      return true;
+    } catch (error) {
+      console.error("Fallback failed to copy text to clipboard:", error);
+      return false;
+    }
+  }
+};
