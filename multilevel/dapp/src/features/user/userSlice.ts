@@ -11,6 +11,7 @@ export const userSlice = createSlice({
     dataAccExists: false,
     ataExists: false,
     tokenBalance: "0",
+    dataSynced: false,
   },
   reducers: {
     setUserDataAccountId: (state, action) => {
@@ -31,6 +32,9 @@ export const userSlice = createSlice({
     setTokenBalance: (state, action) => {
       state.tokenBalance = action.payload;
     },
+    setDataSynced: (state, action) => {
+      state.dataSynced = action.payload;
+    },
   },
 });
 
@@ -41,7 +45,8 @@ export const {
   setUserPdaExists,
   setUserAtaExists,
   setTokenBalance,
-  setUserStore
+  setUserStore,
+  setDataSynced,
 } = userSlice.actions;
 
 export default userSlice.reducer;

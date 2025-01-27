@@ -11,7 +11,7 @@ import { PlanID } from "../enums/plan";
 import { PublicKey, SendTransactionError } from "@solana/web3.js";
 import { useSelector } from "react-redux";
 import { IRootState } from "../app/store";
-import { UserData } from "../schema/user_data";
+// import { UserData } from "../schema/user_data";
 import { AppStore } from "../schema/app_store";
 import { AppState } from "../schema/app_state";
 import { formatBalance, generateReferralCode } from "../utils/utils";
@@ -22,11 +22,11 @@ const Home = () => {
   const { connection } = useConnection();
   const { publicKey, signTransaction } = useWallet();
   const [inviteCode, setInvideCode] = useState("");
-  const userDataRaw = useSelector((state: IRootState) => state.user.data);
-  // Use useMemo to memoize the result of UserData.fromJSON
-  const userData = useMemo(() => {
-    return UserData.fromJSON(userDataRaw);
-  }, [userDataRaw]); // Only recompute when userData changes
+  // const userDataRaw = useSelector((state: IRootState) => state.user.data);
+  // // Use useMemo to memoize the result of UserData.fromJSON
+  // const userData = useMemo(() => {
+  //   return UserData.fromJSON(userDataRaw);
+  // }, [userDataRaw]); // Only recompute when userData changes
 
   const userPDAExists = useSelector(
     (state: IRootState) => state.user.dataAccExists
@@ -135,7 +135,16 @@ const Home = () => {
         <meta property="og:title" content="A very important title" />
       </Helmet>
       <div className="w-full">
-        <section className="w-full relative md:min-h-[600px] lg:min-h-[853px] bg-[url(mecca-banner-bg.png)] bg-cover bg-center bg-no-repeat pt-32 lg:pt-[240px]">
+        <section className="w-full relative md:min-h-[600px] lg:min-h-[853px] pt-32 lg:pt-[240px]">
+          <div className="w-full h-screen absolute top-0 left-0 bg-black5/50"></div>
+          <video
+            src="/assets/how-bg.mp4"
+            className="w-screen top-0 left-0 bg-cover -z-10 object-cover h-screen absolute"
+            loop
+            muted
+            autoPlay
+          ></video>
+          {/* End TeamBee Changes */}
           <div className="w-full max-w-[1152px] mx-auto px-5 relative z-20">
             <div className="w-full text-center">
               <div className="inline-flex items-center justify-center">

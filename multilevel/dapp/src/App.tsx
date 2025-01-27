@@ -1,4 +1,10 @@
-import { Routes, Route } from "react-router-dom";
+import {
+  Routes,
+  Route,
+  useLocation,
+  matchPath,
+  useNavigate,
+} from "react-router-dom";
 import Home from "./pages/Home";
 import { Navbar } from "./components/Navbar";
 import { Footer } from "./components/Footer";
@@ -7,7 +13,7 @@ import Crew from "./pages/Crew";
 import OrganizationChart from "./pages/OrganizationChart";
 import Dashboard from "./pages/Dashboard";
 import NotFoundPage from "./pages/404";
-import { useEffect } from "react";
+import { useCallback, useEffect } from "react";
 import {
   fetchAppState,
   fetchAppStore,
@@ -18,9 +24,14 @@ import {
   getUserDataAcc,
   getUserStoreAcc,
 } from "./utils/web3";
-import { useConnection, useWallet } from "@solana/wallet-adapter-react";
-import { useDispatch } from "react-redux";
 import {
+  useConnection,
+  useLocalStorage,
+  useWallet,
+} from "@solana/wallet-adapter-react";
+import { useDispatch, useSelector } from "react-redux";
+import {
+  setDataSynced,
   setTokenBalance,
   setUserAtaExists,
   setUserData,
@@ -30,14 +41,30 @@ import {
 } from "./features/user/userSlice";
 import { setAppState, setAppStore } from "./features/global/globalSlice";
 import "./App.css";
-import { Toaster } from "react-hot-toast";
+import toast, { Toaster } from "react-hot-toast";
 import { userJoined } from "./network/api";
+import { IRootState } from "./app/store";
+
+const useMultiplePathsMatch = (paths: string[]) => {
+  const location = useLocation();
+  return paths.some((path) => matchPath({ path }, location.pathname));
+};
 
 const App = () => {
   const { connection } = useConnection();
   const dispatch = useDispatch();
-  const { publicKey } = useWallet();
+  const navigate = useNavigate();
+  const { publicKey, connecting } = useWallet();
+  const requiresEnrollment = useMultiplePathsMatch([
+    "/crew",
+    "/organization-chart",
+    "/dashboard",
+  ]);
 
+  const userEnrolled = useSelector(
+    (state: IRootState) => state.user.dataAccExists
+  );
+  const dataSynced = useSelector((state: IRootState) => state.user.dataSynced);
   const syncAppState = async () => {
     const appState = await fetchAppState(connection);
     dispatch(setAppState(appState.toJSON()));
@@ -54,7 +81,7 @@ const App = () => {
     if (userData) {
       dispatch(setUserData(userData.toJSON()));
       // if user referral staus isn't completed hit endpoint for sync
-      console.log(userData.referral_distribution)
+      console.log(userData.referral_distribution);
       if (!userData.referral_distribution.completed) {
         userJoined(publicKey);
       }
@@ -68,6 +95,7 @@ const App = () => {
     const userBalance = await getTokenBalance(connection, userAta);
     dispatch(setUserAtaExists(userBalance != null));
     dispatch(setTokenBalance(userBalance ? userBalance.toString() : "0"));
+    dispatch(setDataSynced(true));
   };
 
   useEffect(() => {
@@ -77,6 +105,22 @@ const App = () => {
   useEffect(() => {
     syncUserData();
   }, [publicKey]);
+
+  const performCheck = useCallback(() => {
+    if ((dataSynced && !userEnrolled) || (!connecting && !publicKey)) {
+      navigate("/");
+      toast("Enrollment required to access the page");
+    }
+  }, [dataSynced, userEnrolled, connecting, publicKey, navigate]);
+
+  useEffect(() => {
+    if (!requiresEnrollment) return;
+    const timeoutId = setTimeout(() => {
+      performCheck();
+    }, 100);
+
+    return () => clearTimeout(timeoutId); // Cleanup timeout on unmount
+  }, [performCheck, requiresEnrollment]);
 
   return (
     <main className="font-poppins">

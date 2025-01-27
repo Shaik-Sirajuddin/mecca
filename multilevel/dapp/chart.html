@@ -1,0 +1,509 @@
+<!-- @format -->
+<html>
+  <head>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400&display=swap"
+      rel="stylesheet"
+    />
+    <link
+      href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,100..1000;1,9..40,100..1000&family=Poppins:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&display=swap"
+      rel="stylesheet"
+    />
+    <script src="https://d3js.org/d3.v3.min.js" charset="utf-8"></script>
+  </head>
+  <div id="body"></div>
+  <style>
+    * {
+      font-family: "Poppins";
+    }
+    body {
+      background-color: black;
+      /* height: 400px; */
+    }
+    #body {
+      /* height: 400px; */
+    }
+    /** @format */
+    .node {
+      cursor: pointer;
+      border-radius: 10px;
+    }
+
+    .node circle {
+      fill: #fff;
+      stroke: steelblue;
+      stroke-width: 1.5px;
+    }
+
+    .node text {
+      font-size: 0.875rem;
+      font-weight: 500;
+      /* font-family: "Roboto", sans-serif; */
+    }
+
+    .link {
+      fill: none;
+      stroke: #ccc;
+      stroke-width: 1.5px;
+    }
+
+    div.tooltip-donut {
+      position: absolute;
+      padding: 4px;
+      background: #ffffff;
+      color: #313639;
+      border: 1px solid black;
+      border-radius: 4px;
+      pointer-events: none;
+      /* right: 0; */
+      /* top: 0; */
+    }
+
+    .myBox {
+      border-radius: 2px;
+      /* display: inline-block; */
+      flex-direction: column;
+      align-items: center;
+      padding: 10px 20px;
+      display: flex;
+      justify-content: center;
+    }
+
+    .myBox p {
+      font-size: 18px;
+      color: white;
+      font-family: "Roboto", sans-serif;
+    }
+
+    /* svg {
+        overflow-x: auto;
+        overflow-y: auto;
+    } */
+  </style>
+  <script>
+    var userData = {};
+    var dataset = [];
+    var dataForGraph = {};
+
+    function getUserAddressFromParam() {
+      const url = new URL(window.location.href);
+
+      // Get all query parameters
+      const params = new URLSearchParams(url.search);
+
+      // Example: Extract specific query parameters
+      return params.get("address"); // Get 'param1
+    }
+    async function fetchData() {
+      let url = `http://localhost:3020/public/referrer-chart`;
+      let userAddress = getUserAddressFromParam();
+      let res = await fetch(url, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ address: userAddress }),
+      });
+      let userList = (await res.json()).body;
+      for (let i = 0; i < userList.length; i++) {
+        dataset.push(userList[i]);
+      }
+      userData = { ...userList[0] };
+    }
+
+    function getNestedList(parent) {
+      let curChildren = [];
+      for (let i = 0; i < dataset.length; i++) {
+        let item = dataset[i];
+        if (item.referrer == parent && item.address != parent) {
+          curChildren.push({
+            address: item.address,
+            referrer: item.referrer,
+            amount: item.amount,
+            current_plan: item.current_plan,
+            id: item.id,
+            children: getNestedList(item.address),
+          });
+        }
+      }
+      return curChildren;
+    }
+
+    function truncatedAddress(address, chars = 4) {
+      if (!address || address.length <= chars * 2 + 2) {
+        return address; // Return the original address if it's too short to shorten
+      }
+      const prefix = address.slice(0, chars + 2); // First `chars` + "0x"
+      const suffix = address.slice(-chars); // Last `chars`
+      return `${prefix}...${suffix}`;
+    }
+
+    function getTrunucatedText(text) {
+      if (text.length > 13) {
+        return text.slice(0, 13) + "..";
+      }
+      return text;
+    }
+
+    function getBackgroundColor(d) {
+      return "black";
+    }
+
+    function getStrokeColor(d) {
+      return "red";
+    }
+
+    function getStrokeWidth(d) {
+      return 1;
+    }
+
+    function buildTree(data) {
+      let boxColor1 = "red",
+        boxColor2 = "blue";
+      let margin = {
+          top: 20,
+          right: 120,
+          bottom: 20,
+          left: 120,
+        },
+        width = window.innerWidth - 100,
+        height = window.innerHeight - margin.top - margin.bottom;
+
+      let root = data;
+
+      let i = 0,
+        duration = 500,
+        rectW = 210,
+        rectH = 140;
+
+      let tree = d3.layout.tree().size([height, width]).nodeSize([210, 140]);
+      let diagonal = d3.svg.diagonal().projection(function (d) {
+        let y = d.y;
+
+        if (d.children) {
+          y = d.y + rectH;
+        }
+        return [d.x + rectW / 2, y];
+      });
+      var div = d3
+        .select("body")
+        .append("div")
+        .attr("class", "tooltip-donut")
+        .style("opacity", 0);
+      let svg = d3
+        .select("#body")
+        .append("svg")
+        .attr("width", width)
+        .attr("height", height)
+        // .attr("viewbox", "0 0 793 1122")
+        // .attr("overflow", "auto")
+        .call(
+          (zm = d3.behavior.zoom().scaleExtent([0.1, 3]).on("zoom", redraw))
+        )
+        .append("g")
+        .attr("id", "scrollGroup")
+        .attr(
+          "transform",
+          "translate(" + (window.innerWidth / 2 - rectW / 2) + "," + 20 + ")"
+        );
+
+      //necessary so that zoom knows where to zoom and unzoom from
+      zm.translate([window.innerWidth / 2 - rectW / 2, 20]);
+
+      root.x0 = 0;
+      root.y0 = height / 2;
+
+      function collapse(d) {
+        if (d.children) {
+          d._children = d.children;
+          d._children.forEach(collapse);
+          d.children = null;
+        }
+      }
+
+      root.children.forEach(collapse);
+      collapse(root);
+      update(root);
+      var maxDepth = 0;
+
+      function update(source) {
+        // Compute the new tree layout.
+        let nodes = tree.nodes(root).reverse(),
+          links = tree.links(nodes);
+        // Normalize for fixed-depth.
+        const levelHeight = 285;
+
+        nodes.forEach(function (d) {
+          d.y = d.depth * levelHeight;
+          maxDepth = Math.max(maxDepth, d.depth);
+        });
+
+        // Update the nodes…
+        let node = svg.selectAll("g.node").data(nodes, function (d) {
+          return d.id;
+        });
+
+        d3.select("svg").attr("height", (maxDepth + 1) * levelHeight);
+        // Enter any new nodes at the parent's previous position.
+        let nodeEnter = node
+          .enter()
+          .append("g")
+          .attr("class", "node")
+          .attr("transform", function (d) {
+            return "translate(" + source.x0 + "," + source.y0 + ")";
+          })
+          .on("click", (d) => {
+            click(d);
+          });
+
+        const lineHeight = 28;
+        nodeEnter
+          .append("image")
+          .attr("xlink:href", function (d) {
+            return "https://multilevelmecca.netlify.app/tree-chart-bg.png";
+          })
+          .attr("width", rectW)
+          .attr("height", rectH)
+          .attr("rx", 5)
+          .attr("ry", 5);
+
+        let baseYText = 18;
+        let end = 120;
+
+        //User Id
+        nodeEnter
+          .append("text")
+          .attr("x", 0)
+          .attr("y", baseYText)
+          .attr("dy", ".35em")
+          .attr("dx", "1em")
+          .style("fill", "white")
+          .text(function (d) {
+            let text = "User ID : ";
+            return getTrunucatedText(text);
+          });
+
+        nodeEnter
+          .append("text")
+          .attr("x", rectW - end)
+          .attr("y", baseYText)
+          .attr("dy", ".35em")
+          .attr("dx", "1em")
+          .style("fill", "white")
+          .text(function (d) {
+            return d.id;
+          });
+
+        //Address
+        nodeEnter
+          .append("text")
+          .attr("x", 0)
+          .attr("y", baseYText + lineHeight)
+          .attr("dy", ".35em")
+          .attr("dx", "1em")
+          .style("fill", "white")
+          .text(function (d) {
+            return "Address";
+          });
+        nodeEnter
+          .append("text")
+          .attr("x", rectW - 128)
+          .attr("y", baseYText + lineHeight)
+          .attr("dy", ".35em")
+          .attr("dx", "1em")
+          .style("fill", "white")
+          .text(function (d) {
+            return truncatedAddress(d.address);
+          });
+
+        //Current Stage
+        nodeEnter
+          .append("text")
+          .attr("x", 0)
+          .attr("y", baseYText + 2 * lineHeight)
+          .attr("dy", ".35em")
+          .attr("dx", "1em")
+          .style("fill", "white")
+          .text(function (d) {
+            return "Current Stage";
+          });
+
+        nodeEnter
+          .append("text")
+          .attr("x", rectW - 100)
+          .attr("y", baseYText + 2 * lineHeight)
+          .attr("dy", ".35em")
+          .attr("dx", "1em")
+          .style("fill", "white")
+          .text(function (d) {
+            return "STAGE " + String.fromCharCode(65 + d.current_plan);
+          });
+
+        //Referral reward
+        nodeEnter
+          .append("text")
+          .attr("x", 0)
+          .attr("y", baseYText + 3 * lineHeight)
+          .attr("dy", ".35em")
+          .attr("dx", "1em")
+          .style("fill", "white")
+          .text(function (d) {
+            return "Reward";
+          });
+        nodeEnter
+          .append("text")
+          .attr("x", rectW - 100)
+          .attr("y", baseYText + 3 * lineHeight)
+          .attr("dy", ".35em")
+          .attr("dx", "1em")
+          .style("fill", "white")
+          .text(function (d) {
+            return d.amount + " MEA";
+          });
+
+        // Transition nodes to their new position.
+        let nodeUpdate = node
+          .transition()
+          .duration(duration)
+          .attr("transform", function (d) {
+            return "translate(" + d.x + "," + d.y + ")";
+          });
+
+        nodeUpdate
+          .select("image")
+          .attr("width", rectW)
+          .attr("height", rectH)
+          .attr("stroke", function (d) {
+            return "red";
+          })
+          .attr("stroke-width", function (d) {
+            return getStrokeWidth(d);
+          })
+          .style("fill", function (d) {
+            return getBackgroundColor(d);
+          });
+
+        nodeUpdate.select("text").style("fill-opacity", 1);
+
+        // Transition exiting nodes to the parent's new position.
+        let nodeExit = node
+          .exit()
+          .transition()
+          .duration(duration)
+          .attr("transform", function (d) {
+            return "translate(" + source.x + "," + source.y + ")";
+          })
+          .remove();
+
+        nodeExit
+          .select("image")
+          .attr("width", rectW)
+          .attr("height", rectH)
+          .attr("stroke", "black")
+          .attr("stroke-width", function (d) {
+            return getStrokeWidth(d);
+          });
+
+        nodeExit.select("text");
+
+        // Update the links…
+        let link = svg.selectAll("path.link").data(links, function (d) {
+          return d.target.id;
+        });
+
+        // Enter any new links at the parent's previous position.
+        link
+          .enter()
+          .insert("path", "g")
+          .attr("class", "link")
+          .attr("x", rectW / 2)
+          .attr("y", rectH / 2)
+          .attr("d", function (d) {
+            var o = {
+              x: source.x0,
+              y: source.y0,
+            };
+            return diagonal({
+              source: o,
+              target: o,
+            });
+          });
+
+        // Transition links to their new position.
+        link.transition().duration(duration).attr("d", diagonal);
+
+        // Transition exiting nodes to the parent's new position.
+        link
+          .exit()
+          .transition()
+          .duration(duration)
+          .attr("d", function (d) {
+            var o = {
+              x: source.x,
+              y: source.y,
+            };
+            return diagonal({
+              source: o,
+              target: o,
+            });
+          })
+          .remove();
+        // Stash the old positions for transition.
+        nodes.forEach(function (d) {
+          d.x0 = d.x;
+          d.y0 = d.y;
+        });
+      }
+
+      // Toggle children on click.
+      function click(d) {
+        if (d.children) {
+          d._children = d.children;
+          d.children = null;
+        } else {
+          d.children = d._children;
+          d._children = null;
+          // if (d.children) {
+          //     d.children.forEach((child) => {
+          //         click(child);
+          //     });
+          // }
+        }
+        update(d);
+      }
+
+      //Redraw for zoom
+      function redraw() {
+        //console.log("here", d3.event.translate, d3.event.scale);
+        svg.attr(
+          "transform",
+          "translate(" +
+            d3.event.translate +
+            ")" +
+            " scale(" +
+            d3.event.scale +
+            ")"
+        );
+        let scale = d3.event.scale;
+      }
+    }
+
+    fetchData().then(() => {
+      let dataForGraph = {
+        address: userData.address,
+        referrer: userData.referrer,
+        amount: "0",
+        current_plan: 0,
+        id: userData.id,
+        children: getNestedList(userData.address),
+      };
+      console.log("data Graph", dataForGraph, dataset);
+
+      buildTree(dataForGraph);
+    });
+
+    const scrollBarWidth = 8;
+  </script>
+</html>

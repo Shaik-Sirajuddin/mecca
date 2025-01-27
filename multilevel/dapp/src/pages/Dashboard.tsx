@@ -1,4 +1,4 @@
-import { useMemo, useState } from "react";
+import { useCallback, useEffect, useMemo, useState } from "react";
 import { Helmet } from "react-helmet-async";
 import { useSelector } from "react-redux";
 import { UserData } from "../schema/user_data";
@@ -25,6 +25,7 @@ const Dashboard = () => {
   const { publicKey, signTransaction } = useWallet();
   const [withdrawAmount, setWithdrawAmount] = useState("0");
   const [txLoading, setTxLoading] = useState(false);
+
   const userDataRaw = useSelector((state: IRootState) => state.user.data);
   // Use useMemo to memoize the result of UserData.fromJSON
   const userData = useMemo(() => {
@@ -94,6 +95,7 @@ const Dashboard = () => {
       toast.error("Failed to copy!");
     }
   };
+
   return (
     <>
       <Helmet>
@@ -101,10 +103,20 @@ const Dashboard = () => {
         <meta property="og:title" content="A very important title" />
       </Helmet>
 
-      <div className="w-full bg-black4 relative">
+      <div className="w-full bg-black5 relative">
         <div className="w-full max-w-[1162px] mx-auto absolute h-[623px] rounded-full blur-[200px] -top-[400px] left-1/2 -translate-x-1/2 bg-[#6E3359]"></div>
 
-        <section className="w-full relative md:min-h-[600px] lg:min-h-[753px] bg-[url(3d-abstract-background.png)] bg-cover bg-center bg-no-repeat pb-28 pt-32 lg:pt-[254px]">
+        <section className="w-full relative md:min-h-[600px] lg:min-h-[753px] pb-28 pt-32 lg:pt-[254px]">
+          <div className="w-full h-screen absolute top-0 left-0 bg-black5/50 z-10"></div>
+          <video
+            src="/assets/dashboard.bg.mp4"
+            className="w-screen top-0 left-0 bg-cover object-cover h-screen absolute"
+            loop
+            muted
+            autoPlay
+          ></video>
+          <div className="w-full bg-xl-gradient top-[80vh] absolute h-[185px] z-10 -bottom-1"></div>
+          {/* End TeamBee Changes */}
           <div className="w-full max-w-[1152px] mx-auto px-10 relative z-20">
             <div className="w-full text-center">
               <div className="inline-flex items-center justify-center">

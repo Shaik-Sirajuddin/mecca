@@ -16,3 +16,7 @@ export const appStoreId = new PublicKey(
 export const payerAcc = new PublicKey(
   "9tFmeBvKhr3PhgdUYYSUuVZTzSrFDB5GzkD8H2DnmMhG"
 );
+
+export const splToken = {
+  decimals: 6,
+};

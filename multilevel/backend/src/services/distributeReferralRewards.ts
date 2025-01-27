@@ -1,24 +1,12 @@
-import {
-  AccountMeta,
-  PublicKey,
-  SystemProgram,
-  TransactionInstruction,
-} from "@solana/web3.js";
+import { AccountMeta, PublicKey, SystemProgram } from "@solana/web3.js";
 import { UserData } from "../schema/user_data";
 import queueManager from "../utils/distributeQueue";
 import {
-  connection,
-  fetchUserDataFromNode,
   getUserDataAcc,
   getUserStoreAcc,
   sendDistributeTransaction,
 } from "../utils/web3";
-import {
-  appStateId,
-  appStoreId,
-  multilevelProgramId,
-  payerAcc,
-} from "../constants";
+import { appStateId, payerAcc } from "../constants";
 import { sleep } from "../utils/utils";
 import { getUserData, storeUserData } from "../database/user";
 
@@ -29,7 +17,7 @@ const distributeRewardsOfUser = async (user: PublicKey) => {
     let userDataAcc = getUserDataAcc(user);
     let userData = await getUserData(user);
     storeUserData(user, userData);
-    console.log(userData.referral_distribution)
+    console.log(userData.referral_distribution);
     if (userData.referral_distribution.completed) {
       console.log("distribution completed");
       return true;

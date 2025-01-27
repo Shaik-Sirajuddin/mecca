@@ -17,13 +17,3 @@ export const storeUserStoreInCache = async (
     userStore
   );
 };
-
-export const getUserStore = async (user: PublicKey) => {
-  let userStore = await getCacheData(CACHE_KEY.USER_STORE(user.toString()));
-  if (!userStore) {
-    //fetch from node
-    userStore = await fetchUserStoreFromNode(user);
-    setCacheData(CACHE_KEY.USER_STORE(user.toString()), userStore);
-  }
-  return userStore as UserStore;
-};

@@ -50,6 +50,32 @@ export class Reward implements IReward {
       ), // Current time in seconds
     });
   }
+
+  // Serialize to JSON
+  toJSON(): Record<string, any> {
+    return {
+      user: this.user.toBase58(),
+      invested_amount: this.invested_amount.toString(),
+      level: this.level,
+      plan_id: this.plan_id,
+      reward_amount: this.reward_amount.toString(),
+      reward_time: this.reward_time.toString(),
+      plan_entry_time: this.plan_entry_time.toString(),
+    };
+  }
+
+  // Deserialize from JSON
+  static fromJSON(json: Record<string, any>): Reward {
+    return new Reward({
+      user: new PublicKey(json.user),
+      invested_amount: new Decimal(json.invested_amount),
+      level: json.level,
+      plan_id: json.plan_id,
+      reward_amount: new Decimal(json.reward_amount),
+      reward_time: new Decimal(json.reward_time),
+      plan_entry_time: new Decimal(json.plan_entry_time),
+    });
+  }
 }
 
 // Define Reward schema for borsh

@@ -5,12 +5,33 @@ import { useMemo } from "react";
 import { IRootState } from "../app/store";
 import { formatBalance, shortenAddress } from "../utils/utils";
 import { splToken } from "../utils/constants";
+import { AppStore } from "../schema/app_store";
+import { PublicKey } from "@solana/web3.js";
+import { UserData } from "../schema/user_data";
 
 const Crew = () => {
   const userStoreRaw = useSelector((state: IRootState) => state.user.store);
   const userStore = useMemo(() => {
     return UserStore.fromJSON(userStoreRaw);
   }, [userStoreRaw]);
+
+  const appStoreRaw = useSelector((state: IRootState) => state.global.store);
+
+  const appStore = useMemo(() => {
+    return AppStore.fromJSON(appStoreRaw);
+  }, [appStoreRaw]);
+
+  const getUserCode = (
+    user: PublicKey,
+    referralMap: Map<string, PublicKey>
+  ) => {
+    for (const [key, value] of referralMap) {
+      if (value.equals(user)) {
+        return key;
+      }
+    }
+    return "";
+  };
 
   return (
     <>
@@ -22,7 +43,17 @@ const Crew = () => {
       <div className="w-full bg-black5 relative">
         <div className="w-full max-w-[1162px] mx-auto absolute h-[623px] rounded-full blur-[200px] -top-[400px] left-1/2 -translate-x-1/2 bg-[#6E3359]"></div>
 
-        <section className="w-full relative md:min-h-[600px] lg:min-h-[753px] bg-[url(3d-abstract-background.png)] bg-cover bg-center bg-no-repeat pb-28 pt-32 lg:pt-[254px]">
+        <section className="w-full relative md:min-h-[600px] lg:min-h-[753px]  pb-28 pt-32 lg:pt-[254px]">
+          <div className="w-full h-screen absolute top-0 left-0 bg-black5/50 z-10"></div>
+          <video
+            src="/assets/dashboard.bg.mp4"
+            className="w-screen top-0 left-0 bg-cover object-cover h-screen absolute"
+            loop
+            muted
+            autoPlay
+          ></video>
+          <div className="w-full bg-xl-gradient top-[80vh] absolute h-[185px] z-10 -bottom-1"></div>
+          {/*End TeamBee Changes  */}
           <div className="w-full max-w-[1152px] mx-auto px-5 relative z-20">
             <div className="w-full text-center">
               <div className="inline-flex items-center justify-center">
@@ -42,15 +73,15 @@ const Crew = () => {
                 TOTAL CREW
               </p>
               <h4 className="md:text-[40px] text-2xl text-magenta1 font-bold font-dm-sans tracking-normal uppercase ">
-                00
+                {userStore.rewards.length}
               </h4>
               <div className="max-w-[596px] grid md:grid-cols-3 grid-cols-1 w-full mx-auto">
                 <div className="">
                   <p className="md:text-2xl text-base font-semibold text-white uppercasep mt-7">
-                    START CREW
+                    DIRECT CREW
                   </p>
                   <h4 className="md:text-[40px] text-2xl font-bold font-dm-sans text-magenta1 leading-tight">
-                    00
+                    {userStore.getCrewCount().direct}
                   </h4>
                 </div>
                 <div className="">
@@ -58,7 +89,7 @@ const Crew = () => {
                     ACTIVE CREW
                   </p>
                   <h4 className="md:text-[40px] text-2xl font-bold font-dm-sans text-magenta1 leading-tight">
-                    00
+                    {userStore.getCrewCount().active}
                   </h4>
                 </div>
                 <div className="">
@@ -66,7 +97,7 @@ const Crew = () => {
                     DEEP CREW
                   </p>
                   <h4 className="md:text-[40px] text-2xl font-bold font-dm-sans text-magenta1 leading-tight">
-                    00
+                    {userStore.getCrewCount().deep}
                   </h4>
                 </div>
               </div>
@@ -92,7 +123,7 @@ const Crew = () => {
                       "text-sm relative flex items-center justify-center text-center w-[84.42px] text-white font-semibold"
                     }
                   >
-                    <svg
+                    <svg  
                       width={85}
                       height={38}
                       viewBox="0 0 85 38"
@@ -145,14 +176,16 @@ const Crew = () => {
                             <p>{index + 1}</p>
                           </td>
                           <td className="text-sm border text-gray5 border-gray3 py-3.5 font-poppins font-semibold px-2.5">
-                            <p>{item.plan_id}</p>
+                            <p>
+                              {getUserCode(item.user, appStore.referral_id_map)}
+                            </p>
                           </td>
                           <td className="text-sm border text-gray5 border-gray3 py-3.5 font-poppins font-semibold px-2.5">
                             <p>{shortenAddress(item.user.toString())}</p>
                           </td>
                           <td className="text-xs border text-gray5 border-gray3 py-3.5 font-poppins font-semibold px-2.5">
                             <p className="bg-pink1 inline-block rounded py-1 px-1.5">
-                              DIRECT CREW
+                              {UserData.getUserCrew(item.level)} CREW
                             </p>
                           </td>
                           <td className="text-sm border text-gray5 border-gray3 py-3.5 font-poppins font-semibold px-2.5">

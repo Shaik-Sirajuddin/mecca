@@ -5,6 +5,8 @@ import { AppState } from "./app_state";
 import { PlanID } from "../enums/plan";
 import { Plan } from "./plan";
 import { getDaysDifference } from "../utils/utils";
+import { UserStore } from "./user_store";
+import { CREW } from "../enums/crew";
 
 // Interfaces
 export interface IReferralDistributionState {
@@ -288,6 +290,19 @@ export class UserData implements IUserData {
     );
     return Math.max(0, userPlan?.validity_days - passedDays);
   };
+
+ 
+
+  static getUserCrew(level: number) {
+    if (level === 1) {
+      return CREW.DIRECT;
+    } else if (level <= 7) {
+      return CREW.ACTIVE;
+    } else {
+      return CREW.DEEP;
+    }
+  }
+
   static dummy() {
     return new UserData({
       upgrade_deduction: [

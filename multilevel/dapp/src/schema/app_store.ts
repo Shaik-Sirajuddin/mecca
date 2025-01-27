@@ -16,6 +16,15 @@ export class AppStore implements IAppStore {
     }
   }
 
+  getUserCode = (user: PublicKey) => {
+    for (const [key, value] of this.referral_id_map) {
+      if (value.equals(user)) {
+        return key;
+      }
+    }
+    return null;
+  };
+
   // Static method to parse raw data into AppStore
   static parse(data: IAppStore): AppStore {
     return new AppStore(data);

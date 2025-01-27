@@ -24,6 +24,25 @@ export class UserStore implements IUserStore {
     );
   }
 
+  getCrewCount() {
+    const crewCount = {
+      direct: 0,
+      active: 0,
+      deep: 0,
+    };
+    for (let i = 0; i < this.rewards.length; i++) {
+      const reward = this.rewards[i];
+      if (reward.level === 1) {
+        crewCount.direct++;
+      } else if (reward.level <= 7) {
+        crewCount.active++;
+      } else {
+        crewCount.deep++;
+      }
+    }
+    return crewCount;
+  }
+
   static dummy() {
     return new UserStore({});
   }

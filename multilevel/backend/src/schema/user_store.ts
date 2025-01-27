@@ -15,7 +15,7 @@ export class UserStore implements IUserStore {
   actions: UserAction[];
 
   constructor(data: any) {
-    this.address = new PublicKey(data.address);
+    this.address = new PublicKey(data.address || PublicKey.default);
     this.rewards = (data.rewards || []).map(
       (reward: any) => new Reward(reward)
     );
@@ -24,9 +24,65 @@ export class UserStore implements IUserStore {
     );
   }
 
+  getCrewCount() {
+    const crewCount = {
+      direct: 0,
+      active: 0,
+      deep: 0,
+    };
+    for (let i = 0; i < this.rewards.length; i++) {
+      const reward = this.rewards[i];
+      if (reward.level === 1) {
+        crewCount.direct++;
+      } else if (reward.level <= 7) {
+        crewCount.active++;
+      } else {
+        crewCount.deep++;
+      }
+    }
+    return crewCount;
+  }
+
+  static dummy() {
+    return new UserStore({});
+  }
+
   static schema = borsh.struct([
     borsh.publicKey("address"),
     borsh.vec(RewardSchema, "rewards"),
     borsh.vec(UserActionSchema, "actions"),
   ]);
+
+  // Convert UserStore instance to JSON
+  toJSON() {
+    return {
+      address: this.address.toBase58(),
+      rewards: this.rewards.map((reward) => reward.toJSON()),
+      actions: this.actions.map((action) => action.toJSON()),
+    };
+  }
+
+  // Convert JSON to UserStore instance
+  static fromJSON(json: Record<string, any>): UserStore {
+    return new UserStore({
+      address: new PublicKey(json.address),
+      rewards: (json.rewards || []).map((reward: any) =>
+        Reward.fromJSON(reward)
+      ),
+      actions: (json.actions || []).map((action: any) =>
+        UserAction.fromJSON(action)
+      ),
+    });
+  }
+
+  directReferred() {
+    let directReferred = 0;
+    for (let i = 0; i < this.rewards.length; i++) {
+      const reward = this.rewards[i];
+      if (reward.level === 1) {
+        directReferred++;
+      }
+    }
+    return directReferred;
+  }
 }
