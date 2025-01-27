@@ -2,8 +2,9 @@
 @tailwind components;
 @tailwind utilities;
 
-html {
-  scroll-behavior: smooth;
+
+html{
+   scroll-behavior: smooth;
 }
 
 input::-webkit-outer-spin-button,
@@ -12,32 +13,39 @@ input::-webkit-inner-spin-button {
   margin: 0;
 }
 
-input[type="number"] {
+input[type=number] {
   -moz-appearance: textfield;
 }
 
-@layer base {
-  :root {
-    --font-poppins: "Poppins";
-    --font-dm-sans: "DM Sans";
-  }
+@layer base{
+ :root{
+
+    --font-poppins: 'Poppins';
+    --font-dm-sans: 'DM Sans';
+
+ }
 }
 
-/* Start TeamBee Changes */
+ /* Start TeamBee Changes */
 a,
-button {
-  @apply transition-all duration-200;
+button{
+  @apply transition-all duration-200  
 }
+
 a span,
 button span {
-  @apply pointer-events-none;
+  @apply pointer-events-none
 }
-a svg:hover,
-button svg:hover {
-  @apply saturate-150;
-}
-/* End TeamBee Changes */
 
+a svg:hover,
+button svg:hover{
+  @apply saturate-150
+}
+
+ /* End TeamBee Changes */
+
+
+ 
 .circle-wrap,
 .circle-wrap * {
   box-sizing: border-box;
@@ -484,6 +492,7 @@ button svg:hover {
   font-size: var(--mecha-caption-3-bold-font-size, 10px);
   line-height: var(--mecha-caption-3-bold-line-height, 14px);
   font-weight: var(--mecha-caption-3-bold-font-weight, 500);
+
 }
 ._102 {
   text-align: center;
@@ -495,6 +504,7 @@ button svg:hover {
   font-size: var(--mecha-caption-2-bold-font-size, 12px);
   line-height: var(--mecha-caption-2-bold-line-height, 20px);
   font-weight: var(--mecha-caption-2-bold-font-weight, 600);
+
 }
 .level-20 {
   color: #858383;
@@ -515,6 +525,7 @@ button svg:hover {
   font-size: var(--mecha-caption-3-bold-font-size, 10px);
   line-height: var(--mecha-caption-3-bold-line-height, 14px);
   font-weight: var(--mecha-caption-3-bold-font-weight, 500);
+
 }
 ._20 {
   text-align: center;
@@ -526,6 +537,7 @@ button svg:hover {
   font-size: var(--mecha-caption-2-bold-font-size, 12px);
   line-height: var(--mecha-caption-2-bold-line-height, 20px);
   font-weight: var(--mecha-caption-2-bold-font-weight, 600);
+
 }
 .level-30 {
   color: #858383;
@@ -546,6 +558,7 @@ button svg:hover {
   font-size: var(--mecha-caption-3-bold-font-size, 10px);
   line-height: var(--mecha-caption-3-bold-line-height, 14px);
   font-weight: var(--mecha-caption-3-bold-font-weight, 500);
+
 }
 ._302 {
   text-align: center;
@@ -557,6 +570,7 @@ button svg:hover {
   font-size: var(--mecha-caption-2-bold-font-size, 12px);
   line-height: var(--mecha-caption-2-bold-line-height, 20px);
   font-weight: var(--mecha-caption-2-bold-font-weight, 600);
+
 }
 .fill-text {
   color: #fff;

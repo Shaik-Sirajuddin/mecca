@@ -8,11 +8,15 @@ const OrganizationChart = () => {
         <title>Mecca || Organization Chart</title>
         <meta property="og:title" content="A very important title"/>
     </Helmet>
-
+  {/* Start TeamBee Changes */}
       <div className='w-full bg-black5 relative'>
         <div className="w-full max-w-[1162px] mx-auto absolute h-[623px] rounded-full blur-[200px] -top-[400px] left-1/2 -translate-x-1/2 bg-[#6E3359]"></div>
           
-           <section className='w-full relative md:min-h-[600px] lg:min-h-[753px] bg-[url(abstract-background-with-flowing.png)] bg-cover bg-top bg-no-repeat pb-28 pt-32 lg:pt-[254px]'>
+           <section className='w-full relative md:min-h-[600px] lg:min-h-[753px]  pb-28 pt-32 lg:pt-[254px]'>
+           <div className="w-full h-screen absolute top-0 left-0 bg-black5/50 z-10"></div>
+           <video src="/assets/dashboard.bg.mp4" className='w-screen top-0 left-0 bg-cover object-cover h-screen absolute' loop muted autoPlay></video>
+           <div className="w-full bg-xl-gradient top-[80vh] absolute h-[185px] z-10 -bottom-1"></div>
+           {/* End TeamBee Changes */}
             <div className="w-full max-w-[1152px] mx-auto px-5 relative z-20">
             <div className="w-full text-center">
               <div className="inline-flex items-center justify-center">
@@ -196,6 +200,7 @@ const OrganizationChart = () => {
             </div>
             </div>
             </div>
+            
             </section>
         </div>
 

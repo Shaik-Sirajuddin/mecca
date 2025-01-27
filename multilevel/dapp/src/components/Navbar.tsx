@@ -1,7 +1,6 @@
 import { useState } from "react";
 import { Link, useLocation } from "react-router-dom";
 import { clsx } from "clsx";
-import { WalletMultiButton } from "@solana/wallet-adapter-react-ui";
 
 const navLinks = [
   { id: 1, title: "Home", href: "/" },
@@ -64,12 +63,42 @@ export const Navbar = () => {
             })}
           </ul>
           <div className="flex items-center gap-4 relative z-20">
-            <WalletMultiButton
-              style={{
-                background: "rgb(209 7 251)",
-              }}
-            />
+            {/* Start TeamBee Changes: removed hover:text-white  */}
+            <button
+              type="button"
+              className="relative transition-all duration-200  lg:max-w-[137px] max-w-[70px] inline-flex items-center justify-center rounded font-bold lg:text-sm text-[10px] text-white font-poppins"
+              aria-label="Connect Wallet"
+            >
+              <svg
+                className="lg:hidden"
+                width={71}
+                height={37}
+                viewBox="0 0 71 37"
+                fill="none"
+                xmlns="http://www.w3.org/2000/svg"
+              >
+                <path
+                  d="M0.290039 6.57709C0.290039 6.21469 0.388508 5.85909 0.574923 5.54831L3.32039 0.971226C3.6818 0.368692 4.33289 0 5.0355 0H69C70.1046 0 71 0.895431 71 2V30.8172C71 31.2022 70.8889 31.579 70.68 31.9024L67.978 36.0852C67.6096 36.6555 66.977 37 66.298 37H2.29004C1.18547 37 0.290039 36.1046 0.290039 35V6.57709Z"
+                  fill="#D107FB"
+                />
+              </svg>
 
+              <svg
+                className="hidden lg:block"
+                width="100%"
+                height="100%"
+                viewBox="0 0 137 43"
+                fill="none"
+                xmlns="http://www.w3.org/2000/svg"
+              >
+                <path
+                  d="M0 7.82843C0 7.29799 0.210714 6.78929 0.585786 6.41421L6.41421 0.585786C6.78929 0.210713 7.29799 0 7.82843 0H135C136.105 0 137 0.895431 137 2V35.6279C137 36.184 136.768 36.715 136.361 37.0934L130.576 42.4656C130.206 42.8091 129.719 43 129.215 43H2C0.89543 43 0 42.1046 0 41V7.82843Z"
+                  fill="#D107FB"
+                />
+              </svg>
+              <span className="absolute">Wallet Connect</span>
+            </button>
+                {/* End TeamBee Changes  */}
             <button onClick={handleToggleMenu} className="lg:hidden">
               {toggleMenu ? (
                 <svg
