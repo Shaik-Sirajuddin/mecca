@@ -55,4 +55,15 @@ export class UserStore implements IUserStore {
       ),
     });
   }
+
+  directReferred() {
+    let directReferred = 0;
+    for (let i = 0; i < this.rewards.length; i++) {
+      const reward = this.rewards[i];
+      if (reward.level === 1) {
+        directReferred++;
+      }
+    }
+    return directReferred;
+  }
 }

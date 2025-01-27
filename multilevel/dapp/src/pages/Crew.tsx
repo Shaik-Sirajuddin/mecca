@@ -8,10 +8,9 @@ import { splToken } from "../utils/constants";
 
 const Crew = () => {
   const userStoreRaw = useSelector((state: IRootState) => state.user.store);
-  // Use useMemo to memoize the result of UserData.fromJSON
   const userStore = useMemo(() => {
     return UserStore.fromJSON(userStoreRaw);
-  }, [userStoreRaw]); // Only recompute when userData changes
+  }, [userStoreRaw]);
 
   return (
     <>

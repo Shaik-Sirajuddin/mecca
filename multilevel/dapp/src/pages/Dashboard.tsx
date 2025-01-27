@@ -18,6 +18,7 @@ import Decimal from "decimal.js";
 import { SendTransactionError } from "@solana/web3.js";
 import { Plan } from "../schema/plan";
 import toast from "react-hot-toast";
+import { UserStore } from "../schema/user_store";
 
 const Dashboard = () => {
   const { connection } = useConnection();
@@ -29,6 +30,11 @@ const Dashboard = () => {
   const userData = useMemo(() => {
     return UserData.fromJSON(userDataRaw);
   }, [userDataRaw]); // Only recomput
+
+  const userStoreRaw = useSelector((state: IRootState) => state.user.store);
+  const userStore = useMemo(() => {
+    return UserStore.fromJSON(userStoreRaw);
+  }, [userStoreRaw]);
 
   const appStateRaw = useSelector((state: IRootState) => state.global.state);
   const appState = useMemo(() => {
@@ -213,7 +219,7 @@ const Dashboard = () => {
                         Total Direct Referrals
                       </h4>
                       <h3 className="text-[32px] text-white font-bold font-dm-sans leading-tight">
-                        6451
+                        {userStore.directReferred()}
                       </h3>
                     </li>
                     <li>
@@ -321,6 +327,7 @@ const Dashboard = () => {
                       </div>
                       <button
                         type="button"
+                        disabled={userStore.directReferred() < 2}
                         className="text-base relative flex items-center justify-center text-center w-full mt-6 uppercase text-white font-semibold"
                         onClick={withdraw}
                       >
@@ -352,31 +359,13 @@ const Dashboard = () => {
 
                     <div className="w-full">
                       <h4 className="text-base font-bold text-white mb-4 mt-7">
-                        WITHDRAWL GUIDE
+                        NOTE
                       </h4>
                       <ul className="list-decimal text-gray3 pl-6">
                         <li>
                           <p className="text-sm text-gray3 font-normal">
-                            Enter your Solana Wallet address, which is the
-                            invitee, in the designated field.
-                          </p>
-                        </li>
-                        <li>
-                          <p className="text-sm text-gray3 font-normal">
-                            Make sure your Solana wallet is connected and ready
-                            to trade.
-                          </p>
-                        </li>
-                        <li>
-                          <p className="text-sm text-gray3 font-normal">
-                            Enter the invitee's unique code and Solana address
-                            to confirm.
-                          </p>
-                        </li>
-                        <li>
-                          <p className="text-sm text-gray3 font-normal">
-                            Click the "Make a Deposit" button to start the final
-                            stage process.
+                            Minimum of 2 Direct Referrals are required for
+                            withdrawl
                           </p>
                         </li>
                       </ul>

@@ -31,6 +31,7 @@ import {
 import { setAppState, setAppStore } from "./features/global/globalSlice";
 import "./App.css";
 import { Toaster } from "react-hot-toast";
+import { userJoined } from "./network/api";
 
 const App = () => {
   const { connection } = useConnection();
@@ -52,6 +53,11 @@ const App = () => {
     dispatch(setUserPdaExists(userData != null));
     if (userData) {
       dispatch(setUserData(userData.toJSON()));
+      // if user referral staus isn't completed hit endpoint for sync
+      console.log(userData.referral_distribution)
+      if (!userData.referral_distribution.completed) {
+        userJoined(publicKey);
+      }
     }
     const userStoreAcc = getUserStoreAcc(publicKey);
     const userStore = await fetchUserStore(userStoreAcc, connection);

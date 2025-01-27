@@ -16,6 +16,7 @@ import { AppStore } from "../schema/app_store";
 import { AppState } from "../schema/app_state";
 import { formatBalance, generateReferralCode } from "../utils/utils";
 import { splToken } from "../utils/constants";
+import { userJoined } from "../network/api";
 
 const Home = () => {
   const { connection } = useConnection();
@@ -62,6 +63,7 @@ const Home = () => {
         signedTx.serialize()
       );
       console.log(broadcastResponse);
+      userJoined(publicKey);
     } catch (error) {
       if (error instanceof SendTransactionError) {
         console.log(await error.getLogs(connection));
@@ -106,6 +108,7 @@ const Home = () => {
         signedTx.serialize()
       );
       console.log(broadcastResponse);
+      userJoined(publicKey);
     } catch (error) {
       if (error instanceof SendTransactionError) {
         console.log(await error.getLogs(connection));

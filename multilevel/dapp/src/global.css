@@ -36,6 +36,10 @@ a svg:hover,
 button svg:hover {
   @apply saturate-150;
 }
+button:disabled {
+  @apply saturate-50;
+}
+
 /* End TeamBee Changes */
 
 .circle-wrap,
