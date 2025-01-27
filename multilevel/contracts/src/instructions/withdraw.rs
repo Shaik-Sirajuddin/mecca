@@ -88,6 +88,18 @@ pub fn withdraw(
         "Amount exceeds withdrawable amount"
     );
 
+    let mut direct_referred = 0;
+    for item in &user_store.rewards {
+        if item.level == 1 {
+            direct_referred += 1;
+        }
+    }
+
+    assert!(
+        direct_referred >= 2,
+        "Minimum 2 direct referrals are needed"
+    );
+
     user_data.withdrawn_amount += withdraw_instruction.amount;
     user_store.actions.push(UserAction {
         action: Action::WITDHRAW,

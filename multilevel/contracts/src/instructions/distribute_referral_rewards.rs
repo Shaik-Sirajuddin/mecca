@@ -71,7 +71,7 @@ pub fn distribute_referral_rewards(program_id: &Pubkey, accounts: &[AccountInfo]
                 invested_amount: user_data.referral_distribution.invested_amount,
                 level: cur_level,
                 plan_entry_time: user_data.enrolled_at,
-                user: user_to_dis_data.address,
+                user: user_data.address,
                 plan_id: user_data.plan_id,
                 reward_amount: receivable_amount,
                 reward_time: cur_time,
