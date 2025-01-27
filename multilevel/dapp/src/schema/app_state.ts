@@ -46,6 +46,26 @@ export class AppState implements IAppState {
     if (planId > 2) return null;
     return this.plans[planId];
   };
+
+  // Serialize to JSON-friendly format
+  toJSON(): Record<string, any> {
+    return {
+      daily_fee: this.daily_fee.toString(), // Decimal as string
+      paused: this.paused,
+      plans: this.plans.map((plan) => plan.toJSON()), // Assuming Plan has toJSON
+      owner: this.owner.toBase58(), // PublicKey as string
+    };
+  }
+
+  // Deserialize from JSON-friendly format
+  static fromJSON(json: any): AppState {
+    return new AppState({
+      daily_fee: new Decimal(json.daily_fee),
+      paused: json.paused,
+      plans: json.plans.map((plan: any) => Plan.fromJSON(plan)), // Assuming Plan has fromJSON
+      owner: new PublicKey(json.owner),
+    });
+  }
 }
 
 // Define AppState schema for borsh

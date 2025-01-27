@@ -18,6 +18,7 @@ import { InstructionID } from "../enums/instruction";
 import {
   getAssociatedTokenAddressSync,
   TOKEN_2022_PROGRAM_ID,
+  getAccount,
 } from "@solana/spl-token";
 import { JoinInstructionSchema } from "../schema/instructions/join_instruction";
 import { PlanID } from "../enums/plan";
@@ -26,13 +27,44 @@ import { AppState, AppStateSchema } from "../schema/app_state";
 import { WithdrawInstructionSchema } from "../schema/instructions/withdraw_instruction";
 import Decimal from "decimal.js";
 import { UpgradeInstructionSchema } from "../schema/instructions/upgrade_instruction";
+import { AppStore, AppStoreSchema } from "../schema/app_store";
+import { UserStore } from "../schema/user_store";
 
+export const isValidPublicKey = (value: string) => {
+  try {
+    new PublicKey(value);
+    return true;
+  } catch {
+    return false;
+  }
+};
 export const fetchUserData = async (
   dataAcc: PublicKey,
   connection: Connection
 ) => {
-  const userDataAccInfo = await connection.getAccountInfo(dataAcc);
-  return new UserData(UserData.schema.decode(userDataAccInfo?.data));
+  try {
+    const userDataAccInfo = await connection.getAccountInfo(dataAcc);
+    return new UserData(UserData.schema.decode(userDataAccInfo?.data));
+  } catch (error: any) {
+    console.log("Fetch user data error : ", error);
+    return null;
+  }
+};
+export const fetchUserStore = async (
+  storeAcc: PublicKey,
+  connection: Connection
+) => {
+  try {
+    const userStoreAccInfo = await connection.getAccountInfo(storeAcc);
+    return new UserStore(UserStore.schema.decode(userStoreAccInfo?.data));
+  } catch (error: any) {
+    console.log("Fetch user store error : ", error);
+    return null;
+  }
+};
+export const fetchAppStore = async (connection: Connection) => {
+  const appStoreInfo = await connection.getAccountInfo(appStoreAcc);
+  return new AppStore(AppStoreSchema.decode(appStoreInfo?.data));
 };
 
 export const fetchAppState = async (connection: Connection) => {
@@ -63,6 +95,25 @@ export const getATA = (user: PublicKey) => {
     true,
     TOKEN_2022_PROGRAM_ID
   );
+};
+
+export const getTokenBalance = async (
+  connection: Connection,
+  userAta: PublicKey
+) => {
+  try {
+    const account = await getAccount(
+      connection,
+      userAta,
+      "confirmed",
+      TOKEN_2022_PROGRAM_ID
+    );
+
+    return new Decimal(account.amount.toString());
+  } catch (error: any) {
+    console.log("Fetch token balance", error);
+    return null;
+  }
 };
 export const getJoinTransaction = (
   user: PublicKey,
@@ -234,10 +285,7 @@ export const getWithdrawTransaction = (user: PublicKey, amount: Decimal) => {
   return tx;
 };
 
-export const getUpgradeTransaction = (
-  user: PublicKey,
-  plan: PlanID
-) => {
+export const getUpgradeTransaction = (user: PublicKey, plan: PlanID) => {
   let instruction_data = Buffer.alloc(100);
 
   UpgradeInstructionSchema.encode(

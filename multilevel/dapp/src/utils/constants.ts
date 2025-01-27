@@ -24,3 +24,8 @@ export const tokenHolderOwner = new PublicKey(
 export const tokenHolderATA = new PublicKey(
   "sgq3kEZrx73HJKE4JDFgjPNnTjFbXYMuqbTaFZHQVvQ"
 );
+
+export const splToken = {
+  decimals: 6,
+  symbol: "MEA",
+};

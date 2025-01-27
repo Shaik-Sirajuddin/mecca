@@ -4,6 +4,7 @@ import Decimal from "decimal.js";
 import { AppState } from "./app_state";
 import { PlanID } from "../enums/plan";
 import { Plan } from "./plan";
+import { getDaysDifference } from "../utils/utils";
 
 // Interfaces
 export interface IReferralDistributionState {
@@ -63,6 +64,24 @@ export class ReferralDistributionState implements IReferralDistributionState {
     borsh.bool("completed"),
     borsh.u64("invested_amount"),
   ]);
+
+  toJSON() {
+    return {
+      last_distributed_user: this.last_distributed_user.toBase58(),
+      last_level: this.last_level,
+      completed: this.completed,
+      invested_amount: this.invested_amount.toString(),
+    };
+  }
+
+  static fromJSON(data: any): ReferralDistributionState {
+    return new ReferralDistributionState({
+      last_distributed_user: data.last_distributed_user,
+      last_level: data.last_level,
+      completed: data.completed,
+      invested_amount: data.invested_amount,
+    });
+  }
 }
 
 export class UpgradeDeduction implements IUpgradeDeduction {
@@ -75,6 +94,20 @@ export class UpgradeDeduction implements IUpgradeDeduction {
   }
 
   static schema = borsh.struct([borsh.u64("daily_amount"), borsh.u32("days")]);
+
+  toJSON() {
+    return {
+      daily_amount: this.daily_amount.toString(),
+      days: this.days,
+    };
+  }
+
+  static fromJSON(data: any): UpgradeDeduction {
+    return new UpgradeDeduction({
+      daily_amount: data.daily_amount,
+      days: data.days,
+    });
+  }
 }
 
 export class Accumulated implements IAccumulated {
@@ -93,6 +126,22 @@ export class Accumulated implements IAccumulated {
     borsh.u64("fee"),
     borsh.u64("referral_reward"),
   ]);
+
+  toJSON() {
+    return {
+      daily_reward: this.daily_reward.toString(),
+      fee: this.fee.toString(),
+      referral_reward: this.referral_reward.toString(),
+    };
+  }
+
+  static fromJSON(data: any): Accumulated {
+    return new Accumulated({
+      daily_reward: data.daily_reward,
+      fee: data.fee,
+      referral_reward: data.referral_reward,
+    });
+  }
 }
 
 export class UserData implements IUserData {
@@ -136,6 +185,7 @@ export class UserData implements IUserData {
       (ud: any) => new UpgradeDeduction(ud)
     );
     this.accumulated = new Accumulated(data.accumulated || {});
+    console.log(data.upgrade_deduction, "here");
   }
 
   applyUpgradeDeduction = (
@@ -152,7 +202,31 @@ export class UserData implements IUserData {
       unaccountedDays: unaccountedDays - daysToAccount,
     };
   };
-  availableForWithdraw = (appState: AppState) => {
+  totalFeePaid = (appState: AppState) => {
+    const userCurPlan = appState.getPlan(this.plan_id);
+    let unaccountedDays = 0;
+    let accumulatedFee = new Decimal(0);
+    if (userCurPlan) {
+      const curTime = new Decimal(Math.floor(Date.now() / 1000));
+      unaccountedDays = Decimal.floor(
+        Decimal.min(
+          curTime,
+          this.enrolled_at.add((userCurPlan.validity_days - 1) * 86400)
+        )
+          .sub(this.last_accounted_time)
+          .div(86400)
+      ).toNumber();
+
+      const totalUnaccountedDays = unaccountedDays;
+
+      accumulatedFee = new Decimal(totalUnaccountedDays).mul(
+        appState.daily_fee
+      ); //deduct fee
+    }
+
+    return accumulatedFee.add(this.acc_fee).add(this.accumulated.fee);
+  };
+  totalDailyReward = (appState: AppState) => {
     const userCurPlan = appState.getPlan(this.plan_id);
     let unaccountedDays = 0;
     let accumulatedReward = new Decimal(0);
@@ -167,7 +241,6 @@ export class UserData implements IUserData {
           .div(86400)
       ).toNumber();
 
-      const totalUnaccountedDays = unaccountedDays;
       let deductionRes = this.applyUpgradeDeduction(
         0,
         unaccountedDays,
@@ -184,23 +257,50 @@ export class UserData implements IUserData {
       accumulatedReward = accumulatedReward.add(deductionRes.amount); // apply deduction 2
       unaccountedDays = deductionRes.unaccountedDays;
 
-      accumulatedReward = accumulatedReward
-        .add(userCurPlan.daily_reward.mul(unaccountedDays)) //consider normal reward rate for remaining days
-        .sub(new Decimal(totalUnaccountedDays).mul(appState.daily_fee)); //deduct fee
+      accumulatedReward = accumulatedReward.add(
+        userCurPlan.daily_reward.mul(unaccountedDays)
+      ); //consider normal reward rate for remaining days
     }
 
     return this.acc_daily_reward
       .add(accumulatedReward)
+      .add(this.accumulated.daily_reward);
+  };
+
+  availableForWithdraw = (appState: AppState) => {
+    const accumulatedReward = this.totalDailyReward(appState);
+    const accumulatedFee = this.totalFeePaid(appState);
+    return accumulatedReward
+      .sub(accumulatedFee)
       .add(this.referral_reward)
-      .sub(this.acc_fee)
-      .add(this.accumulated.daily_reward)
       .add(this.accumulated.referral_reward)
-      .sub(this.accumulated.fee)
       .sub(this.withdrawn_amount);
   };
 
+  getRemainingDays = (appState: AppState) => {
+    if (!this.is_plan_active) {
+      return 0;
+    }
+    const userPlan = appState.getPlan(this.plan_id)!;
+    const passedDays = getDaysDifference(
+      new Date(),
+      new Date(this.enrolled_at.toNumber() * 1000)
+    );
+    return Math.max(0, userPlan?.validity_days - passedDays);
+  };
   static dummy() {
-    return new UserData({});
+    return new UserData({
+      upgrade_deduction: [
+        {
+          daily_amount: 0,
+          days: 0,
+        },
+        {
+          daily_amount: 0,
+          days: 0,
+        },
+      ],
+    });
   }
 
   static schema = borsh.struct([
@@ -219,4 +319,46 @@ export class UserData implements IUserData {
     borsh.array(UpgradeDeduction.schema, 2, "upgrade_deduction"),
     Accumulated.schema.replicate("accumulated"),
   ]);
+
+  toJSON() {
+    return {
+      id: this.id,
+      address: this.address.toBase58(),
+      referral_reward: this.referral_reward.toString(),
+      acc_daily_reward: this.acc_daily_reward.toString(),
+      acc_fee: this.acc_fee.toString(),
+      withdrawn_amount: this.withdrawn_amount.toString(),
+      is_plan_active: this.is_plan_active,
+      enrolled_at: this.enrolled_at.toString(),
+      last_accounted_time: this.last_accounted_time.toString(),
+      plan_id: this.plan_id,
+      referrer: this.referrer.toBase58(),
+      referral_distribution: this.referral_distribution.toJSON(),
+      upgrade_deduction: this.upgrade_deduction.map((ud) => ud.toJSON()),
+      accumulated: this.accumulated.toJSON(),
+    };
+  }
+
+  static fromJSON(data: any): UserData {
+    return new UserData({
+      id: data.id,
+      address: data.address,
+      referral_reward: data.referral_reward,
+      acc_daily_reward: data.acc_daily_reward,
+      acc_fee: data.acc_fee,
+      withdrawn_amount: data.withdrawn_amount,
+      is_plan_active: data.is_plan_active,
+      enrolled_at: data.enrolled_at,
+      last_accounted_time: data.last_accounted_time,
+      plan_id: data.plan_id,
+      referrer: data.referrer,
+      referral_distribution: ReferralDistributionState.fromJSON(
+        data.referral_distribution
+      ),
+      upgrade_deduction: (data.upgrade_deduction || []).map((ud: any) =>
+        UpgradeDeduction.fromJSON(ud)
+      ),
+      accumulated: Accumulated.fromJSON(data.accumulated),
+    });
+  }
 }
