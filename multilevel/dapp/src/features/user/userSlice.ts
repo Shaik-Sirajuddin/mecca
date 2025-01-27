@@ -1,11 +1,13 @@
 import { createSlice } from "@reduxjs/toolkit";
 import { UserData } from "../../schema/user_data";
+import { UserStore } from "../../schema/user_store";
 
 export const userSlice = createSlice({
   name: "user",
   initialState: {
     dataAccountId: "",
     data: UserData.dummy().toJSON(),
+    store: UserStore.dummy().toJSON(),
     dataAccExists: false,
     ataExists: false,
     tokenBalance: "0",
@@ -23,6 +25,9 @@ export const userSlice = createSlice({
     setUserData: (state, action) => {
       state.data = action.payload;
     },
+    setUserStore: (state, action) => {
+      state.store = action.payload;
+    },
     setTokenBalance: (state, action) => {
       state.tokenBalance = action.payload;
     },
@@ -36,6 +41,7 @@ export const {
   setUserPdaExists,
   setUserAtaExists,
   setTokenBalance,
+  setUserStore
 } = userSlice.actions;
 
 export default userSlice.reducer;

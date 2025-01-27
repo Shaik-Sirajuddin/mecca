@@ -37,6 +37,24 @@ export class UserAction implements IUserAction {
       plan_id: 1,
     });
   }
+
+  // Serialize to JSON
+  toJSON(): Record<string, any> {
+    return {
+      action: this.action,
+      amount: this.amount.toString(),
+      plan_id: this.plan_id,
+    };
+  }
+
+  // Deserialize from JSON
+  static fromJSON(json: Record<string, any>): UserAction {
+    return new UserAction({
+      action: json.action,
+      amount: new Decimal(json.amount),
+      plan_id: json.plan_id,
+    });
+  }
 }
 
 // Define the schema for the Action enum
@@ -52,16 +70,3 @@ export const UserActionSchema = borsh.struct([
   borsh.u64("amount"), // u64
   borsh.u8("plan_id"), // u8
 ]);
-
-// Custom serialization/deserialization for Action enum
-export const serializeAction = (action: Action): number => {
-  const value = ActionEnumSchema.get(action);
-  if (value === undefined) throw new Error(`Unknown Action: ${action}`);
-  return value;
-};
-
-export const deserializeAction = (value: number): Action => {
-  const entry = [...ActionEnumSchema.entries()].find(([_, v]) => v === value);
-  if (!entry) throw new Error(`Unknown Action value: ${value}`);
-  return entry[0];
-};

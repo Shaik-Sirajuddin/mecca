@@ -12,9 +12,11 @@ import {
   fetchAppState,
   fetchAppStore,
   fetchUserData,
+  fetchUserStore,
   getATA,
   getTokenBalance,
   getUserDataAcc,
+  getUserStoreAcc,
 } from "./utils/web3";
 import { useConnection, useWallet } from "@solana/wallet-adapter-react";
 import { useDispatch } from "react-redux";
@@ -24,8 +26,10 @@ import {
   setUserData,
   setUserDataAccountId,
   setUserPdaExists,
+  setUserStore,
 } from "./features/user/userSlice";
 import { setAppState, setAppStore } from "./features/global/globalSlice";
+import "./App.css";
 
 const App = () => {
   const { connection } = useConnection();
@@ -47,6 +51,11 @@ const App = () => {
     dispatch(setUserPdaExists(userData != null));
     if (userData) {
       dispatch(setUserData(userData.toJSON()));
+    }
+    const userStoreAcc = getUserStoreAcc(publicKey);
+    const userStore = await fetchUserStore(userStoreAcc, connection);
+    if (userStore) {
+      dispatch(setUserStore(userStore.toJSON()));
     }
     const userAta = getATA(publicKey);
     const userBalance = await getTokenBalance(connection, userAta);

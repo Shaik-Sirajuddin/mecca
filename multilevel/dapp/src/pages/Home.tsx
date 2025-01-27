@@ -17,32 +17,6 @@ import { AppState } from "../schema/app_state";
 import { formatBalance } from "../utils/utils";
 import { splToken } from "../utils/constants";
 
-const chartData = [
-  {
-    chart: [
-      { title: "Level 10-20", level: "10%", stage: "STAGE - A REVENUE" },
-      { title: "Level 30-50", level: "30%", stage: "STAGE - A REVENUE" },
-      { title: "Level 50-70", level: "70%", stage: "STAGE - A REVENUE" },
-    ],
-  },
-  {
-    stage: "STAGE - B REVENUE",
-    chart: [
-      { title: "Level 10-20", level: "10%", stage: "STAGE - A REVENUE" },
-      { title: "Level 30-50", level: "30%", stage: "STAGE - A REVENUE" },
-      { title: "Level 50-70", level: "70%", stage: "STAGE - A REVENUE" },
-    ],
-  },
-  {
-    stage: "STAGE - C REVENUE",
-    chart: [
-      { title: "Level 10-20", level: "10%", stage: "STAGE - A REVENUE" },
-      { title: "Level 30-50", level: "30%", stage: "STAGE - A REVENUE" },
-      { title: "Level 50-70", level: "70%", stage: "STAGE - A REVENUE" },
-    ],
-  },
-];
-
 const Home = () => {
   const { connection } = useConnection();
   const { publicKey, signTransaction } = useWallet();
@@ -68,6 +42,7 @@ const Home = () => {
   }, [appStateRaw]);
 
   const [selectedPlan, setSelectedPlan] = useState(PlanID.A);
+  const [txLoading, setTxLoading] = useState(false);
 
   function handlePlanSwitch(planId: PlanID) {
     setSelectedPlan(planId);
@@ -112,6 +87,7 @@ const Home = () => {
   };
   const enroll = async () => {
     try {
+      setTxLoading(true);
       if (!publicKey) return;
       const referrerAddress = parseReferrerInput();
       if (!referrerAddress) return;
@@ -135,6 +111,8 @@ const Home = () => {
         console.log(await error.getLogs(connection));
       }
       console.log(error);
+    } finally {
+      setTxLoading(false);
     }
   };
 
@@ -326,8 +304,15 @@ const Home = () => {
                         />
                       </svg>
 
-                      <span className="absolute">
-                        {userPDAExists ? "Upgrade" : "Join"}
+                      <span className="absolute flex gap-2 justify-center items-center">
+                        <div
+                          style={{
+                            display: txLoading ? "inline-block" : "none",
+                          }}
+                          id="loader"
+                          className="btn-sky text-xl"
+                        />
+                        <span>{userPDAExists ? "Upgrade" : "Join"}</span>
                       </span>
                     </button>
                   </form>

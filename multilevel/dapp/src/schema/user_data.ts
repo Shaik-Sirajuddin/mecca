@@ -4,6 +4,7 @@ import Decimal from "decimal.js";
 import { AppState } from "./app_state";
 import { PlanID } from "../enums/plan";
 import { Plan } from "./plan";
+import { getDaysDifference } from "../utils/utils";
 
 // Interfaces
 export interface IReferralDistributionState {
@@ -184,6 +185,7 @@ export class UserData implements IUserData {
       (ud: any) => new UpgradeDeduction(ud)
     );
     this.accumulated = new Accumulated(data.accumulated || {});
+    console.log(data.upgrade_deduction, "here");
   }
 
   applyUpgradeDeduction = (
@@ -200,7 +202,31 @@ export class UserData implements IUserData {
       unaccountedDays: unaccountedDays - daysToAccount,
     };
   };
-  availableForWithdraw = (appState: AppState) => {
+  totalFeePaid = (appState: AppState) => {
+    const userCurPlan = appState.getPlan(this.plan_id);
+    let unaccountedDays = 0;
+    let accumulatedFee = new Decimal(0);
+    if (userCurPlan) {
+      const curTime = new Decimal(Math.floor(Date.now() / 1000));
+      unaccountedDays = Decimal.floor(
+        Decimal.min(
+          curTime,
+          this.enrolled_at.add((userCurPlan.validity_days - 1) * 86400)
+        )
+          .sub(this.last_accounted_time)
+          .div(86400)
+      ).toNumber();
+
+      const totalUnaccountedDays = unaccountedDays;
+
+      accumulatedFee = new Decimal(totalUnaccountedDays).mul(
+        appState.daily_fee
+      ); //deduct fee
+    }
+
+    return accumulatedFee.add(this.acc_fee).add(this.accumulated.fee);
+  };
+  totalDailyReward = (appState: AppState) => {
     const userCurPlan = appState.getPlan(this.plan_id);
     let unaccountedDays = 0;
     let accumulatedReward = new Decimal(0);
@@ -215,7 +241,6 @@ export class UserData implements IUserData {
           .div(86400)
       ).toNumber();
 
-      const totalUnaccountedDays = unaccountedDays;
       let deductionRes = this.applyUpgradeDeduction(
         0,
         unaccountedDays,
@@ -232,23 +257,50 @@ export class UserData implements IUserData {
       accumulatedReward = accumulatedReward.add(deductionRes.amount); // apply deduction 2
       unaccountedDays = deductionRes.unaccountedDays;
 
-      accumulatedReward = accumulatedReward
-        .add(userCurPlan.daily_reward.mul(unaccountedDays)) //consider normal reward rate for remaining days
-        .sub(new Decimal(totalUnaccountedDays).mul(appState.daily_fee)); //deduct fee
+      accumulatedReward = accumulatedReward.add(
+        userCurPlan.daily_reward.mul(unaccountedDays)
+      ); //consider normal reward rate for remaining days
     }
 
     return this.acc_daily_reward
       .add(accumulatedReward)
+      .add(this.accumulated.daily_reward);
+  };
+
+  availableForWithdraw = (appState: AppState) => {
+    const accumulatedReward = this.totalDailyReward(appState);
+    const accumulatedFee = this.totalFeePaid(appState);
+    return accumulatedReward
+      .sub(accumulatedFee)
       .add(this.referral_reward)
-      .sub(this.acc_fee)
-      .add(this.accumulated.daily_reward)
       .add(this.accumulated.referral_reward)
-      .sub(this.accumulated.fee)
       .sub(this.withdrawn_amount);
   };
 
+  getRemainingDays = (appState: AppState) => {
+    if (!this.is_plan_active) {
+      return 0;
+    }
+    const userPlan = appState.getPlan(this.plan_id)!;
+    const passedDays = getDaysDifference(
+      new Date(),
+      new Date(this.enrolled_at.toNumber() * 1000)
+    );
+    return Math.max(0, userPlan?.validity_days - passedDays);
+  };
   static dummy() {
-    return new UserData({});
+    return new UserData({
+      upgrade_deduction: [
+        {
+          daily_amount: 0,
+          days: 0,
+        },
+        {
+          daily_amount: 0,
+          days: 0,
+        },
+      ],
+    });
   }
 
   static schema = borsh.struct([

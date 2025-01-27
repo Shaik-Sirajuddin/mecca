@@ -1,16 +1,81 @@
-import { useMemo } from "react";
+import { useMemo, useState } from "react";
 import { Helmet } from "react-helmet-async";
 import { useSelector } from "react-redux";
 import { UserData } from "../schema/user_data";
 import { IRootState } from "../app/store";
+import {
+  deci,
+  formatBalance,
+  formatLocalDateString,
+  updateIfValid,
+} from "../utils/utils";
+import { AppState } from "../schema/app_state";
+import { splToken } from "../utils/constants";
+import { getWithdrawTransaction } from "../utils/web3";
+import { useConnection, useWallet } from "@solana/wallet-adapter-react";
+import Decimal from "decimal.js";
+import { SendTransactionError } from "@solana/web3.js";
+import { Plan } from "../schema/plan";
 
 const Dashboard = () => {
+  const { connection } = useConnection();
+  const { publicKey, signTransaction } = useWallet();
+  const [withdrawAmount, setWithdrawAmount] = useState("0");
+  const [txLoading, setTxLoading] = useState(false);
   const userDataRaw = useSelector((state: IRootState) => state.user.data);
   // Use useMemo to memoize the result of UserData.fromJSON
   const userData = useMemo(() => {
     return UserData.fromJSON(userDataRaw);
   }, [userDataRaw]); // Only recomput
 
+  const appStateRaw = useSelector((state: IRootState) => state.global.state);
+  const appState = useMemo(() => {
+    return AppState.fromJSON(appStateRaw);
+  }, [appStateRaw]);
+
+  const withdraw = async () => {
+    try {
+      setTxLoading(true)
+      if (!publicKey) return;
+      if (!withdrawAmount) {
+        //TODO : modal
+        return;
+      }
+      let parsedWithdrawlAmont = deci(withdrawAmount);
+      if (parsedWithdrawlAmont == null) {
+        //TODO : modal
+        return;
+      }
+      parsedWithdrawlAmont = Decimal.floor(
+        parsedWithdrawlAmont.mul(Decimal.pow(10, splToken.decimals))
+      );
+      const tx = getWithdrawTransaction(publicKey, parsedWithdrawlAmont);
+
+      const { blockhash } = await connection.getLatestBlockhash();
+      tx.recentBlockhash = blockhash;
+      tx.feePayer = publicKey;
+
+      const signedTx = await signTransaction!(tx);
+      const broadcastResponse = await connection.sendRawTransaction(
+        signedTx.serialize()
+      );
+      console.log(broadcastResponse);
+    } catch (error) {
+      if (error instanceof SendTransactionError) {
+        console.log(await error.getLogs(connection));
+      }
+      console.log(error);
+    }
+    finally{
+      setTxLoading(false)
+    }
+  };
+
+  const maxClick = () => {
+    setWithdrawAmount(
+      userData.withdrawn_amount.div(10 ** splToken.decimals).toString()
+    );
+  };
   return (
     <>
       <Helmet>
@@ -41,16 +106,24 @@ const Dashboard = () => {
                 MY CURRENT PARTICIPATION
               </p>
               <h4 className="text-[40px] text-magenta1 font-bold font-dm-sans tracking-normal uppercase ">
-                STAGE B
+                STAGE {Plan.getPlanCode(userData.plan_id)}
               </h4>
-              <span className="text-white bg-green1 text-xs font-semibold rounded p-1">
-                ACTIVE
+              <span
+                className={`text-white bg-green1 text-xs font-semibold rounded p-1 ${
+                  userData.getRemainingDays(appState) > 0
+                    ? "bg-green1"
+                    : "bg-orange-400"
+                }`}
+              >
+                {userData.getRemainingDays(appState) > 0 ? "ACTIVE" : "EXPIRED"}
               </span>
               <p className="text-2xl font-semibold text-white uppercasep mt-7">
                 PARTICIPATION DAY
               </p>
               <h4 className="text-[40px] font-bold font-dm-sans text-magenta1 leading-tight">
-                0000.00.00
+                {formatLocalDateString(
+                  new Date(userData.enrolled_at.toNumber() * 1000)
+                )}
               </h4>
             </div>
             <div className="w-full pt-[70px]">
@@ -108,7 +181,8 @@ const Dashboard = () => {
                       CURRENT POOL AMOUNT
                     </h3>
                     <h4 className="text-[40px] text-magenta1 font-bold font-dm-sans">
-                      5,000 MEA <span></span>
+                      {formatBalance(userData.availableForWithdraw(appState))}{" "}
+                      {splToken.symbol} <span></span>
                       <span className="text-xs text-gray1 font-medium">
                         Your Balance
                       </span>
@@ -129,7 +203,8 @@ const Dashboard = () => {
                         Withdrawn Amount
                       </h4>
                       <h3 className="text-[32px] text-white font-bold font-dm-sans leading-tight">
-                        64,000 MEA
+                        {formatBalance(userData.withdrawn_amount)}{" "}
+                        {splToken.symbol}
                       </h3>
                     </li>
                     <li>
@@ -137,15 +212,20 @@ const Dashboard = () => {
                         Revenue from Referrals
                       </h4>
                       <h3 className="text-[32px] text-white font-bold font-dm-sans leading-tight">
-                        28,000 MEA
+                        {formatBalance(
+                          userData.referral_reward.add(
+                            userData.accumulated.referral_reward
+                          )
+                        )}{" "}
+                        {splToken.symbol}
                       </h3>
                     </li>
                     <li>
                       <h4 className="text-base font-semibold text-white">
-                        Remaining Reward Period
+                        Remaining Reward Days
                       </h4>
                       <h3 className="text-[32px] text-white font-bold font-dm-sans leading-tight">
-                        2m 5d 12h
+                        {userData.getRemainingDays(appState)}
                       </h3>
                     </li>
                     <li>
@@ -153,7 +233,17 @@ const Dashboard = () => {
                         Total Reward Paid
                       </h4>
                       <h3 className="text-[32px] text-white font-bold font-dm-sans leading-tight">
-                        125,000 MEA
+                        {formatBalance(userData.totalDailyReward(appState))}{" "}
+                        {splToken.symbol}
+                      </h3>
+                    </li>
+                    <li>
+                      <h4 className="text-base font-semibold text-white">
+                        Total Fee Paid
+                      </h4>
+                      <h3 className="text-[32px] text-white font-bold font-dm-sans leading-tight">
+                        {formatBalance(userData.totalFeePaid(appState))}{" "}
+                        {splToken.symbol}
                       </h3>
                     </li>
                   </ul>
@@ -165,7 +255,7 @@ const Dashboard = () => {
                       WITHDRAWL
                     </h3>
                     <p className="text-gray1 text-xs font-medium mb-5">
-                      A minimum of 7000 TRX is required for withdrawl.
+                      {/* A minimum of 7000 TRX is required for withdrawl. */}
                     </p>
                     <form className="w-full" id="add-withdrawl-Form">
                       <div className="w-full">
@@ -182,10 +272,18 @@ const Dashboard = () => {
                             type="number"
                             placeholder="Enter Amount"
                             className="bg-black1 text-xs rounded border border-black2 w-full py-2.5 px-3 placeholder:text-gray1 text-white"
+                            value={withdrawAmount}
+                            onChange={(event) => {
+                              updateIfValid(
+                                event.target.value,
+                                setWithdrawAmount
+                              );
+                            }}
                           />
                           <button
                             type="button"
                             className="text-xs font-semibold text-white inline-flex items-center justify-center"
+                            onClick={maxClick}
                           >
                             <svg
                               width={79}
@@ -206,6 +304,7 @@ const Dashboard = () => {
                       <button
                         type="button"
                         className="text-base relative flex items-center justify-center text-center w-full mt-6 uppercase text-white font-semibold"
+                        onClick={withdraw}
                       >
                         <svg
                           width="100%"
@@ -220,7 +319,16 @@ const Dashboard = () => {
                           />
                         </svg>
 
-                        <span className="absolute">WITHDRAW</span>
+                        <span className="absolute flex gap-2 justify-center items-center">
+                          <div
+                            style={{
+                              display: txLoading ? "inline-block" : "none",
+                            }}
+                            id="loader"
+                            className="btn-sky text-xl"
+                          />
+                          <span>{"Withdraw"}</span>
+                        </span>
                       </button>
                     </form>
 

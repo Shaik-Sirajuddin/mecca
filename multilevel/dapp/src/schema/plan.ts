@@ -1,5 +1,6 @@
 import * as borsh from "@coral-xyz/borsh";
 import Decimal from "decimal.js";
+import { PlanID } from "../enums/plan";
 
 export interface IPlan {
   id: number; // u8
@@ -80,6 +81,10 @@ export class Plan implements IPlan {
       active_referral_percentage: json.active_referral_percentage,
       deep_referral_percentage: json.deep_referral_percentage,
     });
+  }
+
+  static getPlanCode(plan_id: PlanID): string {
+    return String.fromCharCode(65 + plan_id);
   }
 }
 

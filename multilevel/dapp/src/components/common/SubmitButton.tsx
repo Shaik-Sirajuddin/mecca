@@ -1,18 +1,29 @@
-import {clsx} from 'clsx'
+import { clsx } from "clsx";
 
-interface ButtonProps{
+interface ButtonProps {
   btnStyle?: string;
   onClick?: () => void;
-    disabled?: boolean;
-   btnText: string; 
+  disabled?: boolean;
+  btnText: string;
 }
 
-
-
-export const SubmitButton = ({btnText, btnStyle, onClick, disabled}: ButtonProps) => {
+export const SubmitButton = ({
+  btnText,
+  btnStyle,
+  onClick,
+  disabled,
+}: ButtonProps) => {
   return (
-    <button disabled={disabled} onClick={onClick} type='submit' className={clsx('text-base relative flex items-center justify-center text-center w-full mt-6 uppercase text-white font-semibold', btnStyle)}>
-    <svg
+    <button
+      disabled={disabled}
+      onClick={onClick}
+      type="submit"
+      className={clsx(
+        "text-base relative flex items-center justify-center text-center w-full mt-6 uppercase text-white font-semibold",
+        btnStyle
+      )}
+    >
+      <svg
         width="100%"
         height="100%"
         viewBox="0 0 426 41"
@@ -25,7 +36,7 @@ export const SubmitButton = ({btnText, btnStyle, onClick, disabled}: ButtonProps
         />
       </svg>
 
-      <span className='absolute'>{btnText}</span>
+      <span className="absolute">{btnText}</span>
     </button>
-  )
-}
+  );
+};
