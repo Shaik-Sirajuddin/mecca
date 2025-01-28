@@ -40,6 +40,19 @@ func AuthRequired(c *gin.Context) {
 	c.Next()
 }
 
+func BotMiddleware(c *gin.Context) {
+	securityCode := c.GetHeader("Authorization")
+
+	if securityCode != utils.SecurityCode {
+		c.IndentedJSON(http.StatusUnauthorized, gin.H{
+			"error": "Unauthorized",
+		})
+		c.Abort()
+		return
+	}
+	c.Next()
+}
+
 func CORSMiddleware() gin.HandlerFunc {
 	return func(c *gin.Context) {
 		c.Writer.Header().Set("Access-Control-Allow-Origin", "*")

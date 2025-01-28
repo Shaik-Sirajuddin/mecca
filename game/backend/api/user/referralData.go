@@ -10,8 +10,7 @@ import (
 )
 
 type ReferralDataBody struct {
-	TelegramID   uint   `json:"telegram_id" binding:"required"`
-	SecurityCode string `json:"security_code"`
+	TelegramID uint `json:"telegram_id" binding:"required"`
 }
 
 type ReferralCount struct {
@@ -48,32 +47,40 @@ func GetReferralCount(userId uint) (bool, ReferralCount) {
 }
 
 func GetReferralCountApi(c *gin.Context) {
-	var body ReferralDataBody
 
-	err := c.ShouldBindJSON(&body)
+	userId := c.GetUint("userId")
 
-	if err != nil {
-		c.IndentedJSON(http.StatusBadRequest, gin.H{
-			"error": "Missing or invalid parametes in body",
-		})
-		return
+	if userId == 0 {
+		//check if telegram id is available from post body
+		if c.Request.Method != "POST" {
+			c.IndentedJSON(http.StatusBadRequest, gin.H{
+				"error": "Invalid Request type , expected POST",
+			})
+			return
+		}
+
+		var body ReferralDataBody
+
+		err := c.ShouldBindJSON(&body)
+
+		if err != nil {
+			c.IndentedJSON(http.StatusBadRequest, gin.H{
+				"error": "Missing or invalid parametes in body",
+			})
+			return
+		}
+
+		var user models.User
+
+		if err := db.DB.Where("telegram_id=?", body.TelegramID).First(&user).Error; err != nil {
+			utils.ResIntenalError(c)
+			return
+		}
+
+		userId = user.ID
 	}
 
-	if body.SecurityCode != utils.SecurityCode {
-		c.IndentedJSON(http.StatusBadRequest, gin.H{
-			"error": "UNAUTHORIZED",
-		})
-		return
-	}
-
-	var user models.User
-
-	if err := db.DB.Where("telegram_id=?", body.TelegramID).First(&user).Error; err != nil {
-		utils.ResIntenalError(c)
-		return
-	}
-
-	success, referralCount := GetReferralCount(user.ID)
+	success, referralCount := GetReferralCount(userId)
 
 	if !success {
 		utils.ResIntenalError(c)
@@ -83,29 +90,42 @@ func GetReferralCountApi(c *gin.Context) {
 	c.IndentedJSON(http.StatusOK, referralCount)
 }
 func GetReferralData(c *gin.Context) {
-	var body ReferralDataBody
-
-	err := c.ShouldBindJSON(&body)
-
-	if err != nil {
-		c.IndentedJSON(http.StatusBadRequest, gin.H{
-			"error": "Missing or invalid parametes in body",
-		})
-		return
-	}
-
-	if body.SecurityCode != utils.SecurityCode {
-		c.IndentedJSON(http.StatusBadRequest, gin.H{
-			"error": "UNAUTHORIZED",
-		})
-		return
-	}
-
+	userId := c.GetUint("userId")
 	var user models.User
 
-	if err := db.DB.Where("telegram_id=?", body.TelegramID).First(&user).Error; err != nil {
-		utils.ResIntenalError(c)
-		return
+	if userId == 0 {
+		//check if telegram id is available from post body
+		if c.Request.Method != "POST" {
+			c.IndentedJSON(http.StatusBadRequest, gin.H{
+				"error": "Invalid Request type , expected POST",
+			})
+			return
+		}
+
+		var body ReferralDataBody
+
+		err := c.ShouldBindJSON(&body)
+
+		if err != nil {
+			c.IndentedJSON(http.StatusBadRequest, gin.H{
+				"error": "Missing or invalid parametes in body",
+			})
+			return
+		}
+
+		if err := db.DB.Where("telegram_id=?", body.TelegramID).First(&user).Error; err != nil {
+			utils.ResIntenalError(c)
+			return
+		}
+
+		userId = user.ID
+	}
+
+	if user.ID == 0 {
+		if err := db.DB.Where("id=?", userId).First(&user).Error; err != nil {
+			utils.ResIntenalError(c)
+			return
+		}
 	}
 
 	type Referee struct {
@@ -113,7 +133,7 @@ func GetReferralData(c *gin.Context) {
 	}
 	var refereeList []Referee
 
-	err = db.DB.Raw(`
+	err := db.DB.Raw(`
 		 SELECT users.name from referrals 
 		 join users on referrals.referee_id = users.id where referrals.referrer_id = ?
 	`, user.ID).Scan(&refereeList).Error

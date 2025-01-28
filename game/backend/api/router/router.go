@@ -27,7 +27,10 @@ func Init() {
 		userR.GET("/profile", user.Profile)
 		userR.POST("/withdraw", user.Withdraw)
 		userR.POST("/profile/update", user.UpdateProfile)
+		userR.GET("/user/referral_details", user.GetReferralData)
+		userR.GET("/user/referral_count", user.GetReferralCountApi)
 	}
+
 	router.POST("/user/referral_details", user.GetReferralData)
 	router.POST("/user/referral_count", user.GetReferralCountApi)
 
