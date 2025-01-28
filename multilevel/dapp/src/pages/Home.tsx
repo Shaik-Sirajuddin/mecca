@@ -372,37 +372,7 @@ const Home = () => {
                   <ul className="text-gray3 list-disc pl-6">
                     <li>
                       <p className="text-gray3 text-sm font-normal">
-                        The bonus pool will incur a daily fee of -1$MEA
-                      </p>
-                    </li>
-                    <li>
-                      <p className="text-gray3 text-sm font-normal">
-                        If your tokens in the bonus pool reach "0 $MEA", you
-                        will no longer be able to receive invitation rewards.
-                      </p>
-                    </li>
-                    <li>
-                      <p className="text-gray3 text-sm font-normal">
-                        If you don't have enough funds in the bonus pool, fill
-                        it up.
-                      </p>
-                    </li>
-                    <li>
-                      <p className="text-gray3 text-sm font-normal">
-                        If you leave the "0" limit, you will receive the reward
-                        again.
-                      </p>
-                    </li>
-                    <li>
-                      <p className="text-gray3 text-sm font-normal">
-                        The minimum amount to be filled in the bonus pool is 1
-                        $MEA.
-                      </p>
-                    </li>
-                    <li>
-                      <p className="text-gray3 text-sm font-normal">
-                        After the first stage, bonuses will not be given for
-                        stage updates and additional deposits of lower users.
+                        The bonus pool will incur a daily fee of 1 MEA (deduction)
                       </p>
                     </li>
                   </ul>

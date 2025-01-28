@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useMemo, useState } from "react";
+import { useMemo, useState } from "react";
 import { Helmet } from "react-helmet-async";
 import { useSelector } from "react-redux";
 import { UserData } from "../schema/user_data";
@@ -8,6 +8,7 @@ import {
   deci,
   formatBalance,
   formatLocalDateString,
+  formatToDecimal,
   updateIfValid,
 } from "../utils/utils";
 import { AppState } from "../schema/app_state";
@@ -19,12 +20,19 @@ import { SendTransactionError } from "@solana/web3.js";
 import { Plan } from "../schema/plan";
 import toast from "react-hot-toast";
 import { UserStore } from "../schema/user_store";
+import { PieChart } from "react-minimal-pie-chart";
 
 const Dashboard = () => {
   const { connection } = useConnection();
   const { publicKey, signTransaction } = useWallet();
   const [withdrawAmount, setWithdrawAmount] = useState("0");
   const [txLoading, setTxLoading] = useState(false);
+  const [tooltip, setTooltip] = useState({
+    visible: false,
+    x: 0,
+    y: 0,
+    data: "null",
+  });
 
   const userDataRaw = useSelector((state: IRootState) => state.user.data);
   // Use useMemo to memoize the result of UserData.fromJSON
@@ -37,10 +45,27 @@ const Dashboard = () => {
     return UserStore.fromJSON(userStoreRaw);
   }, [userStoreRaw]);
 
+  const crewProfit = useMemo(() => {
+    return userStore.getCrewProfit();
+  }, [userStore]);
+
   const appStateRaw = useSelector((state: IRootState) => state.global.state);
   const appState = useMemo(() => {
     return AppState.fromJSON(appStateRaw);
   }, [appStateRaw]);
+
+  const totalRewards = useMemo(() => {
+    return crewProfit.active
+      .add(crewProfit.deep)
+      .add(crewProfit.direct)
+      .add(userData.availableForWithdraw(appState));
+  }, [
+    appState,
+    crewProfit.active,
+    crewProfit.deep,
+    crewProfit.direct,
+    userData,
+  ]);
 
   const withdraw = async () => {
     try {
@@ -94,6 +119,21 @@ const Dashboard = () => {
     } else {
       toast.error("Failed to copy!");
     }
+  };
+
+  const handleMouseOver = (e: React.MouseEvent, dataIndex: number) => {
+    console.log("here");
+    const rect = (e.target as SVGAElement).getBoundingClientRect(); // Get bounding rectangle for positioning
+    setTooltip({
+      visible: true,
+      x: rect.left + window.scrollX + rect.width / 2, // Center horizontally
+      y: rect.top + window.scrollY - 20, // Position above the segment
+      data: "this",
+    });
+  };
+
+  const handleMouseOut = () => {
+    setTooltip({ visible: false, x: 0, y: 0, data: "" });
   };
 
   return (
@@ -285,7 +325,7 @@ const Dashboard = () => {
                   </ul>
                 </div>
 
-                <div className="w-full">
+                <div className="w-full gap-12 flex flex-col">
                   <div className="w-full lg:px-11 px-5 py-6 lg:py-8 bg-[url(withdrawl-frame.png)] bg-full bg-center bg-no-repeat">
                     <h3 className="text-2xl font-semibold text-white">
                       WITHDRAWL
@@ -383,6 +423,74 @@ const Dashboard = () => {
                       </ul>
                     </div>
                   </div>
+                  <div className="w-full lg:px-11 px-5 py-6 lg:py-8 bg-[url(withdrawl-frame.png)] bg-full bg-center bg-no-repeat">
+                    <PieChart
+                      viewBoxSize={[100, 100]}
+                      style={{
+                        height: "300px",
+                      }}
+                      data={[
+                        {
+                          title: "Direct",
+                          value: formatToDecimal(crewProfit.direct).toNumber(),
+                          color: "#D107FB",
+                        },
+                        {
+                          title: "Deep",
+                          value: formatToDecimal(crewProfit.deep).toNumber(),
+                          color: "red",
+                        },
+                        {
+                          title: "Active",
+                          value: formatToDecimal(crewProfit.active).toNumber(),
+                          color: "green",
+                        },
+                        {
+                          title: "Daily Reward",
+                          value: formatToDecimal(
+                            userData.totalDailyReward(appState)
+                          ).toNumber(),
+                          color: "#313136",
+                        },
+                      ]}
+                      // onMouseOver={handleMouseOver}
+                      // onMouseOut={handleMouseOut}
+                      label={({ dataEntry }) => {
+                        const percentage = new Decimal(dataEntry.value)
+                          .div(formatToDecimal(totalRewards))
+                          .mul(100)
+                          .toNumber();
+                        if (percentage < 5) {
+                          return "";
+                        }
+                        return `${dataEntry.value} MEA`;
+                      }}
+                      labelPosition={50} // Controls how far from the center the label appears
+                      labelStyle={{
+                        fontSize: "5px",
+                        fill: "#fff", // Text color
+                        pointerEvents: "none", // Prevent text from capturing mouse events
+                      }}
+                    />
+                  </div>
+                  {/* {tooltip.visible && (
+                    <div
+                      style={{
+                        position: "absolute",
+                        top: tooltip.y,
+                        left: tooltip.x,
+                        backgroundColor: "rgba(0, 0, 0, 0.7)",
+                        color: "white",
+                        padding: "5px 10px",
+                        borderRadius: "5px",
+                        pointerEvents: "none",
+                        transform: "translate(-50%, -100%)", // Adjust tooltip position
+                        whiteSpace: "now  rap",
+                      }}
+                    >
+                      <strong>{tooltip.data}</strong>
+                    </div>
+                  )} */}
                 </div>
               </div>
             </div>

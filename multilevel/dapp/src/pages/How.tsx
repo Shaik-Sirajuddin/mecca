@@ -14,7 +14,7 @@ const How = () => {
               {/* Start TeamBee Changes */}
            <section className='w-full relative md:min-h-[600px] lg:min-h-[800px] lg:pb-6 pb-16 pt-32 lg:pt-[254px]'>
            <div className="w-full h-screen absolute top-0 left-0 bg-black5/50"></div>
-            <video src="how-bg.mp4" className='w-screen top-0 left-0 bg-cover -z-10 object-cover h-screen absolute' loop muted autoPlay></video>
+            <video src="/assets/how-bg.mp4" className='w-screen top-0 left-0 bg-cover -z-10 object-cover h-screen absolute' loop muted autoPlay></video>
              {/* End TeamBee Changes */}
             <div className="w-full max-w-[1152px] mx-auto px-10 relative z-20">
             <div className="w-full text-center">

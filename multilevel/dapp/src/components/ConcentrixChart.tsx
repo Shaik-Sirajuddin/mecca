@@ -33,6 +33,20 @@ export const ConcentrixChart = ({ plan_id }: Props) => {
       <h5 className="text-magenta1 text-xs uppercase font-semibold my-3">
         STAGE-{String.fromCharCode(65 + plan_id)} REVENUE
       </h5>
+      <div className="flex gap-4 mt-4 mb-4 justify-between">
+        <div className="lg:px-11 px-5 py-6 lg:py-8 bg-[url(withdrawl-frame.png)] bg-full bg-center bg-no-repeat">
+          <div className="text-white text-center">
+            <div>Direct Bonus</div>
+            <div className="font-bold">{plan.direct_referral_percentage} %</div>
+          </div>
+        </div>
+        <div className="lg:px-11 px-5 py-6 lg:py-8 bg-[url(withdrawl-frame.png)] bg-full bg-center bg-no-repeat">
+          <div className="text-white text-center">
+            <div>Level 2 - 6 Bonus</div>
+            <div className="font-bold">{plan.active_referral_percentage} %</div>
+          </div>
+        </div>
+      </div>
       <div className="flex items-center justify-center px-5 py-3 md:w-[300px] md:h-[300px] mx-auto">
         <div className="circle-wrap">
           <div className="_20-30">
@@ -70,7 +84,7 @@ export const ConcentrixChart = ({ plan_id }: Props) => {
               className={`level-20 ${maxFillLevel >= 20 ? "fill-text" : ""}`}
             >
               <div className="level-11-20">Level 11 -20</div>
-              <div className="_20">{plan.active_referral_percentage}%</div>
+              <div className="_20">{plan.deep_referral_percentage}%</div>
             </div>
           </div>
           <div className="_1-10">
@@ -86,8 +100,8 @@ export const ConcentrixChart = ({ plan_id }: Props) => {
               );
             })}
             <div className="level-10 fill-text">
-              <div className="level-7-10">Level 7 -10</div>
-              <div className="_102">{plan.direct_referral_percentage}%</div>
+              <div className="level-7-10">Level 7 - 10</div>
+              <div className="_102">{1}%</div>
             </div>
             <div className="center-dot"></div>
           </div>

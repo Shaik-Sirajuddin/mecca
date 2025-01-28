@@ -6,6 +6,10 @@ export function isValidNumber(str: string) {
   const regex = /^-?\d+(\.\d+)?$|^-?\d+\.$/;
   return regex.test(str);
 }
+
+export const formatToDecimal = (amount: Decimal) => {
+  return amount.div(Math.pow(10, splToken.decimals));
+};
 /**
  * Returns formatted amount with decimal point representaion
  */

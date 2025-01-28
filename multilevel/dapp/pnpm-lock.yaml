@@ -65,6 +65,9 @@ importers:
       react-hot-toast:
         specifier: ^2.5.1
         version: 2.5.1(react-dom@18.3.1(react@18.3.1))(react@18.3.1)
+      react-minimal-pie-chart:
+        specifier: ^9.1.0
+        version: 9.1.0(react-dom@18.3.1(react@18.3.1))(react@18.3.1)
       react-redux:
         specifier: ^9.2.0
         version: 9.2.0(@types/react@18.3.18)(react@18.3.1)(redux@5.0.1)
@@ -4632,6 +4635,12 @@ packages:
   react-lifecycles-compat@3.0.4:
     resolution: {integrity: sha512-fBASbA6LnOU9dOU2eW7aQ8xmYBSXUIWr+UmF9b1efZBazGNO+rcXT/icdKnYm2pTwcRylVUYwW7H1PHfLekVzA==}
 
+  react-minimal-pie-chart@9.1.0:
+    resolution: {integrity: sha512-JziZXZT0aw+9X+rGSpQwbSG7t3ypsyhzJNpiTUGfVeCqr70YIPbHE5Us3RsCsNRlVHbeLGrp/ibVuzUJT6Gcvw==}
+    peerDependencies:
+      react: ^16.8.0 || ^17 || ^18 || ^19
+      react-dom: ^16.8.0 || ^17 || ^18 || ^19
+
   react-modal@3.16.3:
     resolution: {integrity: sha512-yCYRJB5YkeQDQlTt17WGAgFJ7jr2QYcWa1SHqZ3PluDmnKJ/7+tVU+E6uKyZ0nODaeEj+xCpK4LcSnKXLMC0Nw==}
     peerDependencies:
@@ -5082,6 +5091,10 @@ packages:
   supports-preserve-symlinks-flag@1.0.0:
     resolution: {integrity: sha512-ot0WnXS9fgdkgIcePe6RHNk1WA8+muPa6cSjeR3V8K27q9BB1rTE3R1p7Hv0z1ZyAc8s6Vvv8DIyWf681MAt0w==}
     engines: {node: '>= 0.4'}
+
+  svg-partial-circle@1.0.0:
+    resolution: {integrity: sha512-jDWgNzrlpsGo9A7/tdjCy6+1RzeeANYV1a3JtNYC/0ZXI3U+3VMucuNv7JuKti9VVBdyNxNO1CZs/k0xS1lUFA==}
+    engines: {node: '>=6'}
 
   tabbable@6.2.0:
     resolution: {integrity: sha512-Cat63mxsVJlzYvN51JmVXIgNoUokrIaT2zLclCXjRd8boZ0004U4KCs/sToJ75C6sdlByWxpYnb5Boif1VSFew==}
@@ -11549,6 +11562,12 @@ snapshots:
 
   react-lifecycles-compat@3.0.4: {}
 
+  react-minimal-pie-chart@9.1.0(react-dom@18.3.1(react@18.3.1))(react@18.3.1):
+    dependencies:
+      react: 18.3.1
+      react-dom: 18.3.1(react@18.3.1)
+      svg-partial-circle: 1.0.0
+
   react-modal@3.16.3(react-dom@16.13.1(react@16.13.1))(react@16.13.1):
     dependencies:
       exenv: 1.2.2
@@ -12114,6 +12133,8 @@ snapshots:
       has-flag: 4.0.0
 
   supports-preserve-symlinks-flag@1.0.0: {}
+
+  svg-partial-circle@1.0.0: {}
 
   tabbable@6.2.0: {}
 

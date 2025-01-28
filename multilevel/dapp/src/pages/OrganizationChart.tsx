@@ -343,7 +343,7 @@ const OrganizationChart = () => {
       <iframe
         src={`./chart.html?address=${publicKey?.toString()}`}
         width={"100%"}
-        height={"500px"}
+        height={"700px"}
       ></iframe>
     </>
   );

@@ -2,6 +2,7 @@ import * as borsh from "@coral-xyz/borsh";
 import { PublicKey } from "@solana/web3.js";
 import { Reward, RewardSchema } from "./reward";
 import { UserAction, UserActionSchema } from "./action";
+import Decimal from "decimal.js";
 
 export interface IUserStore {
   address: PublicKey;
@@ -41,6 +42,25 @@ export class UserStore implements IUserStore {
       }
     }
     return crewCount;
+  }
+
+  getCrewProfit() {
+    const crewProfit = {
+      direct: new Decimal(0),
+      active: new Decimal(0),
+      deep: new Decimal(0),
+    };
+    for (let i = 0; i < this.rewards.length; i++) {
+      const reward = this.rewards[i];
+      if (reward.level === 1) {
+        crewProfit.direct = crewProfit.direct.add(reward.invested_amount);
+      } else if (reward.level <= 7) {
+        crewProfit.active = crewProfit.active.add(reward.invested_amount);
+      } else {
+        crewProfit.deep = crewProfit.deep.add(reward.invested_amount);
+      }
+    }
+    return crewProfit;
   }
 
   static dummy() {
