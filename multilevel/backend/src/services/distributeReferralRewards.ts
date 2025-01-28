@@ -17,7 +17,6 @@ const distributeRewardsOfUser = async (user: PublicKey) => {
     let userDataAcc = getUserDataAcc(user);
     let userData = await getUserData(user);
     storeUserData(user, userData);
-    console.log(userData.referral_distribution);
     if (userData.referral_distribution.completed) {
       console.log("distribution completed");
       return true;

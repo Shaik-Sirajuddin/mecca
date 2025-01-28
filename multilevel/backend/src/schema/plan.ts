@@ -1,5 +1,6 @@
 import * as borsh from "@coral-xyz/borsh";
 import Decimal from "decimal.js";
+import { PlanID } from "../enums/plan";
 
 export interface IPlan {
   id: number; // u8
@@ -45,13 +46,45 @@ export class Plan implements IPlan {
     return new Plan({
       id: 1,
       investment_required: new Decimal(1000),
-      validity_days: 30,
+      validity_days: 2000,
       daily_reward: new Decimal(10),
       max_level: 10,
       direct_referral_percentage: 5,
       active_referral_percentage: 3,
       deep_referral_percentage: 2,
     });
+  }
+
+  // Convert instance to JSON (serializable object)
+  toJSON(): Record<string, any> {
+    return {
+      id: this.id,
+      investment_required: this.investment_required.toString(),
+      validity_days: this.validity_days,
+      daily_reward: this.daily_reward.toString(),
+      max_level: this.max_level,
+      direct_referral_percentage: this.direct_referral_percentage,
+      active_referral_percentage: this.active_referral_percentage,
+      deep_referral_percentage: this.deep_referral_percentage,
+    };
+  }
+
+  // Create a Plan instance from JSON
+  static fromJSON(json: IPlan): Plan {
+    return new Plan({
+      id: json.id,
+      investment_required: json.investment_required,
+      validity_days: json.validity_days,
+      daily_reward: json.daily_reward,
+      max_level: json.max_level,
+      direct_referral_percentage: json.direct_referral_percentage,
+      active_referral_percentage: json.active_referral_percentage,
+      deep_referral_percentage: json.deep_referral_percentage,
+    });
+  }
+
+  static getPlanCode(plan_id: PlanID): string {
+    return String.fromCharCode(65 + plan_id);
   }
 }
 

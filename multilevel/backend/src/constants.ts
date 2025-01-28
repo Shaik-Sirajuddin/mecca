@@ -1,4 +1,4 @@
-import { Connection, PublicKey } from "@solana/web3.js";
+import { PublicKey } from "@solana/web3.js";
 
 export const rpcUrl = "https://api.devnet.solana.com";
 export const multilevelProgramId = new PublicKey(

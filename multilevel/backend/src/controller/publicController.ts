@@ -5,6 +5,11 @@ import queueManager from "../utils/distributeQueue";
 import { Reward } from "../schema/reward";
 import { getUserData, getUserStore } from "../database/user";
 import { formatBalance } from "../utils/utils";
+import MUserData from "../models/user_data";
+import Decimal from "decimal.js";
+import { Plan } from "../schema/plan";
+import { UserData } from "../schema/user_data";
+import { connection, fetchAppState } from "../utils/web3";
 
 //called when user joins a new plan or upgrades
 export const join = async (req: Request, res: Response) => {
@@ -105,6 +110,49 @@ export const getReferrerChartData = async (req: Request, res: Response) => {
       );
     }
     responseHandler.success(res, "Fetched", userList);
+  } catch (error) {
+    console.log(error);
+    responseHandler.error(res, error);
+  }
+};
+
+export const getUserStats = async (req: Request, res: Response) => {
+  try {
+    let users = await MUserData.findAll({
+      where: {},
+    });
+    let data = {
+      participants: [0, 0, 0],
+      userClaimable: "",
+      accDailyReward: "",
+      accReferralReward: "",
+      accFee: "",
+    };
+    let userClaimable = new Decimal(0);
+    let accDailyReward = new Decimal(0);
+    let accReferralReward = new Decimal(0);
+    let accFee = new Decimal(0);
+    //todo : migrate to fetch from cache
+    let appstate = await fetchAppState(connection);
+    for (let i = 0; i < users.length; i++) {
+      let user = users[i];
+      let userData = new UserData(JSON.parse(user.dataValues.data).data);
+      data.participants[userData.plan_id]++;
+      userClaimable = userClaimable.add(
+        userData.availableForWithdraw(appstate)
+      );
+      accDailyReward = accDailyReward.add(userData.totalDailyReward(appstate));
+      accReferralReward = accReferralReward.add(
+        userData.referral_reward.add(userData.accumulated.referral_reward)
+      );
+      accFee = accFee.add(userData.totalFeePaid(appstate));
+    }
+    data.userClaimable = userClaimable.toString();
+    data.accDailyReward = accDailyReward.toString();
+    data.accReferralReward = accReferralReward.toString();
+    data.accFee = accFee.toString();
+
+    responseHandler.success(res, "Fetched", data);
   } catch (error) {
     console.log(error);
     responseHandler.error(res, error);

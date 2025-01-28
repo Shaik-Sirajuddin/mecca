@@ -10,7 +10,6 @@ export class AppStore implements IAppStore {
 
   constructor(data: any) {
     this.referral_id_map = new Map();
-    console.log(data.referral_id_map);
     for (const [key, value] of data.referral_id_map) {
       this.referral_id_map.set(key, value);
     }

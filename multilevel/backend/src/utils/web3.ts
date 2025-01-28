@@ -7,10 +7,11 @@ import {
   Transaction,
   TransactionInstruction,
 } from "@solana/web3.js";
-import { multilevelProgramId, rpcUrl } from "../constants";
+import { appStateId, multilevelProgramId, rpcUrl } from "../constants";
 import { secretKey } from "../key";
 import { UserData } from "../schema/user_data";
 import { UserStore } from "../schema/user_store";
+import { AppState, AppStateSchema } from "../schema/app_state";
 
 const wallet = Keypair.fromSecretKey(secretKey);
 
@@ -55,4 +56,8 @@ export const sendDistributeTransaction = async (accounts: AccountMeta[]) => {
   }
 };
 
+export const fetchAppState = async (connection: Connection) => {
+  const appStateInfo = await connection.getAccountInfo(appStateId);
+  return new AppState(AppStateSchema.decode(appStateInfo?.data));
+};
 export const connection = new Connection(rpcUrl);

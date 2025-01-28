@@ -23,10 +23,17 @@ export const storeUserData = async (user: PublicKey, userData: UserData) => {
     },
   });
   if (!created) {
-    await MUserData.create({
-      address: user.toString(),
-      data: JSON.stringify({ data: userData }),
-    });
+    await MUserData.update(
+      {
+        data: JSON.stringify({ data: userData }),
+      },
+      {
+        where: {
+          address: user.toString(),
+        },
+      }
+    );
+    // await userDataEntry.update("data", JSON.stringify({ data: userData }));
   }
 };
 
@@ -35,7 +42,7 @@ export const storeUserStore = async (user: PublicKey, userStore: UserStore) => {
     CACHE_KEY.USER_STORE(user.toString()),
     userStore
   );
-  let [userDataEntry, created] = await MUserStore.findOrCreate({
+  let [userStoreEntry, created] = await MUserStore.findOrCreate({
     where: {
       address: user.toString(),
     },
@@ -45,10 +52,16 @@ export const storeUserStore = async (user: PublicKey, userStore: UserStore) => {
     },
   });
   if (!created) {
-    await MUserStore.create({
-      address: user.toString(),
-      data: JSON.stringify({ data: userStore }),
-    });
+    await MUserStore.update(
+      {
+        data: JSON.stringify({ data: UserStore }),
+      },
+      {
+        where: {
+          address: user.toString(),
+        },
+      }
+    );
   }
 };
 export const getUserData = async (user: PublicKey) => {

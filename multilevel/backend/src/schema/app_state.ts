@@ -2,6 +2,7 @@ import * as borsh from "@coral-xyz/borsh";
 import { PublicKey } from "@solana/web3.js";
 import { Plan, PlanSchema } from "./plan";
 import Decimal from "decimal.js";
+import { PlanID } from "../enums/plan";
 
 export interface IAppState {
   daily_fee: Decimal; // u64
@@ -34,10 +35,35 @@ export class AppState implements IAppState {
   // Example dummy AppState for testing purposes
   static dummy(): AppState {
     return new AppState({
-      daily_fee: new Decimal(100),
+      daily_fee: new Decimal(1),
       paused: false,
       plans: [Plan.dummy(), Plan.dummy(), Plan.dummy()],
-      owner: new PublicKey("6u...example_pubkey"),
+      owner: PublicKey.default,
+    });
+  }
+
+  getPlan = (planId: PlanID) => {
+    if (planId > 2) return null;
+    return this.plans[planId];
+  };
+
+  // Serialize to JSON-friendly format
+  toJSON(): Record<string, any> {
+    return {
+      daily_fee: this.daily_fee.toString(), // Decimal as string
+      paused: this.paused,
+      plans: this.plans.map((plan) => plan.toJSON()), // Assuming Plan has toJSON
+      owner: this.owner.toBase58(), // PublicKey as string
+    };
+  }
+
+  // Deserialize from JSON-friendly format
+  static fromJSON(json: any): AppState {
+    return new AppState({
+      daily_fee: new Decimal(json.daily_fee),
+      paused: json.paused,
+      plans: json.plans.map((plan: any) => Plan.fromJSON(plan)), // Assuming Plan has fromJSON
+      owner: new PublicKey(json.owner),
     });
   }
 }

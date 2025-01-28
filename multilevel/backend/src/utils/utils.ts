@@ -18,3 +18,15 @@ export const formatNum = (amount: string) => {
   }
   return formattedNum;
 };
+
+export function getDaysDifference(date1: Date, date2: Date): number {
+  // Get the timestamps for both dates
+  const time1 = date1.getTime();
+  const time2 = date2.getTime();
+
+  // Calculate the difference in milliseconds
+  const diffInMs = Math.abs(time1 - time2);
+
+  // Convert milliseconds to days
+  return Math.floor(diffInMs / (1000 * 60 * 60 * 24));
+}
