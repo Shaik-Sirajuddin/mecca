@@ -50,7 +50,7 @@ func Init() {
 
 	adminR := router.Group("/admin", middleware.Admin)
 	{
-		adminR.GET("/dau", admin.DAU)
+		adminR.GET("/stats", admin.Stats)
 		adminR.GET("/user-count", admin.UserCount)
 	}
 
