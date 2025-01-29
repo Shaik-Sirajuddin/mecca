@@ -52,6 +52,7 @@ func Init() {
 	{
 		adminR.GET("/stats", admin.Stats)
 		adminR.GET("/user-count", admin.UserCount)
+		adminR.GET("/users", admin.Users)
 	}
 
 	router.Run("localhost:8002")
