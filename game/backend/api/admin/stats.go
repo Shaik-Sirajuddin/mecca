@@ -30,18 +30,17 @@ func Stats(c *gin.Context) {
 	holdingsValue := HodingsValue{}
 
 	if err := db.DB.Raw(
-		`SELECT SUM(bh.value * bv.quantity) AS total_holdings_value
-				FROM beluga_holdings bh
-				JOIN beluga_variants bv ON bh.id = bv.beluga_id;
-       `, &holdingsValue.Value).Error; err != nil {
+		`SELECT COALESCE(SUM(bv.value * bh.quantity), 0) AS total_holdings_value
+		 FROM beluga_holdings bh
+		 JOIN beluga_variants bv ON bh.beluga_id = bv.id;
+       `).Scan(&holdingsValue.Value).Error; err != nil {
 		utils.ResIntenalError(c)
 		return
 	}
 
 	if err := db.DB.Raw(
-		`SELECT SUM(coins) AS total_coins
-				FROM users;
-       `, &holdingsValue.Coins).Error; err != nil {
+		`SELECT COALESCE(SUM(coins), 0) AS total_coins FROM users;`).
+		Scan(&holdingsValue.Coins).Error; err != nil {
 		utils.ResIntenalError(c)
 		return
 	}

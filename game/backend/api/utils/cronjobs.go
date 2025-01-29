@@ -101,5 +101,5 @@ func StartJob() {
 	})
 
 	// Start the cron scheduler
-	c.Start()
+	// c.Start()
 }
