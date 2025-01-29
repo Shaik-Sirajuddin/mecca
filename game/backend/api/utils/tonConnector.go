@@ -130,6 +130,8 @@ func Transfer(toAddr string, amount string) (bool, string) {
 }
 
 func TransferSPLTokens(toAddr string, amount string) (bool, string) {
+	//temporary disable withdrawls 
+	return false , ""
 
 	defer func() {
 		if r := recover(); r != nil {

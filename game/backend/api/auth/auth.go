@@ -147,6 +147,7 @@ func Login(c *gin.Context) {
 		c.IndentedJSON(http.StatusOK, gin.H{
 			"sessionId": sessionId,
 		})
+		println("user already exists")
 		return
 	}
 	// user doesn't exist create user and balance
@@ -165,7 +166,7 @@ func Login(c *gin.Context) {
 	user = models.User{
 		TelegramId:   telegramId,
 		ReferralCode: referralCode,
-		Name:         "beluga_" + strings.ToLower(utils.GenerateReferralCode()),
+		Name:         "mea_" + strings.ToLower(utils.GenerateReferralCode()),
 	}
 
 	result := db.DB.Create(&user)
@@ -178,24 +179,30 @@ func Login(c *gin.Context) {
 
 	//create entry in Referrals table if request is from Bot
 
+	//TODO : use transaction system 
 	if isValidBotRequest {
 		var referrer models.User
-		if err := db.DB.Where("referral_code=?", body.ReferralCode).First(&referrer).Error; err != nil {
+		if err := db.DB.Where("referral_code=?", body.ReferralCode).First(&referrer).Error; err != nil && err.Error() != "record not found" {
 			println(err.Error())
+			println("hree")
 			utils.ResIntenalError(c)
 			return
 		}
 
-		var referralItem = models.Referrals{
-			ReferrerId:   referrer.ID,
-			RefereeId:    user.ID,
-			ReferralCode: body.ReferralCode,
+		//create referral entry if valid referrer
+		if referrer.ID != 0 {
+			var referralItem = models.Referrals{
+				ReferrerId:   referrer.ID,
+				RefereeId:    user.ID,
+				ReferralCode: body.ReferralCode,
+			}
+	
+			if err := db.DB.Create(&referralItem).Error; err != nil {
+				utils.ResIntenalError(c)
+				return
+			}
 		}
-
-		if err := db.DB.Create(&referralItem).Error; err != nil {
-			utils.ResIntenalError(c)
-			return
-		}
+		
 	}
 
 	defaultHoldings := []models.BelugaHolding{}
