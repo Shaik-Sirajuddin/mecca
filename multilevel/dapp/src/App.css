@@ -17,3 +17,12 @@
     transform: rotate(360deg);
   }
 }
+
+.blurred-background {
+  background: rgba(255, 255, 255, 0.1); /* Semi-transparent background */
+  backdrop-filter: blur(2px); /* Apply the blur effect */
+  -webkit-backdrop-filter: blur(2px); /* For Safari support */
+  border-radius: 15px; /* Optional: adds rounded corners */
+  padding: 20px; /* Optional: inner spacing */
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1); /* Optional: subtle shadow */
+}

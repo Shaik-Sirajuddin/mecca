@@ -33,7 +33,7 @@ button span {
   @apply pointer-events-none;
 }
 a svg:hover,
-button svg:hover {
+button:not(:disabled) svg:hover {
   @apply saturate-150;
 }
 button:disabled {
@@ -565,3 +565,5 @@ button:disabled {
 .fill-text {
   color: #fff;
 }
+
+

@@ -53,6 +53,9 @@ export const Navbar = () => {
                         : ""
                     }`}
                     aria-current={isActive ? "page" : undefined}
+                    onClick={() => {
+                      handleToggleMenu();
+                    }}
                   >
                     {link.title}
                   </Link>
@@ -66,7 +69,11 @@ export const Navbar = () => {
           <div className="flex items-center gap-4 relative z-20">
             <WalletMultiButton
               style={{
-                background: "rgb(209 7 251)",
+                // background: "rgb(209 7 251)",
+                whiteSpace: "nowrap",
+                background: "url(wallet_bg.png)",
+                backgroundSize: "100% 100%",
+                backgroundRepeat: "no-repeat",
               }}
             />
 

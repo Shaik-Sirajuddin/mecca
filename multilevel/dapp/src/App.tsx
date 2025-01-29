@@ -24,11 +24,7 @@ import {
   getUserDataAcc,
   getUserStoreAcc,
 } from "./utils/web3";
-import {
-  useConnection,
-  useLocalStorage,
-  useWallet,
-} from "@solana/wallet-adapter-react";
+import { useConnection, useWallet } from "@solana/wallet-adapter-react";
 import { useDispatch, useSelector } from "react-redux";
 import {
   setDataSynced,
@@ -109,7 +105,7 @@ const App = () => {
   const performCheck = useCallback(() => {
     if ((dataSynced && !userEnrolled) || (!connecting && !publicKey)) {
       navigate("/");
-      toast("Enrollment required to access the page");
+      toast.error("Enrollment required to access the page");
     }
   }, [dataSynced, userEnrolled, connecting, publicKey, navigate]);
 
@@ -133,7 +129,7 @@ const App = () => {
         <Route path="/organization-chart" element={<OrganizationChart />} />
         <Route path="/*" element={<NotFoundPage />} />
       </Routes>
-      <Toaster />
+      <Toaster position="top-right" />
       <Footer />
     </main>
   );

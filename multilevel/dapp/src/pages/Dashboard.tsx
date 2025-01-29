@@ -1,6 +1,6 @@
 import { useMemo, useState } from "react";
 import { Helmet } from "react-helmet-async";
-import { useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { UserData } from "../schema/user_data";
 import { IRootState } from "../app/store";
 import {
@@ -8,32 +8,45 @@ import {
   deci,
   formatBalance,
   formatLocalDateString,
-  formatToDecimal,
   updateIfValid,
 } from "../utils/utils";
 import { AppState } from "../schema/app_state";
 import { splToken } from "../utils/constants";
-import { getWithdrawTransaction } from "../utils/web3";
+import {
+  fetchUserData,
+  getATA,
+  getTokenBalance,
+  getUserDataAcc,
+  getWithdrawTransaction,
+} from "../utils/web3";
 import { useConnection, useWallet } from "@solana/wallet-adapter-react";
 import Decimal from "decimal.js";
 import { SendTransactionError } from "@solana/web3.js";
 import { Plan } from "../schema/plan";
 import toast from "react-hot-toast";
 import { UserStore } from "../schema/user_store";
-import { PieChart } from "react-minimal-pie-chart";
+import ModalSuccess from "../components/models/ModelSuccess";
+import ModelFailure from "../components/models/ModelFailure";
+import {
+  setTokenBalance,
+  setUserAtaExists,
+  setUserData,
+} from "../features/user/userSlice";
+import { userJoined } from "../network/api";
 
 const Dashboard = () => {
   const { connection } = useConnection();
   const { publicKey, signTransaction } = useWallet();
   const [withdrawAmount, setWithdrawAmount] = useState("0");
   const [txLoading, setTxLoading] = useState(false);
-  const [tooltip, setTooltip] = useState({
-    visible: false,
-    x: 0,
-    y: 0,
-    data: "null",
-  });
+  const dispatch = useDispatch();
 
+  const [modalData, setModalData] = useState({
+    title: "",
+    description: "",
+    type: "",
+    show: true,
+  });
   const userDataRaw = useSelector((state: IRootState) => state.user.data);
   // Use useMemo to memoize the result of UserData.fromJSON
   const userData = useMemo(() => {
@@ -54,18 +67,46 @@ const Dashboard = () => {
     return AppState.fromJSON(appStateRaw);
   }, [appStateRaw]);
 
-  const totalRewards = useMemo(() => {
-    return crewProfit.active
-      .add(crewProfit.deep)
-      .add(crewProfit.direct)
-      .add(userData.availableForWithdraw(appState));
-  }, [
-    appState,
-    crewProfit.active,
-    crewProfit.deep,
-    crewProfit.direct,
-    userData,
-  ]);
+  const rewardPercent = useMemo(() => {
+    return userData.referral_reward
+      .add(
+        userData
+          .totalDailyReward(appState)
+          .sub(userData.accumulated.daily_reward)
+      )
+      .div(appState.getPlan(userData.plan_id)!.investment_required)
+      .mul(100)
+      .toFixed(2);
+  }, [appState, userData]);
+  // const totalRewards = useMemo(() => {
+  //   return crewProfit.active
+  //     .add(crewProfit.deep)
+  //     .add(crewProfit.direct)
+  //     .add(userData.availableForWithdraw(appState));
+  // }, [
+  //   appState,
+  //   crewProfit.active,
+  //   crewProfit.deep,
+  //   crewProfit.direct,
+  //   userData,
+  // ]);
+
+  const syncUserData = async () => {
+    if (!publicKey) return;
+    const userDataAcc = getUserDataAcc(publicKey);
+    const userData = await fetchUserData(userDataAcc, connection);
+    if (userData) {
+      dispatch(setUserData(userData.toJSON()));
+      // if user referral staus isn't completed hit endpoint for sync
+      if (!userData.referral_distribution.completed) {
+        userJoined(publicKey);
+      }
+    }
+    const userAta = getATA(publicKey);
+    const userBalance = await getTokenBalance(connection, userAta);
+    dispatch(setUserAtaExists(userBalance != null));
+    dispatch(setTokenBalance(userBalance ? userBalance.toString() : "0"));
+  };
 
   const withdraw = async () => {
     try {
@@ -73,11 +114,23 @@ const Dashboard = () => {
       if (!publicKey) return;
       if (!withdrawAmount) {
         //TODO : modal
+        setModalData({
+          title: "Invalid Input",
+          description: "Enter valid amount for withdrawl",
+          show: true,
+          type: "error",
+        });
         return;
       }
       let parsedWithdrawlAmont = deci(withdrawAmount);
-      if (parsedWithdrawlAmont == null) {
+      if (parsedWithdrawlAmont == null || parsedWithdrawlAmont.eq(0)) {
         //TODO : modal
+        setModalData({
+          title: "Invalid Input",
+          description: "Enter valid amount for withdrawl",
+          show: true,
+          type: "error",
+        });
         return;
       }
       parsedWithdrawlAmont = Decimal.floor(
@@ -94,11 +147,24 @@ const Dashboard = () => {
         signedTx.serialize()
       );
       console.log(broadcastResponse);
-    } catch (error) {
+      setModalData({
+        title: "Transaction Success",
+        description: "Withdrawl Successful",
+        show: true,
+        type: "success",
+      });
+      syncUserData();
+    } catch (error: any) {
       if (error instanceof SendTransactionError) {
         console.log(await error.getLogs(connection));
       }
       console.log(error);
+      setModalData({
+        title: "Something went wrong",
+        description: error.toString(),
+        show: true,
+        type: "error",
+      });
     } finally {
       setTxLoading(false);
     }
@@ -119,21 +185,6 @@ const Dashboard = () => {
     } else {
       toast.error("Failed to copy!");
     }
-  };
-
-  const handleMouseOver = (e: React.MouseEvent, dataIndex: number) => {
-    console.log("here");
-    const rect = (e.target as SVGAElement).getBoundingClientRect(); // Get bounding rectangle for positioning
-    setTooltip({
-      visible: true,
-      x: rect.left + window.scrollX + rect.width / 2, // Center horizontally
-      y: rect.top + window.scrollY - 20, // Position above the segment
-      data: "this",
-    });
-  };
-
-  const handleMouseOut = () => {
-    setTooltip({ visible: false, x: 0, y: 0, data: "" });
   };
 
   return (
@@ -198,131 +249,168 @@ const Dashboard = () => {
             </div>
             <div className="w-full pt-[70px]">
               <div className="w-full grid md:grid-cols-2 gap-12 grid-cols-1">
-                <div className="w-full lg:px-11 px-5 py-6 h-fit lg:py-8 bg-[url(stage-b-bg-2.png)] bg-full-3 bg-center bg-no-repeat">
-                  <div className="w-full flex items-center justify-between gap-6 flex-wrap mb-5">
-                    <p className="text-sm text-white uppercase font-medium">
-                      MY UNIQUE ID HERE
-                    </p>
-                    <button
-                      type="button"
-                      className="text-xs font-semibold text-white inline-flex items-center justify-center"
-                      onClick={() => {
-                        performCopy(userData.id);
-                      }}
-                    >
-                      <svg
-                        width={79}
-                        height={35}
-                        viewBox="0 0 79 35"
-                        fill="none"
-                        xmlns="http://www.w3.org/2000/svg"
+                <div className="w-full gap-12 flex flex-col">
+                  <div className="w-full lg:px-11 px-5 py-6 h-fit lg:py-8 bg-[url(stage-b-bg-2.png)] bg-full-3 bg-center bg-no-repeat">
+                    <div className="w-full flex items-center justify-between gap-6 flex-wrap mb-5">
+                      <p className="text-sm text-white uppercase font-medium">
+                        MY UNIQUE ID HERE
+                      </p>
+                      <button
+                        type="button"
+                        className="text-xs font-semibold text-white inline-flex items-center justify-center"
+                        onClick={() => {
+                          performCopy(userData.id);
+                        }}
                       >
-                        <path
-                          d="M0 6.23757C0 5.81727 0.132413 5.40765 0.378437 5.06687L3.43778 0.829302C3.81377 0.308511 4.41701 0 5.05934 0H77C78.1046 0 79 0.895431 79 2V28.4674C79 28.912 78.8518 29.3439 78.5789 29.695L75.564 33.5727C75.1851 34.06 74.6024 34.3451 73.9851 34.3451H2C0.895429 34.3451 0 33.4496 0 32.3451V6.23757Z"
-                          fill="#D107FB"
-                        />
-                      </svg>
-                      <span className="absolute">Copy</span>
-                    </button>
-                  </div>
-                  <div className="w-full flex items-center justify-between gap-6 flex-wrap">
-                    <p className="text-sm text-white uppercase font-medium">
-                      SOLANA LINK ADDRESS HERE
-                    </p>
-                    <button
-                      type="button"
-                      className="text-xs font-semibold text-white inline-flex items-center justify-center"
-                      onClick={() => {
-                        if (publicKey) performCopy(publicKey.toString());
-                      }}
-                    >
-                      <svg
-                        width={79}
-                        height={35}
-                        viewBox="0 0 79 35"
-                        fill="none"
-                        xmlns="http://www.w3.org/2000/svg"
+                        <svg
+                          width={79}
+                          height={35}
+                          viewBox="0 0 79 35"
+                          fill="none"
+                          xmlns="http://www.w3.org/2000/svg"
+                        >
+                          <path
+                            d="M0 6.23757C0 5.81727 0.132413 5.40765 0.378437 5.06687L3.43778 0.829302C3.81377 0.308511 4.41701 0 5.05934 0H77C78.1046 0 79 0.895431 79 2V28.4674C79 28.912 78.8518 29.3439 78.5789 29.695L75.564 33.5727C75.1851 34.06 74.6024 34.3451 73.9851 34.3451H2C0.895429 34.3451 0 33.4496 0 32.3451V6.23757Z"
+                            fill="#D107FB"
+                          />
+                        </svg>
+                        <span className="absolute">Copy</span>
+                      </button>
+                    </div>
+                    <div className="w-full flex items-center justify-between gap-6 flex-wrap">
+                      <p className="text-sm text-white uppercase font-medium">
+                        SOLANA LINK ADDRESS HERE
+                      </p>
+                      <button
+                        type="button"
+                        className="text-xs font-semibold text-white inline-flex items-center justify-center"
+                        onClick={() => {
+                          if (publicKey) performCopy(publicKey.toString());
+                        }}
                       >
-                        <path
-                          d="M0 6.23757C0 5.81727 0.132413 5.40765 0.378437 5.06687L3.43778 0.829302C3.81377 0.308511 4.41701 0 5.05934 0H77C78.1046 0 79 0.895431 79 2V28.4674C79 28.912 78.8518 29.3439 78.5789 29.695L75.564 33.5727C75.1851 34.06 74.6024 34.3451 73.9851 34.3451H2C0.895429 34.3451 0 33.4496 0 32.3451V6.23757Z"
-                          fill="#D107FB"
-                        />
-                      </svg>
-                      <span className="absolute">Copy</span>
-                    </button>
-                  </div>
+                        <svg
+                          width={79}
+                          height={35}
+                          viewBox="0 0 79 35"
+                          fill="none"
+                          xmlns="http://www.w3.org/2000/svg"
+                        >
+                          <path
+                            d="M0 6.23757C0 5.81727 0.132413 5.40765 0.378437 5.06687L3.43778 0.829302C3.81377 0.308511 4.41701 0 5.05934 0H77C78.1046 0 79 0.895431 79 2V28.4674C79 28.912 78.8518 29.3439 78.5789 29.695L75.564 33.5727C75.1851 34.06 74.6024 34.3451 73.9851 34.3451H2C0.895429 34.3451 0 33.4496 0 32.3451V6.23757Z"
+                            fill="#D107FB"
+                          />
+                        </svg>
+                        <span className="absolute">Copy</span>
+                      </button>
+                    </div>
 
-                  <div className="w-full my-5">
-                    <h3 className="text-2xl text-white font-semibold">
-                      CURRENT POOL AMOUNT
+                    <div className="w-full my-5">
+                      <h3 className="text-2xl text-white font-semibold">
+                        CURRENT POOL AMOUNT
+                      </h3>
+                      <h4 className="text-[40px] text-magenta1 font-bold font-dm-sans">
+                        {formatBalance(userData.availableForWithdraw(appState))}{" "}
+                        {splToken.symbol} <span></span>
+                        <span className="text-xs text-gray1 font-medium">
+                          Your Balance
+                        </span>
+                      </h4>
+                    </div>
+
+                    <ul className="w-full flex flex-col gap-5">
+                      <li>
+                        <h4 className="text-base font-semibold text-white">
+                          Total Direct Referrals
+                        </h4>
+                        <h3 className="text-[32px] text-white font-bold font-dm-sans leading-tight">
+                          {userStore.directReferred()}
+                        </h3>
+                      </li>
+                      <li>
+                        <h4 className="text-base font-semibold text-white">
+                          Withdrawn Amount
+                        </h4>
+                        <h3 className="text-[32px] text-white font-bold font-dm-sans leading-tight">
+                          {formatBalance(userData.withdrawn_amount)}{" "}
+                          {splToken.symbol}
+                        </h3>
+                      </li>
+                      <li>
+                        <h4 className="text-base font-semibold text-white">
+                          Revenue from Referrals
+                        </h4>
+                        <h3 className="text-[32px] text-white font-bold font-dm-sans leading-tight">
+                          {formatBalance(
+                            userData.referral_reward.add(
+                              userData.accumulated.referral_reward
+                            )
+                          )}{" "}
+                          {splToken.symbol}
+                        </h3>
+                      </li>
+                      <li>
+                        <h4 className="text-base font-semibold text-white">
+                          Remaining Reward Days
+                        </h4>
+                        <h3 className="text-[32px] text-white font-bold font-dm-sans leading-tight">
+                          {userData.getRemainingDays(appState)}
+                        </h3>
+                      </li>
+                      <li>
+                        <h4 className="text-base font-semibold text-white">
+                          Total Reward Paid
+                        </h4>
+                        <h3 className="text-[32px] text-white font-bold font-dm-sans leading-tight">
+                          {formatBalance(userData.totalDailyReward(appState))}{" "}
+                          {splToken.symbol}
+                        </h3>
+                      </li>
+                      <li>
+                        <h4 className="text-base font-semibold text-white">
+                          Total Fee Paid
+                        </h4>
+                        <h3 className="text-[32px] text-white font-bold font-dm-sans leading-tight">
+                          {formatBalance(userData.totalFeePaid(appState))}{" "}
+                          {splToken.symbol}
+                        </h3>
+                      </li>
+                    </ul>
+                  </div>
+                  <div className="w-full lg:px-11 px-5 py-6 lg:py-8 bg-[url(withdrawl-frame.png)] bg-full bg-center bg-no-repeat">
+                    <h3 className="text-2xl font-semibold text-white">
+                      RETURN RATE
                     </h3>
-                    <h4 className="text-[40px] text-magenta1 font-bold font-dm-sans">
-                      {formatBalance(userData.availableForWithdraw(appState))}{" "}
-                      {splToken.symbol} <span></span>
-                      <span className="text-xs text-gray1 font-medium">
-                        Your Balance
-                      </span>
-                    </h4>
-                  </div>
+                    <p className="text-gray1 text-xs font-medium mb-5">
+                      {/* A minimum of 7000 TRX is required for withdrawl. */}
+                    </p>
 
-                  <ul className="w-full flex flex-col gap-5">
-                    <li>
-                      <h4 className="text-base font-semibold text-white">
-                        Total Direct Referrals
-                      </h4>
-                      <h3 className="text-[32px] text-white font-bold font-dm-sans leading-tight">
-                        {userStore.directReferred()}
+                    <div className="flex items-center gap-3 mb-5">
+                      <div
+                        style={{
+                          height: "48px",
+                          width: "100%",
+                          borderRadius: "4px",
+                          background: `linear-gradient(to right, #D107FB 0%, #E97DFF ${
+                            parseFloat(rewardPercent) / 10
+                          }%, #313136 ${
+                            parseFloat(rewardPercent) / 10
+                          }%, #313136 100%)`,
+                        }}
+                      ></div>
+                      <h3 className="text-2xl font-semibold text-white">
+                        {rewardPercent}%
                       </h3>
-                    </li>
-                    <li>
-                      <h4 className="text-base font-semibold text-white">
-                        Withdrawn Amount
-                      </h4>
-                      <h3 className="text-[32px] text-white font-bold font-dm-sans leading-tight">
-                        {formatBalance(userData.withdrawn_amount)}{" "}
-                        {splToken.symbol}
-                      </h3>
-                    </li>
-                    <li>
-                      <h4 className="text-base font-semibold text-white">
-                        Revenue from Referrals
-                      </h4>
-                      <h3 className="text-[32px] text-white font-bold font-dm-sans leading-tight">
-                        {formatBalance(
-                          userData.referral_reward.add(
-                            userData.accumulated.referral_reward
-                          )
-                        )}{" "}
-                        {splToken.symbol}
-                      </h3>
-                    </li>
-                    <li>
-                      <h4 className="text-base font-semibold text-white">
-                        Remaining Reward Days
-                      </h4>
-                      <h3 className="text-[32px] text-white font-bold font-dm-sans leading-tight">
-                        {userData.getRemainingDays(appState)}
-                      </h3>
-                    </li>
-                    <li>
-                      <h4 className="text-base font-semibold text-white">
-                        Total Reward Paid
-                      </h4>
-                      <h3 className="text-[32px] text-white font-bold font-dm-sans leading-tight">
-                        {formatBalance(userData.totalDailyReward(appState))}{" "}
-                        {splToken.symbol}
-                      </h3>
-                    </li>
-                    <li>
-                      <h4 className="text-base font-semibold text-white">
-                        Total Fee Paid
-                      </h4>
-                      <h3 className="text-[32px] text-white font-bold font-dm-sans leading-tight">
-                        {formatBalance(userData.totalFeePaid(appState))}{" "}
-                        {splToken.symbol}
-                      </h3>
-                    </li>
-                  </ul>
+                    </div>
+                    <div className="w-full">
+                      <ul className="list-decimal text-gray3 pl-6">
+                        <li>
+                          <p className="text-sm text-gray3 font-normal">
+                            A return rate of 1000% indicates plan completion
+                          </p>
+                        </li>
+                      </ul>
+                    </div>
+                  </div>
                 </div>
 
                 <div className="w-full gap-12 flex flex-col">
@@ -379,7 +467,11 @@ const Dashboard = () => {
                       </div>
                       <button
                         type="button"
-                        disabled={userStore.directReferred() < 2}
+                        disabled={
+                          userStore.directReferred() < 2 ||
+                          !withdrawAmount ||
+                          withdrawAmount.trim() == "0"
+                        }
                         className="text-base relative flex items-center justify-center text-center w-full mt-6 uppercase text-white font-semibold"
                         onClick={withdraw}
                       >
@@ -424,7 +516,7 @@ const Dashboard = () => {
                     </div>
                   </div>
                   <div className="w-full lg:px-11 px-5 py-6 lg:py-8 bg-[url(withdrawl-frame.png)] bg-full bg-center bg-no-repeat">
-                    <PieChart
+                    {/* <PieChart
                       viewBoxSize={[100, 100]}
                       style={{
                         height: "300px",
@@ -471,7 +563,33 @@ const Dashboard = () => {
                         fill: "#fff", // Text color
                         pointerEvents: "none", // Prevent text from capturing mouse events
                       }}
-                    />
+                    /> */}
+                    <ul className="w-full flex flex-col gap-5">
+                      <li>
+                        <h4 className="text-base font-semibold text-white">
+                          Direct Bonus
+                        </h4>
+                        <h3 className="text-[32px] text-white font-bold font-dm-sans leading-tight">
+                          {formatBalance(crewProfit.direct)} {splToken.symbol}
+                        </h3>
+                      </li>
+                      <li>
+                        <h4 className="text-base font-semibold text-white">
+                          Active Bonus
+                        </h4>
+                        <h3 className="text-[32px] text-white font-bold font-dm-sans leading-tight">
+                          {formatBalance(crewProfit.active)} {splToken.symbol}
+                        </h3>
+                      </li>
+                      <li>
+                        <h4 className="text-base font-semibold text-white">
+                          Deep Bonus
+                        </h4>
+                        <h3 className="text-[32px] text-white font-bold font-dm-sans leading-tight">
+                          {formatBalance(crewProfit.deep)} {splToken.symbol}
+                        </h3>
+                      </li>
+                    </ul>
                   </div>
                   {/* {tooltip.visible && (
                     <div
@@ -497,6 +615,29 @@ const Dashboard = () => {
           </div>
           <div className="w-full bg-xl-gradient absolute h-[185px] z-10 -bottom-1"></div>
         </section>
+
+        <ModalSuccess
+          description={modalData.description}
+          title={modalData.title}
+          show={modalData.show && modalData.type == "success"}
+          onClose={() => {
+            setModalData({
+              ...modalData,
+              show: false,
+            });
+          }}
+        />
+        <ModelFailure
+          description={modalData.description}
+          title={modalData.title}
+          onClose={() => {
+            setModalData({
+              ...modalData,
+              show: false,
+            });
+          }}
+          show={modalData.show && modalData.type == "error"}
+        />
       </div>
     </>
   );

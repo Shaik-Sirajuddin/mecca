@@ -1,6 +1,6 @@
 import { Helmet } from "react-helmet-async";
 import { ConcentrixChart } from "../components/ConcentrixChart";
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { useConnection, useWallet } from "@solana/wallet-adapter-react";
 import {
   getJoinTransaction,
@@ -17,22 +17,38 @@ import { AppState } from "../schema/app_state";
 import { formatBalance, generateReferralCode } from "../utils/utils";
 import { splToken } from "../utils/constants";
 import { userJoined } from "../network/api";
+import ModalSuccess from "../components/models/ModelSuccess";
+import ModelFailure from "../components/models/ModelFailure";
+import Decimal from "decimal.js";
+import { UserData } from "../schema/user_data";
+import BonusPie from "../components/BonusPie";
 
 const Home = () => {
   const { connection } = useConnection();
   const { publicKey, signTransaction } = useWallet();
   const [inviteCode, setInvideCode] = useState("");
-  // const userDataRaw = useSelector((state: IRootState) => state.user.data);
-  // // Use useMemo to memoize the result of UserData.fromJSON
-  // const userData = useMemo(() => {
-  //   return UserData.fromJSON(userDataRaw);
-  // }, [userDataRaw]); // Only recompute when userData changes
+  const [pieChartSelected, setPieChartSelected] = useState(false);
+  const userDataRaw = useSelector((state: IRootState) => state.user.data);
+  // Use useMemo to memoize the result of UserData.fromJSON
+  const userData = useMemo(() => {
+    return UserData.fromJSON(userDataRaw);
+  }, [userDataRaw]); // Only recompute when userData changes
+
+  const [modalData, setModalData] = useState({
+    title: "",
+    description: "",
+    type: "",
+    show: true,
+  });
 
   const userPDAExists = useSelector(
     (state: IRootState) => state.user.dataAccExists
   );
   const appStoreRaw = useSelector((state: IRootState) => state.global.store);
   const appStateRaw = useSelector((state: IRootState) => state.global.state);
+  const userBalance = useSelector(
+    (state: IRootState) => new Decimal(state.user.tokenBalance)
+  );
 
   const appStore = useMemo(() => {
     return AppStore.fromJSON(appStoreRaw);
@@ -51,54 +67,36 @@ const Home = () => {
 
   const upgrade = async () => {
     try {
-      if (!publicKey) return;
-      const tx = getUpgradeTransaction(publicKey, selectedPlan);
-
-      const { blockhash } = await connection.getLatestBlockhash();
-      tx.recentBlockhash = blockhash;
-      tx.feePayer = publicKey;
-
-      const signedTx = await signTransaction!(tx);
-      const broadcastResponse = await connection.sendRawTransaction(
-        signedTx.serialize()
-      );
-      console.log(broadcastResponse);
-      userJoined(publicKey);
-    } catch (error) {
-      if (error instanceof SendTransactionError) {
-        console.log(await error.getLogs(connection));
-      }
-      console.log(error);
-    }
-  };
-
-  const parseReferrerInput = () => {
-    if (!inviteCode) {
-      //user user address
-      return publicKey;
-    }
-    if (!isValidPublicKey(inviteCode)) {
-      const parsedAddress = appStore.referral_id_map.get(inviteCode);
-      if (!parsedAddress) {
-        //invalid invite code
-        return undefined;
-      }
-      return parsedAddress;
-    }
-    return new PublicKey(inviteCode);
-  };
-  const enroll = async () => {
-    try {
       setTxLoading(true);
       if (!publicKey) return;
-      const referrerAddress = parseReferrerInput();
-      if (!referrerAddress) return;
-      const tx = getJoinTransaction(
-        publicKey,
-        referrerAddress,
-        selectedPlan,
-        generateReferralCode(appStore.referral_id_map)
-      );
+      if (selectedPlan < userData.plan_id) {
+        setModalData({
+          title: "Downgrade isn't possible",
+          description: `Cannot downgrade plan`,
+          show: true,
+          type: "error",
+        });
+        return;
+      }
+      if (
+        userBalance.lessThan(
+          appState
+            .getPlan(selectedPlan)!
+            .investment_required.sub(
+              appState.getPlan(userData.plan_id)!.investment_required
+            )
+        )
+      ) {
+        setModalData({
+          title: "Insufficient Balance",
+          description: ``,
+          show: true,
+          type: "error",
+        });
+        return;
+      }
+      const tx = getUpgradeTransaction(publicKey, selectedPlan);
+
       const { blockhash } = await connection.getLatestBlockhash();
       tx.recentBlockhash = blockhash;
       tx.feePayer = publicKey;
@@ -119,7 +117,94 @@ const Home = () => {
     }
   };
 
+  const parseReferrerInput = () => {
+    if (!inviteCode) {
+      //user user address
+      return publicKey;
+    }
+    if (!isValidPublicKey(inviteCode)) {
+      const parsedAddress = appStore.referral_id_map.get(inviteCode);
+      if (!parsedAddress) {
+        //invalid invite code
+        setModalData({
+          title: "Invalid Invite Code",
+          description: "Enter valid invite code or address",
+          show: true,
+          type: "error",
+        });
+        return undefined;
+      }
+      return parsedAddress;
+    }
+    return new PublicKey(inviteCode);
+  };
+  const enroll = async () => {
+    try {
+      setTxLoading(true);
+      if (!publicKey) return;
+      const referrerAddress = parseReferrerInput();
+      if (!referrerAddress) return;
+      const tx = getJoinTransaction(
+        publicKey,
+        referrerAddress,
+        selectedPlan,
+        generateReferralCode(appStore.referral_id_map)
+      );
+      if (
+        userBalance.lessThan(
+          appState.getPlan(selectedPlan)!.investment_required
+        )
+      ) {
+        setModalData({
+          title: "Insufficient Balance",
+          description: ``,
+          show: true,
+          type: "error",
+        });
+        return;
+      }
+      const { blockhash } = await connection.getLatestBlockhash();
+      tx.recentBlockhash = blockhash;
+      tx.feePayer = publicKey;
+
+      const signedTx = await signTransaction!(tx);
+      const broadcastResponse = await connection.sendRawTransaction(
+        signedTx.serialize()
+      );
+      console.log(broadcastResponse);
+      userJoined(publicKey);
+      setModalData({
+        title: "Transaction Success",
+        description: "Plan Enrollment Successful",
+        show: true,
+        type: "success",
+      });
+    } catch (error: any) {
+      if (error instanceof SendTransactionError) {
+        console.log(await error.getLogs(connection));
+      }
+      console.log(error);
+      setModalData({
+        title: "Something went wrong",
+        description: error.toString(),
+        show: true,
+        type: "error",
+      });
+    } finally {
+      setTxLoading(false);
+    }
+  };
+
   const handleEnrollClick = () => {
+    if (!publicKey) {
+      setModalData({
+        title: "Not Connected",
+        description: "Please connect your wallet",
+        show: true,
+        type: "error",
+      });
+      return;
+    }
     if (userPDAExists) {
       //check whethere user can upgrade
       upgrade();
@@ -128,6 +213,19 @@ const Home = () => {
     }
   };
 
+  const [isTallScreen, setIsTallScreen] = useState(false);
+
+  useEffect(() => {
+    const checkHeight = () => {
+      setIsTallScreen(window.innerHeight > 750);
+    };
+
+    checkHeight(); // Run initially
+    window.addEventListener("resize", checkHeight);
+
+    return () => window.removeEventListener("resize", checkHeight);
+  }, []);
+
   return (
     <>
       <Helmet>
@@ -135,15 +233,15 @@ const Home = () => {
         <meta property="og:title" content="A very important title" />
       </Helmet>
       <div className="w-full">
-        <section className="w-full relative md:min-h-[600px] lg:min-h-[853px] pt-32 lg:pt-[240px]">
-          <div className="w-full h-screen absolute top-0 left-0 bg-black5/50"></div>
+        <section className="w-full bg-black5 relative md:min-h-[600px] lg:h-[90vh] pt-32 lg:pt-[240px]">
           <video
             src="/assets/how-bg.mp4"
-            className="w-screen top-0 left-0 bg-cover -z-10 object-cover h-screen absolute"
+            className="w-screen top-0 left-0 bg-cover z-0 object-cover h-screen absolute"
             loop
             muted
             autoPlay
           ></video>
+          <div className="w-full h-screen absolute top-0 left-0 bg-black5/50"></div>
           {/* End TeamBee Changes */}
           <div className="w-full max-w-[1152px] mx-auto px-5 relative z-20">
             <div className="w-full text-center">
@@ -173,8 +271,13 @@ const Home = () => {
 
         <section className="w-full bg-[url(abstract-design-bg.png)] relative md:pt-0 pt-28 bg-black4 bg-cover bg-no-repeat bg-center pb-[161px] min-h-[671px]">
           <div className="w-full max-w-[1152px] mx-auto px-5">
-            <div className="w-full grid grid-cols-1 lg:grid-cols-2 gap-[60px] md:-translate-y-36 relative z-10">
-              <div className="w-full md:px-9 px-4 md:py-7 py-6 backdrop-blur-md bg-[url(stage-b-bg.png)] bg-full bg-center bg-no-repeat h-[650px]">
+            {/* removed :  md:-translate-y-36 */}
+            <div
+              className={`w-full grid grid-cols-1 lg:grid-cols-2 gap-[60px] ${
+                isTallScreen ? "md:-translate-y-36" : ""
+              } relative z-10`}
+            >
+              <div className="w-full md:px-9 px-4 md:py-7 py-6 backdrop-blur-md bg-[url(stage-b-bg.png)] bg-full bg-center bg-no-repeat h-[690px]">
                 <ul className="flex items-center md:gap-4 gap-2">
                   <li>
                     <button
@@ -302,6 +405,9 @@ const Home = () => {
                       type="button"
                       className="text-base relative flex items-center justify-center text-center w-full mt-6 uppercase text-white font-semibold"
                       onClick={handleEnrollClick}
+                      disabled={
+                        userPDAExists && selectedPlan <= userData.plan_id
+                      }
                     >
                       <svg
                         width="100%"
@@ -358,28 +464,55 @@ const Home = () => {
                           stage process.
                         </p>
                       </li>
+
+                      <li>
+                        <p className="text-gray3 text-sm font-normal">
+                          The bonus pool will incur a daily fee of 1 MEA
+                          (deduction)
+                        </p>
+                      </li>
                     </ul>
                   </div>
                 </div>
               </div>
-              <div className="w-full md:px-9 px-4 md:py-7 py-6 backdrop-blur-md bg-[url(stage-b-bg.png)] bg-full bg-center bg-no-repeat h-[650px]">
-                <ConcentrixChart plan_id={selectedPlan} />
-
-                <div className="w-full">
-                  <h4 className="text-white font-bold text-base mt-5 mb-3">
-                    NOTICE
-                  </h4>
-                  <ul className="text-gray3 list-disc pl-6">
-                    <li>
-                      <p className="text-gray3 text-sm font-normal">
-                        The bonus pool will incur a daily fee of 1 MEA (deduction)
-                      </p>
-                    </li>
-                  </ul>
-                </div>
+              <div className="w-full md:px-9 px-4 md:py-7 py-6 backdrop-blur-md bg-[url(stage-b-bg.png)] bg-full bg-center bg-no-repeat h-[690px]">
+                {!pieChartSelected && (
+                  <ConcentrixChart plan_id={selectedPlan} />
+                )}
+                {pieChartSelected && <BonusPie plan_id={selectedPlan} />}
+                <button
+                  className="bg-magenta1 p-2.5 rounded-md absolute top-4 right-4"
+                  onClick={() => {
+                    setPieChartSelected(!pieChartSelected);
+                  }}
+                >
+                  <img src="/assets/arrow-icon.png" alt="" />
+                </button>
               </div>
             </div>
           </div>
+          <ModalSuccess
+            description={modalData.description}
+            title={modalData.title}
+            show={modalData.show && modalData.type == "success"}
+            onClose={() => {
+              setModalData({
+                ...modalData,
+                show: false,
+              });
+            }}
+          />
+          <ModelFailure
+            description={modalData.description}
+            title={modalData.title}
+            onClose={() => {
+              setModalData({
+                ...modalData,
+                show: false,
+              });
+            }}
+            show={modalData.show && modalData.type == "error"}
+          />
         </section>
       </div>
     </>

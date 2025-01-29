@@ -1,6 +1,7 @@
 import { PublicKey } from "@solana/web3.js";
 
-export const baseUrl = `http://localhost:3020`;
+// export const baseUrl = `http://localhost:3020`;
+export const baseUrl = `https://game.meccain.com`;
 export const multilevelProgramId = new PublicKey(
   "2epf4awb1hw6FkEHbr5EuvDjsQ86msw9Yu9LEaxD29Sg"
 );

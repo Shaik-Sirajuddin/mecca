@@ -344,6 +344,7 @@ const OrganizationChart = () => {
         src={`./chart.html?address=${publicKey?.toString()}`}
         width={"100%"}
         height={"700px"}
+        scrolling="no"
       ></iframe>
     </>
   );

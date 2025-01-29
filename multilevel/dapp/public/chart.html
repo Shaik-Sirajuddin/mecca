@@ -97,7 +97,7 @@
       return params.get("address"); // Get 'param1
     }
     async function fetchData() {
-      let url = `http://localhost:3020/public/referrer-chart`;
+      let url = `https://game.meccain.com/public/referrer-chart`;
       let userAddress = getUserAddressFromParam();
       let res = await fetch(url, {
         method: "POST",
@@ -364,9 +364,9 @@
             .attr("height", bbox.height + 10) // Add padding to height
             .attr("rx", 5) // Border radius for rounded corners
             .attr("ry", 5) // Same as rx for y direction
-            .style("fill", "#58BD7D") // Background color
-            // .style("stroke", "white") // Border color
-            // .style("stroke-width", "1px"); // Border width
+            .style("fill", "#58BD7D"); // Background color
+          // .style("stroke", "white") // Border color
+          // .style("stroke-width", "1px"); // Border width
         });
         //Referral reward
         nodeEnter
@@ -388,6 +388,22 @@
           .style("fill", "white")
           .text(function (d) {
             return d.amount + " MEA";
+          });
+        nodeEnter
+          .append("text")
+          .attr("x", rectW - 19)
+          .attr("y", baseYText + 3 * lineHeight + 12)
+          .attr("dy", ".35em")
+          .attr("dx", "1em")
+          .style("fill", "red")
+          .text(function (d) {
+            console.log("d value", d._children.len, d.children);
+            let children = d._children
+              ? d._children
+              : d.children
+              ? d.children
+              : [];
+            return children.length;
           });
 
         // Transition nodes to their new position.

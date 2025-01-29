@@ -5,7 +5,6 @@ import { AppState } from "./app_state";
 import { PlanID } from "../enums/plan";
 import { Plan } from "./plan";
 import { getDaysDifference } from "../utils/utils";
-import { UserStore } from "./user_store";
 import { CREW } from "../enums/crew";
 
 // Interfaces

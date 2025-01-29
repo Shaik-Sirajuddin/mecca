@@ -4,8 +4,8 @@ export const Footer = () => {
   return (
     <footer className="bg-purple1 overflow-hidden">
       <div className="w-full max-w-[1152px] mx-auto px-4 relative">
-        <div className="w-full flex md:flex-row flex-col md:gap-0 gap-8">
-          <div className=" flex md:flex-row flex-col gap-8 xl:gap-24 md:gap-6 md:border-r md:border-black3 xl:pr-[86px] md:pr-5 xl:pt-[80px] pt-10 md:pt-9 mb:pb-6 xl:pb-10">
+        <div className="w-full flex md:flex-row justify-between flex-col md:gap-0 gap-8">
+          <div className=" flex md:flex-row  flex-col gap-8 xl:gap-24 md:gap-6 md:border-black3 xl:pr-[86px] md:pr-5 xl:pt-[80px] pt-10 md:pt-9 mb:pb-6 xl:pb-10">
             <Link to="/">
               <img
                 src="Mecca-Logo.png"
@@ -13,7 +13,6 @@ export const Footer = () => {
                 className="lg:min-w-[107.63px] min-w-24 object-contain"
               />
             </Link>
-
             <ul className="flex flex-col gap-3">
               <li>
                 <Link
@@ -58,7 +57,7 @@ export const Footer = () => {
             </ul>
           </div>
 
-          <div className="md:w-1/3 flex flex-col md:border-r md:border-black3 md:px-5 xl:px-[86px] md:pt-9 xl:pt-[80px] md:pb-6 xl:pb-10">
+          <div className="flex flex-col md:border-black3 md:px-5 xl:px-[86px] md:pt-9 xl:pt-[80px] md:pb-6 xl:pb-10">
             <h3 className="text-gray2 text-xs mb-10 uppercase font-bold tracking-widest">
               contact
             </h3>
@@ -70,47 +69,6 @@ export const Footer = () => {
             </p>
             <p className="text-sm text-gray1 font-normal mb-3">Bahamas</p>
             <p className="text-sm text-gray1 font-normal mb-3">732-528-4945</p>
-          </div>
-
-          <div className="md:w-1/3 sm:w-1/2 sm:max-w-full max-w-[256px] flex flex-col xl:pl-[86px] md:pl-5 xl:pt-[80px] md:pt-9 md:pb-8 xl:pb-[66px]">
-            <h3 className="text-gray2 text-xs mb-10 uppercase font-bold tracking-widest">
-              newsletter
-            </h3>
-            <p className="text-gray2 text-sm leading-6 sm:pr-10">
-              Subscribe our newsletter to get more free design course and
-              resource
-            </p>
-            <form
-              id="news-letter-form"
-              className="relative inline-flex items-center justify-end mt-5"
-            >
-              <input
-                type="email"
-                id="email"
-                name="email"
-                className="border-black3 bg-transparent text-white text-sm rounded-full border-2 py-3 px-4 w-full focus:outline-none focus:border-gray2 placeholder:text-gray1"
-                placeholder="Your email address"
-              />
-              <button
-                type="submit"
-                className="bg-magenta1 absolute right-2 text-white text-xs font-bold w-8 h-8 flex items-center justify-center rounded-full"
-              >
-                <svg
-                  width={14}
-                  height={9}
-                  viewBox="0 0 14 9"
-                  fill="none"
-                  xmlns="http://www.w3.org/2000/svg"
-                >
-                  <path
-                    fillRule="evenodd"
-                    clipRule="evenodd"
-                    d="M9.09094 0.265207C9.49676 -0.109399 10.1294 -0.0840962 10.504 0.321722L13.7348 3.82168C14.0884 4.20474 14.0884 4.79518 13.7348 5.17824L10.504 8.67828C10.1294 9.08411 9.49677 9.10941 9.09095 8.73481C8.68513 8.36021 8.65982 7.72755 9.03442 7.32173L10.716 5.49997L0.999999 5.49997C0.447714 5.49997 -7.64154e-07 5.05225 -7.86799e-07 4.49997C-8.09444e-07 3.94768 0.447714 3.49997 0.999999 3.49997L10.716 3.49997L9.03443 1.67829C8.65982 1.27247 8.68513 0.639813 9.09094 0.265207Z"
-                    fill="#FCFCFD"
-                  />
-                </svg>
-              </button>
-            </form>
           </div>
         </div>
         <div className="w-full flex sm:flex-row flex-col items-start justify-between gap-3 sm:gap-8 sm:items-center py-6 relative md:mt-0 mt-[40px]">

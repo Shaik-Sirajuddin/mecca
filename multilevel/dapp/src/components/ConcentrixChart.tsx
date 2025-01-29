@@ -3,6 +3,8 @@ import { PlanID } from "../enums/plan";
 import { IRootState } from "../app/store";
 import { useMemo } from "react";
 import { AppState } from "../schema/app_state";
+import { formatBalance } from "../utils/utils";
+import { splToken } from "../utils/constants";
 
 interface Props {
   plan_id: PlanID;
@@ -33,20 +35,7 @@ export const ConcentrixChart = ({ plan_id }: Props) => {
       <h5 className="text-magenta1 text-xs uppercase font-semibold my-3">
         STAGE-{String.fromCharCode(65 + plan_id)} REVENUE
       </h5>
-      <div className="flex gap-4 mt-4 mb-4 justify-between">
-        <div className="lg:px-11 px-5 py-6 lg:py-8 bg-[url(withdrawl-frame.png)] bg-full bg-center bg-no-repeat">
-          <div className="text-white text-center">
-            <div>Direct Bonus</div>
-            <div className="font-bold">{plan.direct_referral_percentage} %</div>
-          </div>
-        </div>
-        <div className="lg:px-11 px-5 py-6 lg:py-8 bg-[url(withdrawl-frame.png)] bg-full bg-center bg-no-repeat">
-          <div className="text-white text-center">
-            <div>Level 2 - 6 Bonus</div>
-            <div className="font-bold">{plan.active_referral_percentage} %</div>
-          </div>
-        </div>
-      </div>
+
       <div className="flex items-center justify-center px-5 py-3 md:w-[300px] md:h-[300px] mx-auto">
         <div className="circle-wrap">
           <div className="_20-30">
@@ -104,6 +93,33 @@ export const ConcentrixChart = ({ plan_id }: Props) => {
               <div className="_102">{1}%</div>
             </div>
             <div className="center-dot"></div>
+          </div>
+        </div>
+      </div>
+      <h5 className="text-white text-xs uppercase font-semibold my-3 text-center">
+        Deep Bonus
+      </h5>
+      <div>
+        <div className="mt-4 mb-4 lg:px-11 px-5 py-6 lg:py-8 bg-[url(withdrawl-frame.png)] bg-full bg-center bg-no-repeat">
+          <div className="text-white text-center">
+            <div>Owner Bonus - Daily Reward</div>
+            <div className="font-bold">
+              {formatBalance(plan.daily_reward)} {splToken.symbol}
+            </div>
+          </div>
+        </div>
+      </div>
+      <div className="flex gap-4 mt-4 mb-4 justify-between">
+        <div className="lg:px-11 px-5 py-6 lg:py-8 bg-[url(withdrawl-frame.png)] bg-full bg-center bg-no-repeat">
+          <div className="text-white text-center">
+            <div>Direct (Level 1)</div>
+            <div className="font-bold">{plan.direct_referral_percentage} %</div>
+          </div>
+        </div>
+        <div className="lg:px-11 px-5 py-6 lg:py-8 bg-[url(withdrawl-frame.png)] bg-full bg-center bg-no-repeat">
+          <div className="text-white text-center">
+            <div>Active (Level 2-6)</div>
+            <div className="font-bold">{plan.active_referral_percentage} %</div>
           </div>
         </div>
       </div>
