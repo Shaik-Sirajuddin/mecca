@@ -19,7 +19,7 @@ const distributeRewardsOfUser = async (user: PublicKey) => {
     let userData = await fetchUserDataFromNode(user);
     storeUserData(user, userData);
     if (userData.referral_distribution.completed) {
-      console.log("distribution completed for user" , user.toString());
+      console.log("distribution completed for user", user.toString());
       return true;
     }
     //TODO : queue stuck at user , in case a user distribution fails
@@ -79,7 +79,7 @@ const distributeRewardsOfUser = async (user: PublicKey) => {
     await sendDistributeTransaction(
       instruction_accounts.concat(...referrerAccounts)
     );
-    await sleep(2000);
+    await sleep(3000);
     await distributeRewardsOfUser(user);
   } catch (error) {
     console.log(error);
@@ -89,13 +89,13 @@ const distributeRewardsOfUser = async (user: PublicKey) => {
 export const distributeReferralRewards = async () => {
   try {
     if (distributing) {
-      console.log("distributing return")
-      return
+      console.log("distributing return");
+      return;
     }
     distributing = true;
     let user = queueManager.pop()?.address;
     if (!user) return;
-    console.log("distribution started for user", user.toString())
+    console.log("distribution started for user", user.toString());
     await distributeRewardsOfUser(user);
   } catch (error) {
     console.log(error);

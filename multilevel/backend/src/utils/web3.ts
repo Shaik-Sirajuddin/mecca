@@ -17,12 +17,12 @@ const wallet = Keypair.fromSecretKey(secretKey);
 
 export const fetchUserDataFromNode = async (user: PublicKey) => {
   let userDataAcc = getUserDataAcc(user);
-  let accountInfo = await connection.getAccountInfo(userDataAcc);
+  let accountInfo = await connection.getAccountInfo(userDataAcc, "processed");
   return new UserData(UserData.schema.decode(accountInfo?.data));
 };
 export const fetchUserStoreFromNode = async (user: PublicKey) => {
   let userStoreAcc = getUserStoreAcc(user);
-  let accountInfo = await connection.getAccountInfo(userStoreAcc);
+  let accountInfo = await connection.getAccountInfo(userStoreAcc, "processed");
   return new UserStore(UserStore.schema.decode(accountInfo?.data));
 };
 export const getUserDataAcc = (address: PublicKey) => {
