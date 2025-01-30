@@ -2,6 +2,7 @@ import { AccountMeta, PublicKey, SystemProgram } from "@solana/web3.js";
 import { UserData } from "../schema/user_data";
 import queueManager from "../utils/distributeQueue";
 import {
+  fetchUserDataFromNode,
   getUserDataAcc,
   getUserStoreAcc,
   sendDistributeTransaction,
@@ -15,10 +16,10 @@ let distributing = false;
 const distributeRewardsOfUser = async (user: PublicKey) => {
   try {
     let userDataAcc = getUserDataAcc(user);
-    let userData = await getUserData(user);
+    let userData = await fetchUserDataFromNode(user);
     storeUserData(user, userData);
     if (userData.referral_distribution.completed) {
-      console.log("distribution completed");
+      console.log("distribution completed for user" , user.toString());
       return true;
     }
     //TODO : queue stuck at user , in case a user distribution fails
@@ -87,10 +88,14 @@ const distributeRewardsOfUser = async (user: PublicKey) => {
 
 export const distributeReferralRewards = async () => {
   try {
-    if (distributing) return;
+    if (distributing) {
+      console.log("distributing return")
+      return
+    }
     distributing = true;
-    let user = queueManager.top()?.address;
+    let user = queueManager.pop()?.address;
     if (!user) return;
+    console.log("distribution started for user", user.toString())
     await distributeRewardsOfUser(user);
   } catch (error) {
     console.log(error);

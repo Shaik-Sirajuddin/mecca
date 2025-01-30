@@ -5,7 +5,7 @@ import { setUpCron } from "./services/cronjobs";
 import { makeConnection } from "./config/connection";
 
 dotenv.config();
-const port = 3020;
+const port = 3050;
 
 server.listen(port, () => {
   console.log(`server listening at ${port}`);

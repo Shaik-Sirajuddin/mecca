@@ -1,5 +1,5 @@
 import { PublicKey } from "@solana/web3.js";
-import { connection, getUserDataAcc } from "./web3";
+import { connection, fetchUserDataFromNode, getUserDataAcc } from "./web3";
 import { UserData } from "../schema/user_data";
 
 interface QueueItem {
@@ -18,10 +18,7 @@ const queueManager = {
   verifyAndAdd: async (address: PublicKey) => {
     try {
       if (queueManager.contains(address)) return false;
-      let userDataAcc = getUserDataAcc(address);
-      let userDataAccount = await connection.getAccountInfo(userDataAcc);
-      let deserializedData = UserData.schema.decode(userDataAccount?.data);
-      let userData = new UserData(deserializedData);
+      let userData = await fetchUserDataFromNode(address);
       let enrolledAt = new Date(userData.enrolled_at.toNumber() * 1000);
       if (userData.referral_distribution.completed) return false;
       queue.push({

@@ -3,7 +3,7 @@ import { UserData } from "../schema/user_data";
 import MUserData from "../models/user_data";
 import MUserStore from "../models/user_store";
 
-import { getCacheData, setCacheDataWithoutExpiration } from "../config/redis";
+import { getCacheData, setCacheData, setCacheDataWithoutExpiration } from "../config/redis";
 import { CACHE_KEY } from "../enums/CacheKeys";
 import { fetchUserDataFromNode, fetchUserStoreFromNode } from "../utils/web3";
 import { UserStore } from "../schema/user_store";
@@ -13,55 +13,62 @@ export const storeUserData = async (user: PublicKey, userData: UserData) => {
     CACHE_KEY.USER_DATA(user.toString()),
     userData
   );
-  let [userDataEntry, created] = await MUserData.findOrCreate({
-    where: {
+  let userDataEntry = await MUserData.findOne({
+    attributes : ['id'],
+    where : {
       address: user.toString(),
-    },
-    defaults: {
-      address: user.toString(),
-      data: JSON.stringify({ data: userData }),
-    },
-  });
-  if (!created) {
+    }
+  })
+  if(userDataEntry){
     await MUserData.update(
       {
         data: JSON.stringify({ data: userData }),
       },
       {
         where: {
-          address: user.toString(),
+          id : userDataEntry.dataValues.id,
         },
       }
     );
-    // await userDataEntry.update("data", JSON.stringify({ data: userData }));
+  }
+  else{
+    await MUserData.create(
+      {
+        address : user.toString(),
+        data: JSON.stringify({ data: userData }),
+      },
+    );
   }
 };
 
 export const storeUserStore = async (user: PublicKey, userStore: UserStore) => {
-  await setCacheDataWithoutExpiration(
+  await setCacheData(
     CACHE_KEY.USER_STORE(user.toString()),
     userStore
   );
-  let [userStoreEntry, created] = await MUserStore.findOrCreate({
-    where: {
+  let userStoreEntry = await MUserStore.findOne({
+    attributes : ['id'],
+    where : {
       address: user.toString(),
-    },
-    defaults: {
-      address: user.toString(),
-      data: JSON.stringify({ data: userStore }),
-    },
-  });
-  if (!created) {
+    }
+  })
+  if(userStoreEntry){
     await MUserStore.update(
       {
         data: JSON.stringify({ data: UserStore }),
       },
       {
         where: {
-          address: user.toString(),
+          id : userStoreEntry.dataValues.id,
         },
       }
     );
+  }
+  else{
+    await MUserStore.create({
+      address: user.toString(),
+      data: JSON.stringify({ data: userStore }),
+    })
   }
 };
 export const getUserData = async (user: PublicKey) => {

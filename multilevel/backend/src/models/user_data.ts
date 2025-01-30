@@ -24,6 +24,7 @@ const UserData = sequelize.define<
     address: {
       type: DataTypes.STRING,
       allowNull: false,
+      unique : true,
     },
     data: {
       type: DataTypes.TEXT,

@@ -14,6 +14,7 @@ import { connection, fetchAppState } from "../utils/web3";
 //called when user joins a new plan or upgrades
 export const join = async (req: Request, res: Response) => {
   try {
+    //TODO : rate limit endpoint for an address 
     let { address } = req.body;
     if (!address) {
       throw "Invalid Address";
@@ -22,9 +23,10 @@ export const join = async (req: Request, res: Response) => {
     if (queueManager.contains(userPubKey)) {
       throw "User already in queue";
     }
-    if (!queueManager.verifyAndAdd(userPubKey)) {
+    if (!(await queueManager.verifyAndAdd(userPubKey))) {
       throw "User is invalid or already distributed";
     }
+    console.log("user Queued" , queueManager.top())
     responseHandler.success(res, "User Queued for distribution", {});
   } catch (error) {
     console.log(error);
