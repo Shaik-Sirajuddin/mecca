@@ -63,15 +63,15 @@ func Profile(c *gin.Context) {
 		return
 	}
 
-
 	c.IndentedJSON(http.StatusOK, gin.H{
 		"message": "Profile Fetched",
 		"data": gin.H{
-			"username":       user.Name,
-			"wallet_address": user.WalletAddress,
-			"coins":          user.Coins,
-			"balance":        belugaBalance,
-			"holding_value":  holdingValue.String(),
+			"username":        user.Name,
+			"wallet_address":  user.WalletAddress,
+			"coins":           user.Coins,
+			"profile_id":      user.ProfileId,
+			"balance":         belugaBalance,
+			"holding_value":   holdingValue.String(),
 			"withdrawn_today": withdrawnDetails.Total.String(),
 		},
 	})

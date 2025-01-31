@@ -10,6 +10,7 @@ type User struct {
 	ID               uint
 	TelegramId       uint            `gorm:"not null"`
 	Name             string          `gorm:"not null;default:''"`
+	ProfileId        uint            `gorm:"not null;default:1"`
 	WalletAddress    string          `gorm:"not null;default:''"`
 	ReferralCode     string          `gorm:"not null;default:''"`
 	AdditionalPlayed uint            `gorm:"not null"`

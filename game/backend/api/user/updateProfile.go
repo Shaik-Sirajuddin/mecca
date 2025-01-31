@@ -12,6 +12,7 @@ import (
 type UpdateBody struct {
 	Name          string `json:"name"`
 	WalletAddress string `json:"wallet_address"`
+	ProfileId     uint   `json:"profile_id"`
 }
 
 func UpdateProfile(c *gin.Context) {
@@ -31,6 +32,7 @@ func UpdateProfile(c *gin.Context) {
 	result := db.DB.Model(&models.User{}).Where("id = ?", userId).Updates(map[string]interface{}{
 		"name":           body.Name,
 		"wallet_address": body.WalletAddress,
+		"profile_id":     body.ProfileId,
 	})
 
 	if result.Error != nil {
