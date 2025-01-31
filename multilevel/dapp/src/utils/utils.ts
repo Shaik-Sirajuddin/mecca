@@ -128,3 +128,11 @@ export const copyToClipboard = async (text: string) => {
     }
   }
 };
+
+export const getClipBoardText = async () => {
+  try {
+    return await navigator.clipboard.readText();
+  } catch {
+    return null;
+  }
+};

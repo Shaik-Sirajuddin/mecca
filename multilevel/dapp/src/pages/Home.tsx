@@ -1,7 +1,10 @@
 import { Helmet } from "react-helmet-async";
 import { ConcentrixChart } from "../components/ConcentrixChart";
 import { useEffect, useMemo, useState } from "react";
-import { useConnection, useWallet } from "@solana/wallet-adapter-react";
+import {
+  useConnection,
+  useWallet,
+} from "@solana/wallet-adapter-react";
 import {
   getJoinTransaction,
   getUpgradeTransaction,
@@ -14,7 +17,11 @@ import { IRootState } from "../app/store";
 // import { UserData } from "../schema/user_data";
 import { AppStore } from "../schema/app_store";
 import { AppState } from "../schema/app_state";
-import { formatBalance, generateReferralCode } from "../utils/utils";
+import {
+  formatBalance,
+  generateReferralCode,
+  getClipBoardText,
+} from "../utils/utils";
 import { splToken } from "../utils/constants";
 import { userJoined } from "../network/api";
 import ModalSuccess from "../components/models/ModelSuccess";
@@ -22,6 +29,7 @@ import ModelFailure from "../components/models/ModelFailure";
 import Decimal from "decimal.js";
 import { UserData } from "../schema/user_data";
 import BonusPie from "../components/BonusPie";
+import { useSearchParams } from "react-router-dom";
 
 const Home = () => {
   const { connection } = useConnection();
@@ -29,6 +37,8 @@ const Home = () => {
   const [inviteCode, setInvideCode] = useState("");
   const [pieChartSelected, setPieChartSelected] = useState(false);
   const userDataRaw = useSelector((state: IRootState) => state.user.data);
+  const [searchParams] = useSearchParams();
+  // Get a specific query parameter
   // Use useMemo to memoize the result of UserData.fromJSON
   const userData = useMemo(() => {
     return UserData.fromJSON(userDataRaw);
@@ -117,26 +127,28 @@ const Home = () => {
     }
   };
 
-  const parseReferrerInput = () => {
-    if (!inviteCode) {
+  const parseReferrerInput = (code = inviteCode, showModal = true) => {
+    if (!code) {
       //user user address
       return publicKey;
     }
-    if (!isValidPublicKey(inviteCode)) {
-      const parsedAddress = appStore.referral_id_map.get(inviteCode);
+    if (!isValidPublicKey(code)) {
+      const parsedAddress = appStore.referral_id_map.get(code);
       if (!parsedAddress) {
         //invalid invite code
-        setModalData({
-          title: "Invalid Invite Code",
-          description: "Enter valid invite code or address",
-          show: true,
-          type: "error",
-        });
+        if (showModal) {
+          setModalData({
+            title: "Invalid Invite Code",
+            description: "Enter valid invite code or address",
+            show: true,
+            type: "error",
+          });
+        }
         return undefined;
       }
       return parsedAddress;
     }
-    return new PublicKey(inviteCode);
+    return new PublicKey(code);
   };
   const enroll = async () => {
     try {
@@ -226,6 +238,22 @@ const Home = () => {
     return () => window.removeEventListener("resize", checkHeight);
   }, []);
 
+  const getReferralFromClipboard = async () => {
+    const text = await getClipBoardText();
+    if (text != null) {
+      if (parseReferrerInput(text, false)) {
+        setInvideCode(text);
+      }
+    }
+  };
+  useEffect(() => {
+    const referrer = searchParams.get('r')
+    if (referrer && parseReferrerInput(referrer, false)) {
+      setInvideCode(referrer);
+    } else {
+      getReferralFromClipboard();
+    }
+  }, [searchParams]);
   return (
     <>
       <Helmet>
@@ -283,19 +311,30 @@ const Home = () => {
                     <button
                       type="button"
                       onClick={() => handlePlanSwitch(PlanID.A)}
-                      className="md:text-xs text-[10px] md:h-9 text-center disabled:text-gray1 text-white font-semibold inline-flex items-center justify-center uppercase"
+                      style={{
+                        background: "rgba(210, 8, 252, 0.05)",
+                      }}
+                      className={`${
+                        selectedPlan === PlanID.A ? "selected" : ""
+                      } md:text-xs text-[10px] md:h-9 text-center disabled:text-gray1 text-white font-semibold inline-flex items-center justify-center uppercase`}
                     >
                       <svg
-                        width={79}
-                        height={35}
+                        width={100}
+                        height={50}
                         className="text-green2"
                         viewBox="0 0 79 35"
                         fill="none"
                         xmlns="http://www.w3.org/2000/svg"
                       >
                         <path
-                          d="M0 6.23757C0 5.81727 0.132413 5.40765 0.378437 5.06687L3.43778 0.829302C3.81377 0.308511 4.41701 0 5.05934 0H77C78.1046 0 79 0.895431 79 2V28.4674C79 28.912 78.8518 29.3439 78.5789 29.695L75.564 33.5727C75.1851 34.06 74.6024 34.3451 73.9851 34.3451H2C0.895429 34.3451 0 33.4496 0 32.3451V6.23757Z"
-                          fill="currentColor"
+                          d="M0.25 6.23757C0.25 5.86981 0.365861 5.51139 0.581132 5.21321L3.64047 0.975639C3.96946 0.519947 4.4973 0.25 5.05934 0.25H77C77.9665 0.25 78.75 1.0335 78.75 2V28.4674C78.75 28.8564 78.6204 29.2344 78.3816 29.5415L75.3667 33.4192C75.0351 33.8456 74.5253 34.0951 73.9851 34.0951H2C1.0335 34.0951 0.25 33.3116 0.25 32.3451V6.23757Z"
+                          fill={
+                            selectedPlan === PlanID.A
+                              ? "url(#paint0_linear_183_463)"
+                              : ""
+                          }
+                          strokeWidth={selectedPlan === PlanID.A ? "0.5" : "1"}
+                          stroke="#D107FB"
                         />
                       </svg>
                       <span className="absolute">STAGE - A</span>
@@ -305,20 +344,29 @@ const Home = () => {
                     <button
                       type="button"
                       onClick={() => handlePlanSwitch(PlanID.B)}
-                      className="md:text-xs text-[10px] md:h-9 text-center disabled:text-gray1 text-white font-semibold inline-flex items-center justify-center uppercase"
+                      style={{
+                        background: "rgba(210, 8, 252, 0.05)",
+                      }}
+                      className={`${
+                        selectedPlan === PlanID.B ? "selected" : ""
+                      } md:text-xs text-[10px] md:h-9 text-center disabled:text-gray1 text-white font-semibold inline-flex items-center justify-center uppercase`}
                     >
                       <svg
-                        width={79}
-                        height={35}
+                        width={100}
+                        height={50}
                         viewBox="0 0 79 35"
                         fill="none"
                         xmlns="http://www.w3.org/2000/svg"
                       >
                         <path
                           d="M0.25 6.23757C0.25 5.86981 0.365861 5.51139 0.581132 5.21321L3.64047 0.975639C3.96946 0.519947 4.4973 0.25 5.05934 0.25H77C77.9665 0.25 78.75 1.0335 78.75 2V28.4674C78.75 28.8564 78.6204 29.2344 78.3816 29.5415L75.3667 33.4192C75.0351 33.8456 74.5253 34.0951 73.9851 34.0951H2C1.0335 34.0951 0.25 33.3116 0.25 32.3451V6.23757Z"
-                          fill="url(#paint0_linear_183_463)"
+                          fill={
+                            selectedPlan === PlanID.B
+                              ? "url(#paint0_linear_183_463)"
+                              : ""
+                          }
+                          strokeWidth={selectedPlan === PlanID.B ? "0.5" : "1"}
                           stroke="#D107FB"
-                          strokeWidth="0.5"
                         />
                         <defs>
                           <linearGradient
@@ -344,20 +392,30 @@ const Home = () => {
                   <li>
                     <button
                       type="button"
+                      style={{
+                        background: "rgba(210, 8, 252, 0.05)",
+                      }}
                       onClick={() => handlePlanSwitch(PlanID.C)}
-                      className="md:text-xs text-[10px] md:h-9 text-center disabled:text-gray1 text-white font-semibold inline-flex items-center justify-center uppercase"
+                      className={`${
+                        selectedPlan === PlanID.C ? "selected" : ""
+                      } md:text-xs text-[10px] md:h-9 text-center disabled:text-gray1 text-white font-semibold inline-flex items-center justify-center uppercase`}
                     >
                       <svg
-                        width={79}
-                        height={35}
+                        width={100}
+                        height={50}
                         viewBox="0 0 79 35"
                         fill="none"
                         xmlns="http://www.w3.org/2000/svg"
                       >
                         <path
                           d="M0.5 6.23757C0.5 5.92234 0.59931 5.61513 0.783827 5.35955L0.379884 5.06792L0.783827 5.35955L3.84317 1.12198C4.12516 0.731383 4.57759 0.5 5.05934 0.5H77C77.8284 0.5 78.5 1.17157 78.5 2V28.4674C78.5 28.8008 78.3889 29.1248 78.1842 29.3881L75.1693 33.2658C74.8851 33.6313 74.4481 33.8451 73.9851 33.8451H2C1.17157 33.8451 0.5 33.1735 0.5 32.3451V6.23757Z"
-                          fill="#38383E"
-                          stroke="white"
+                          fill={
+                            selectedPlan === PlanID.C
+                              ? "url(#paint0_linear_183_463)"
+                              : ""
+                          }
+                          strokeWidth={selectedPlan === PlanID.B ? "0.5" : "1"}
+                          stroke="#D107FB"
                         />
                       </svg>
 
@@ -481,12 +539,35 @@ const Home = () => {
                 )}
                 {pieChartSelected && <BonusPie plan_id={selectedPlan} />}
                 <button
-                  className="bg-magenta1 p-2.5 rounded-md absolute top-4 right-4"
+                  className="p-2.5 rounded-md absolute top-4 right-4"
                   onClick={() => {
                     setPieChartSelected(!pieChartSelected);
                   }}
                 >
-                  <img src="/assets/arrow-icon.png" alt="" />
+                  <img
+                    src="/assets/arrow-icon.png"
+                    className="absolute"
+                    alt=""
+                    style={{
+                      top: "15px",
+                      left: "15px",
+                    }}
+                  />
+                  <svg
+                    width={35}
+                    height={35}
+                    viewBox="0 0 60 60"
+                    fill="none"
+                    xmlns="http://www.w3.org/2000/svg"
+                  >
+                    <path
+                      d="M10 0 H59 V49 L49 59 H0 V10 Z"
+                      // d="M10 0 H78 V68 L68 78 H0 V10 Z"
+                      // d="M0.5 6.23757C0.5 5.92234 0.59931 5.61513 0.783827 5.35955L0.379884 5.06792L0.783827 5.35955L3.84317 1.12198C4.12516 0.731383 4.57759 0.5 5.05934 0.5H77C77.8284 0.5 78.5 1.17157 78.5 2V28.4674C78.5 28.8008 78.3889 29.1248 78.1842 29.3881L75.1693 33.2658C74.8851 33.6313 74.4481 33.8451 73.9851 33.8451H2C1.17157 33.8451 0.5 33.1735 0.5 32.3451V6.23757Z"
+                      strokeWidth={"2"}
+                      stroke="#D107FB"
+                    />
+                  </svg>
                 </button>
               </div>
             </div>

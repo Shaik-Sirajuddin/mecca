@@ -52,6 +52,9 @@ export const ConcentrixChart = ({ plan_id }: Props) => {
             })}
             <div
               className={`level-30 ${maxFillLevel >= 30 ? "fill-text" : ""}`}
+              style={{
+                display: maxFillLevel >= 30 ? "block" : "none",
+              }}
             >
               <div className="level-21-30">Level 21 -30</div>
               <div className="_302">{plan.deep_referral_percentage}%</div>
@@ -70,6 +73,9 @@ export const ConcentrixChart = ({ plan_id }: Props) => {
               );
             })}
             <div
+              style={{
+                display: maxFillLevel >= 20 ? "block" : "none",
+              }}
               className={`level-20 ${maxFillLevel >= 20 ? "fill-text" : ""}`}
             >
               <div className="level-11-20">Level 11 -20</div>

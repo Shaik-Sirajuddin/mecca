@@ -35,7 +35,7 @@ export class UserStore implements IUserStore {
       const reward = this.rewards[i];
       if (reward.level === 1) {
         crewCount.direct++;
-      } else if (reward.level <= 7) {
+      } else if (reward.level <= 6) {
         crewCount.active++;
       } else {
         crewCount.deep++;

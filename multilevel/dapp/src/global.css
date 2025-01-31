@@ -36,6 +36,10 @@ a svg:hover,
 button:not(:disabled) svg:hover {
   @apply saturate-150;
 }
+button.selected svg:hover {
+  @apply saturate-100; /* Set to normal or any other value you want */
+}
+
 button:disabled {
   @apply saturate-50;
 }
@@ -453,7 +457,9 @@ button:disabled {
   top: 50%;
 }
 .c-fill {
-  background: #d107fb;
+  background: rgba(209, 7, 251, 0.1);
+  /* background: #d107fb; */
+  border-width: 0;
   border-color: #c800f1;
 }
 .center-dot {

@@ -290,12 +290,10 @@ export class UserData implements IUserData {
     return Math.max(0, userPlan?.validity_days - passedDays);
   };
 
- 
-
   static getUserCrew(level: number) {
     if (level === 1) {
       return CREW.DIRECT;
-    } else if (level <= 7) {
+    } else if (level <= 6) {
       return CREW.ACTIVE;
     } else {
       return CREW.DEEP;
