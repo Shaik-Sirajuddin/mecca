@@ -11,8 +11,11 @@ use solana_program::{
 
 use crate::{
     instructions::{
-        distribute_referral_rewards::distribute_referral_rewards, join::join,
-        owner::update_state::update_state, upgrade_plan::upgrade_plan, withdraw::withdraw,
+        distribute_referral_rewards::distribute_referral_rewards,
+        join::join,
+        owner::{update_owner::update_owner, update_state::update_state},
+        upgrade_plan::upgrade_plan,
+        withdraw::withdraw,
     },
     state::{app_state::AppState, app_store::AppStore},
 };
@@ -25,6 +28,7 @@ pub enum InstructionID {
     Withdraw,
     Distribute,
     UpdateState,
+    UpdateOwner,
 }
 
 pub fn process_instruction(
@@ -41,6 +45,7 @@ pub fn process_instruction(
         InstructionID::Distribute => distribute_referral_rewards(program_id, accounts),
         InstructionID::Join => join(program_id, accounts, instruction_data),
         InstructionID::UpdateState => update_state(program_id, accounts, instruction_data),
+        InstructionID::UpdateOwner => update_owner(program_id, accounts, instruction_data),
         InstructionID::Upgrade => upgrade_plan(program_id, accounts, instruction_data),
         InstructionID::Withdraw => withdraw(program_id, accounts, instruction_data),
     }

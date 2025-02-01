@@ -66,7 +66,7 @@ pub fn upgrade_plan(
     let app_state_acc = next_account_info(accounts_iter)?;
 
     let mint_account = next_account_info(accounts_iter)?;
-    let user_token_account = next_account_info(accounts_iter)?; 
+    let user_token_account = next_account_info(accounts_iter)?;
     let app_token_account = next_account_info(accounts_iter)?;
     let app_token_owner = next_account_info(accounts_iter)?;
     let token_program = next_account_info(accounts_iter)?;
@@ -81,7 +81,10 @@ pub fn upgrade_plan(
 
     assert!(app_state.paused == false, "Upgrades are paused");
     assert!(user_data.is_plan_active, "No current plan in progress");
-
+    assert!(
+        user_data.referral_distribution.completed,
+        "Distribution not completed for previous enrollments"
+    );
     let upgrade_instruction = UpgradeInstruction::try_from_slice(instruction_data)?;
     let current_plan = app_state.get_plan(user_data.plan_id).unwrap();
     let plan_to_upgrade = app_state.get_plan(upgrade_instruction.plan_id).unwrap();

@@ -174,7 +174,10 @@ pub fn join(
         };
         user
     };
-
+    assert!(
+        new_user || user_data.referral_distribution.completed,
+        "Distribution not completed for previous enrollments"
+    );
     let mut user_store = if new_user {
         UserStore::new(payer_acc.key.clone())
     } else {
@@ -259,7 +262,7 @@ pub fn join(
     user_store.realloc_and_save(&[payer_acc, user_store_acc, system_program])?;
 
     //transfer tokens from user
-    msg!("Token Program {}" , token_program.key.to_string());
+    msg!("Token Program {}", token_program.key.to_string());
     invoke(
         &spl_token_2022::instruction::transfer_checked(
             token_program.key,
