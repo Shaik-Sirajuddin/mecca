@@ -11,7 +11,7 @@ import {
   updateIfValid,
 } from "../utils/utils";
 import { AppState } from "../schema/app_state";
-import { splToken } from "../utils/constants";
+import { siteUrl, splToken } from "../utils/constants";
 import {
   fetchUserData,
   getATA,
@@ -252,8 +252,8 @@ const Dashboard = () => {
                 <div className="w-full gap-12 flex flex-col">
                   <div className="w-full lg:px-11 px-5 py-6 h-fit lg:py-8 bg-[url(stage-b-bg-2.png)] bg-full-3 bg-center bg-no-repeat">
                     <div className="w-full flex items-center justify-between gap-6 flex-wrap mb-5">
-                      <p className="text-sm text-white uppercase font-medium">
-                        MY UNIQUE ID HERE
+                      <p className="text-sm text-white uppercase font-medium flex justify-between flex-1">
+                        MY UNIQUE ID <b> {userData.id}</b>
                       </p>
                       <button
                         type="button"
@@ -278,14 +278,16 @@ const Dashboard = () => {
                       </button>
                     </div>
                     <div className="w-full flex items-center justify-between gap-6 flex-wrap">
-                      <p className="text-sm text-white uppercase font-medium">
-                        SOLANA LINK ADDRESS HERE
+                      <p className="text-sm text-white uppercase font-medium flex flex-1 justify-between">
+                        Referral Link
+                        {/* <b>{shortenAddress(userData.address.toString())}</b> */}
                       </p>
                       <button
                         type="button"
                         className="text-xs font-semibold text-white inline-flex items-center justify-center"
                         onClick={() => {
-                          if (publicKey) performCopy(publicKey.toString());
+                          if (publicKey)
+                            performCopy(`${siteUrl}?r=${userData.id}`);
                         }}
                       >
                         <svg

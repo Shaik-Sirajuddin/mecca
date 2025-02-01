@@ -206,7 +206,7 @@ const How = () => {
                     </li>
                     <li>
                       <p className="text-white text-xs font-medium text-start -mt-1">
-                        5%
+                        30%
                       </p>
                     </li>
                   </ul>

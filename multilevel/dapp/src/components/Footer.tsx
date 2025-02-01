@@ -1,7 +1,13 @@
-import { Link } from "react-router-dom";
+import { useEffect } from "react";
+import { Link, useLocation } from "react-router-dom";
 
 export const Footer = () => {
-  return (
+  const location = useLocation();
+  const { pathname } = location;
+  useEffect(() => {
+    console.log("patha name here", pathname);
+  }, [pathname]);
+  return pathname != "/organization-chart" ? (
     <footer className="bg-purple1 overflow-hidden">
       <div className="w-full max-w-[1152px] mx-auto px-4 relative">
         <div className="w-full flex md:flex-row justify-between flex-col md:gap-0 gap-8">
@@ -207,5 +213,7 @@ export const Footer = () => {
         </a>
       </div>
     </footer>
+  ) : (
+    <div></div>
   );
 };
