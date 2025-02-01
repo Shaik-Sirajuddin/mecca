@@ -16,12 +16,13 @@ const syncUserData = async () => {
     );
     await storeUserData(new PublicKey(users[i].dataValues.address), userData);
     await sleep(500);
+
   }
 };
 export const setUpCron = async () => {
   distributeReferralRewards();
-  cron.schedule("*/20 * * * * *", async () => {
-    console.log("Running a task every 20 seconds:", new Date());
+  cron.schedule("*/30 * * * * *", async () => {
+    console.log("Running a task every 30 seconds:", new Date());
     distributeReferralRewards();
   });
   cron.schedule("0 * * * *", () => {

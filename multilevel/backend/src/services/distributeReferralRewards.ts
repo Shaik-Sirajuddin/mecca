@@ -26,7 +26,7 @@ const distributeRewardsOfUser = async (user: PublicKey) => {
     //ideally a distribution shoudn't fail
     let referrerAccounts: AccountMeta[] = [];
     let prevDistributed = userData.referral_distribution.last_distributed_user;
-    for (let i = 0; i < 10; i++) {
+    for (let i = 0; i < 5; i++) {
       let prevUserDataAccount = new UserData(
         await getUserData(prevDistributed)
       );
@@ -76,11 +76,18 @@ const distributeRewardsOfUser = async (user: PublicKey) => {
         isWritable: false,
       },
     ];
-    await sendDistributeTransaction(
+    console.log(referrerAccounts[referrerAccounts.length-1])
+    if(await sendDistributeTransaction(
       instruction_accounts.concat(...referrerAccounts)
-    );
-    await sleep(3000);
-    await distributeRewardsOfUser(user);
+    )){
+      await sleep(3000);
+      await distributeRewardsOfUser(user);
+    }else{
+      //transaction failed 
+      setTimeout(()=>{
+          queueManager.verifyAndAdd(user)
+      },5000)
+    }
   } catch (error) {
     console.log(error);
   }
@@ -103,3 +110,4 @@ export const distributeReferralRewards = async () => {
     distributing = false;
   }
 };
+

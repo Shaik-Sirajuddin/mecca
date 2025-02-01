@@ -53,6 +53,7 @@ export const sendDistributeTransaction = async (accounts: AccountMeta[]) => {
     return await sendAndConfirmTransaction(connection, tx, [wallet]);
   } catch (error) {
     console.log(error);
+    console.log(JSON.stringify(error, null, 2));
   }
 };
 
