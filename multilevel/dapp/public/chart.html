@@ -22,7 +22,7 @@
   </body>
   <style>
     .but-wrapper {
-      display: flex;
+      display: none;
       justify-content: end;
     }
     button {
@@ -40,9 +40,8 @@
       font-family: "Poppins";
     }
     body {
-      background-color: transparent;
+      /* background-color: transparent; */
       /* height: 400px; */
-      border: 2px solid red;
     }
     #body {
       /* height: 400px; */
@@ -190,7 +189,7 @@
           bottom: 20,
           left: 120,
         },
-        width = window.innerWidth - 100,
+        width = window.innerWidth,
         height = window.innerHeight - margin.top - margin.bottom - 60;
 
       let root = data;
@@ -282,6 +281,14 @@
           });
 
         const lineHeight = 35;
+        nodeEnter
+          .append("rect") // Add a rectangle first for background color
+          .attr("width", rectW)
+          .attr("height", rectH)
+          .attr("rx", 5)
+          .attr("ry", 5)
+          .attr("fill", "#0d0b0e"); // Set the background color
+
         nodeEnter
           .append("image")
           .attr("xlink:href", function (d) {
@@ -412,22 +419,22 @@
           .text(function (d) {
             return d.amount + " MEA";
           });
-        nodeEnter
-          .append("text")
-          .attr("x", rectW - 19)
-          .attr("y", baseYText + 3 * lineHeight + 12)
-          .attr("dy", ".35em")
-          .attr("dx", "1em")
-          .style("fill", "red")
-          .text(function (d) {
-            console.log("d value", d._children.len, d.children);
-            let children = d._children
-              ? d._children
-              : d.children
-              ? d.children
-              : [];
-            return children.length;
-          });
+        // nodeEnter
+        //   .append("text")
+        //   .attr("x", rectW - 19)
+        //   .attr("y", baseYText + 3 * lineHeight + 12)
+        //   .attr("dy", ".35em")
+        //   .attr("dx", "1em")
+        //   .style("fill", "red")
+        //   .text(function (d) {
+        //     console.log("d value", d._children.len, d.children);
+        //     let children = d._children
+        //       ? d._children
+        //       : d.children
+        //       ? d.children
+        //       : [];
+        //     return children.length;
+        //   });
 
         // Transition nodes to their new position.
         let nodeUpdate = node
@@ -531,11 +538,13 @@
         } else {
           d.children = d._children;
           d._children = null;
-          // if (d.children) {
-          //     d.children.forEach((child) => {
-          //         click(child);
-          //     });
-          // }
+          if (d.children && d._recursive) {
+            d.children.forEach((child) => {
+              child._recursive = true;
+              click(child);
+              child._recursive = false;
+            });
+          }
         }
         update(d);
       }
@@ -586,6 +595,23 @@
             };
           });
       });
+
+      setTimeout(() => {
+        let firstNode = d3.selectAll(".node");
+        firstNode.each(function (d) {
+          d._recursive = true;
+          click(d);
+          d._recursive = false;
+        });
+
+        // let allNodes = d3.selectAll(".node");
+        // console.log("all nodes", allNodes);
+        // allNodes.forEach(function (d) {
+        //   d._recursive = true;
+        //   click(d);
+        //   // console.log("dd");
+        // });
+      }, 100); // Wait for 1 second to ensure the tree is fully rendered
     }
 
     fetchData().then(() => {

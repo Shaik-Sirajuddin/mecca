@@ -36,7 +36,7 @@ import { userJoined } from "../network/api";
 
 const Dashboard = () => {
   const { connection } = useConnection();
-  const { publicKey, signTransaction } = useWallet();
+  const { publicKey, sendTransaction } = useWallet();
   const [withdrawAmount, setWithdrawAmount] = useState("0");
   const [txLoading, setTxLoading] = useState(false);
   const dispatch = useDispatch();
@@ -69,6 +69,7 @@ const Dashboard = () => {
 
   const rewardPercent = useMemo(() => {
     return userData.referral_reward
+      .add(userData.accumulated.referral_reward)
       .add(
         userData
           .totalDailyReward(appState)
@@ -142,11 +143,7 @@ const Dashboard = () => {
       tx.recentBlockhash = blockhash;
       tx.feePayer = publicKey;
 
-      const signedTx = await signTransaction!(tx);
-      const broadcastResponse = await connection.sendRawTransaction(
-        signedTx.serialize()
-      );
-      console.log(broadcastResponse);
+      await sendTransaction(tx, connection);
       setModalData({
         title: "Transaction Success",
         description: "Withdrawl Successful",
@@ -208,7 +205,7 @@ const Dashboard = () => {
           ></video>
           <div className="w-full bg-xl-gradient top-[80vh] absolute h-[185px] z-10 -bottom-1"></div>
           {/* End TeamBee Changes */}
-          <div className="w-full max-w-[1152px] mx-auto px-10 relative z-20">
+          <div className="w-full max-w-[1152px] mx-auto px-5 relative z-20">
             <div className="w-full text-center">
               <div className="inline-flex items-center justify-center">
                 <img
@@ -279,7 +276,7 @@ const Dashboard = () => {
                     </div>
                     <div className="w-full flex items-center justify-between gap-6 flex-wrap">
                       <p className="text-sm text-white uppercase font-medium flex flex-1 justify-between">
-                        Referral Link
+                        Invite Link
                         {/* <b>{shortenAddress(userData.address.toString())}</b> */}
                       </p>
                       <button
@@ -322,7 +319,7 @@ const Dashboard = () => {
                     <ul className="w-full flex flex-col gap-5">
                       <li>
                         <h4 className="text-base font-semibold text-white">
-                          Total Direct Referrals
+                          Total Direct Invites
                         </h4>
                         <h3 className="text-[32px] text-white font-bold font-dm-sans leading-tight">
                           {userStore.directReferred()}
@@ -339,7 +336,7 @@ const Dashboard = () => {
                       </li>
                       <li>
                         <h4 className="text-base font-semibold text-white">
-                          Revenue from Referrals
+                          Revenue from Invites
                         </h4>
                         <h3 className="text-[32px] text-white font-bold font-dm-sans leading-tight">
                           {formatBalance(
@@ -467,25 +464,26 @@ const Dashboard = () => {
                           </button>
                         </div>
                       </div>
+
                       <button
                         type="button"
+                        className="min-h-button text-base relative flex items-center justify-center text-center w-full mt-6 uppercase text-white font-semibold"
                         disabled={
                           userStore.directReferred() < 2 ||
                           !withdrawAmount ||
                           withdrawAmount.trim() == "0"
                         }
-                        className="text-base relative flex items-center justify-center text-center w-full mt-6 uppercase text-white font-semibold"
                         onClick={withdraw}
                       >
                         <svg
                           width="100%"
                           height="100%"
-                          viewBox="0 0 426 41"
+                          viewBox="0 0 426 45"
                           fill="none"
                           xmlns="http://www.w3.org/2000/svg"
                         >
                           <path
-                            d="M0 7.58831C0 7.11587 0.167242 6.65869 0.47209 6.29777L4.90076 1.05452C5.28077 0.604618 5.83975 0.345062 6.42867 0.345062H424C425.105 0.345062 426 1.24049 426 2.34506V33.636C426 34.0662 425.861 34.4849 425.604 34.8301L422.1 39.5391C421.722 40.0462 421.128 40.3451 420.495 40.3451H2C0.895426 40.3451 0 39.4496 0 38.3451V7.58831Z"
+                            d="M0 8.5C0 7.9 0.17 7.4 0.47 7L4.9 1.5C5.28 1 5.84 0.7 6.43 0.7H424C425.1 0.7 426 1.6 426 2.7V38C426 38.5 425.86 39 425.6 39.4L422.1 44C421.72 44.5 421.13 44.8 420.5 44.8H2C0.9 44.8 0 43.9 0 42.8V8.5Z"
                             fill="#D107FB"
                           />
                         </svg>
@@ -510,8 +508,8 @@ const Dashboard = () => {
                       <ul className="list-decimal text-gray3 pl-6">
                         <li>
                           <p className="text-sm text-gray3 font-normal">
-                            Minimum of 2 Direct Referrals are required for
-                            withdrawl
+                            A Minimum of 2 Direct Invites is required for
+                            withdrawal
                           </p>
                         </li>
                       </ul>
@@ -569,7 +567,7 @@ const Dashboard = () => {
                     <ul className="w-full flex flex-col gap-5">
                       <li>
                         <h4 className="text-base font-semibold text-white">
-                          Direct Bonus
+                          Start Bonus
                         </h4>
                         <h3 className="text-[32px] text-white font-bold font-dm-sans leading-tight">
                           {formatBalance(crewProfit.direct)} {splToken.symbol}

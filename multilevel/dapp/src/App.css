@@ -19,10 +19,21 @@
 }
 
 .blurred-background {
-  background: rgba(255, 255, 255, 0.1); /* Semi-transparent background */
+  background: rgba(10, 9, 9, 0.1); /* Semi-transparent background */
   backdrop-filter: blur(2px); /* Apply the blur effect */
   -webkit-backdrop-filter: blur(2px); /* For Safari support */
   border-radius: 15px; /* Optional: adds rounded corners */
   padding: 20px; /* Optional: inner spacing */
   box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1); /* Optional: subtle shadow */
+}
+
+@media only screen and (max-width: 600px) {
+  .min-h-button {
+    height: 40px;
+    background: url("button_mobile_bg.png") 0% 0% / 100% 100% no-repeat;
+  }
+  .wallet-adapter-button  {
+    font-size: 14px !important;
+    padding: 12px !important;
+  }
 }

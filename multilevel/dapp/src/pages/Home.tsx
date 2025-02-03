@@ -1,10 +1,7 @@
 import { Helmet } from "react-helmet-async";
 import { ConcentrixChart } from "../components/ConcentrixChart";
-import { useEffect, useMemo, useState } from "react";
-import {
-  useConnection,
-  useWallet,
-} from "@solana/wallet-adapter-react";
+import { useCallback, useEffect, useMemo, useState } from "react";
+import { useConnection, useWallet } from "@solana/wallet-adapter-react";
 import {
   getJoinTransaction,
   getUpgradeTransaction,
@@ -33,7 +30,7 @@ import { useSearchParams } from "react-router-dom";
 
 const Home = () => {
   const { connection } = useConnection();
-  const { publicKey, signTransaction } = useWallet();
+  const { publicKey, sendTransaction } = useWallet();
   const [inviteCode, setInvideCode] = useState("");
   const [pieChartSelected, setPieChartSelected] = useState(false);
   const userDataRaw = useSelector((state: IRootState) => state.user.data);
@@ -111,11 +108,7 @@ const Home = () => {
       tx.recentBlockhash = blockhash;
       tx.feePayer = publicKey;
 
-      const signedTx = await signTransaction!(tx);
-      const broadcastResponse = await connection.sendRawTransaction(
-        signedTx.serialize()
-      );
-      console.log(broadcastResponse);
+      await sendTransaction(tx, connection);
       userJoined(publicKey);
     } catch (error) {
       if (error instanceof SendTransactionError) {
@@ -126,30 +119,33 @@ const Home = () => {
       setTxLoading(false);
     }
   };
-
-  const parseReferrerInput = (code = inviteCode, showModal = true) => {
-    if (!code) {
-      //user user address
-      return publicKey;
-    }
-    if (!isValidPublicKey(code)) {
-      const parsedAddress = appStore.referral_id_map.get(code);
-      if (!parsedAddress) {
-        //invalid invite code
-        if (showModal) {
-          setModalData({
-            title: "Invalid Invite Code",
-            description: "Enter valid invite code or address",
-            show: true,
-            type: "error",
-          });
-        }
-        return undefined;
+  const parseReferrerInput = useCallback(
+    (code = inviteCode, showModal = true) => {
+      if (!code) {
+        //user user address
+        return publicKey;
       }
-      return parsedAddress;
-    }
-    return new PublicKey(code);
-  };
+      if (!isValidPublicKey(code)) {
+        const parsedAddress = appStore.referral_id_map.get(code);
+        if (!parsedAddress) {
+          //invalid invite code
+          if (showModal) {
+            setModalData({
+              title: "Invalid Invite Code",
+              description: "Enter valid invite code or address",
+              show: true,
+              type: "error",
+            });
+          }
+          return undefined;
+        }
+        return parsedAddress;
+      }
+      return new PublicKey(code);
+    },
+    [appStore.referral_id_map, inviteCode, publicKey]
+  );
+
   const enroll = async () => {
     try {
       setTxLoading(true);
@@ -179,11 +175,7 @@ const Home = () => {
       tx.recentBlockhash = blockhash;
       tx.feePayer = publicKey;
 
-      const signedTx = await signTransaction!(tx);
-      const broadcastResponse = await connection.sendRawTransaction(
-        signedTx.serialize()
-      );
-      console.log(broadcastResponse);
+      await sendTransaction(tx, connection);
       userJoined(publicKey);
       setModalData({
         title: "Transaction Success",
@@ -238,22 +230,26 @@ const Home = () => {
     return () => window.removeEventListener("resize", checkHeight);
   }, []);
 
-  const getReferralFromClipboard = async () => {
+  const getReferralFromClipboard = useCallback(async () => {
     const text = await getClipBoardText();
     if (text != null) {
       if (parseReferrerInput(text, false)) {
         setInvideCode(text);
       }
     }
-  };
+    console.log("called1");
+  }, [parseReferrerInput]);
   useEffect(() => {
-    const referrer = searchParams.get('r')
+    getReferralFromClipboard();
+  }, [getReferralFromClipboard]);
+
+  useEffect(() => {
+    const referrer = searchParams.get("r");
     if (referrer && parseReferrerInput(referrer, false)) {
       setInvideCode(referrer);
-    } else {
-      getReferralFromClipboard();
     }
-  }, [searchParams]);
+    console.log("called2");
+  }, [searchParams, parseReferrerInput]);
   return (
     <>
       <Helmet>
@@ -319,7 +315,7 @@ const Home = () => {
                       } md:text-xs text-[10px] md:h-9 text-center disabled:text-gray1 text-white font-semibold inline-flex items-center justify-center uppercase`}
                     >
                       <svg
-                        width={100}
+                        width={95}
                         height={50}
                         className="text-green2"
                         viewBox="0 0 79 35"
@@ -352,7 +348,7 @@ const Home = () => {
                       } md:text-xs text-[10px] md:h-9 text-center disabled:text-gray1 text-white font-semibold inline-flex items-center justify-center uppercase`}
                     >
                       <svg
-                        width={100}
+                        width={95}
                         height={50}
                         viewBox="0 0 79 35"
                         fill="none"
@@ -401,7 +397,7 @@ const Home = () => {
                       } md:text-xs text-[10px] md:h-9 text-center disabled:text-gray1 text-white font-semibold inline-flex items-center justify-center uppercase`}
                     >
                       <svg
-                        width={100}
+                        width={95}
                         height={50}
                         viewBox="0 0 79 35"
                         fill="none"
@@ -461,7 +457,7 @@ const Home = () => {
                     </div>
                     <button
                       type="button"
-                      className="text-base relative flex items-center justify-center text-center w-full mt-6 uppercase text-white font-semibold"
+                      className="min-h-button text-base relative flex items-center justify-center text-center w-full mt-6 uppercase text-white font-semibold"
                       onClick={handleEnrollClick}
                       disabled={
                         userPDAExists && selectedPlan <= userData.plan_id
@@ -470,12 +466,12 @@ const Home = () => {
                       <svg
                         width="100%"
                         height="100%"
-                        viewBox="0 0 426 41"
+                        viewBox="0 0 426 45"
                         fill="none"
                         xmlns="http://www.w3.org/2000/svg"
                       >
                         <path
-                          d="M0 7.58831C0 7.11587 0.167242 6.65869 0.47209 6.29777L4.90076 1.05452C5.28077 0.604618 5.83975 0.345062 6.42867 0.345062H424C425.105 0.345062 426 1.24049 426 2.34506V33.636C426 34.0662 425.861 34.4849 425.604 34.8301L422.1 39.5391C421.722 40.0462 421.128 40.3451 420.495 40.3451H2C0.895426 40.3451 0 39.4496 0 38.3451V7.58831Z"
+                          d="M0 8.5C0 7.9 0.17 7.4 0.47 7L4.9 1.5C5.28 1 5.84 0.7 6.43 0.7H424C425.1 0.7 426 1.6 426 2.7V38C426 38.5 425.86 39 425.6 39.4L422.1 44C421.72 44.5 421.13 44.8 420.5 44.8H2C0.9 44.8 0 43.9 0 42.8V8.5Z"
                           fill="#D107FB"
                         />
                       </svg>

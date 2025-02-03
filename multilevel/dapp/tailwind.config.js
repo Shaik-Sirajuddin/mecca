@@ -31,6 +31,7 @@ export default {
         pink1: "#E647FF",
         red1: "#FF3B30",
         yellow1: "#FF9500",
+        header :'#454247'
       },
       backgroundImage: {
         "nav-active":

@@ -221,7 +221,7 @@ const How = () => {
                 </h3>
                 <p className="text-white text-[10px] font-medium text-center mt-2 mb-6">
                   Users receive bonuses from the participation payments of users
-                  in their 2nd to 6th levels (indirect referrals)
+                  in their 2nd to 6th levels (indirect invites)
                 </p>
                 <div className="flex justify-center -translate-x-10 lg:translate-x-0">
                   <div className="relative mx-auto">
@@ -273,7 +273,7 @@ const How = () => {
                   <div className="relative mx-auto">
                     <div className="w-11 text-center pt-1 relative bg-magenta1 h-[266px] overflow-hidden mx-auto z-10 rounded">
                       <span className="text-sm text-center text-white font-medium mb-6 pt-6 block">
-                        C
+                        A
                       </span>
                       <div className="w-full bg-magenta2 shadow-shadow1 h-full rounded ">
                         <span className="text-sm text-center text-white font-medium pt-8 mb-8 block">
@@ -281,7 +281,7 @@ const How = () => {
                         </span>
                         <div className="w-full bg-magenta3 shadow-shadow1 h-full rounded text-center">
                           <span className="text-sm text-center text-white font-medium pt-10 block">
-                            A
+                            C
                           </span>
                         </div>
                       </div>
@@ -291,7 +291,7 @@ const How = () => {
                   <ul className="text-white text-xs font-medium lg:-ml-14 -ml-16 max-w-[100px] mt-4 lg:-mr-8">
                     <li>
                       <p className="text-white text-xs font-medium text-start mb-10">
-                        7th–30th levels 1%
+                        7th–10th levels 1%
                       </p>
                     </li>
                     <li>
@@ -301,7 +301,7 @@ const How = () => {
                     </li>
                     <li>
                       <p className="text-white text-xs font-medium text-start">
-                        7th–10th levels 1%
+                        7th–30th levels 1%
                       </p>
                     </li>
                   </ul>
@@ -394,7 +394,7 @@ const How = () => {
                   <div className="w-full flex md:flex-row flex-col justify-center items-center md:gap-10 gap-6">
                     <img src="BONUS-vector.svg" alt="" />
                     <p className="text-white text-sm font-normal md:text-start text-center mb-6">
-                      Users must have at least *2 direct referrals* to withdraw
+                      Users must have at least *2 direct invites* to withdraw
                       bonuses
                     </p>
                   </div>
@@ -450,7 +450,7 @@ const How = () => {
                     This platform allows users to participate in various stages
                     of investment or staking using cryptocurrency. Participants
                     earn rewards over time, and additional benefits may include
-                    referral bonuses and upgrade options.
+                    invite bonuses and upgrade options.
                   </DisclosurePanel>
                 </Disclosure>
                 <Disclosure as="div" className="md:p-4 p-3">
@@ -474,13 +474,13 @@ const How = () => {
                     This platform allows users to participate in various stages
                     of investment or staking using cryptocurrency. Participants
                     earn rewards over time, and additional benefits may include
-                    referral bonuses and upgrade options.
+                    invite bonuses and upgrade options.
                   </DisclosurePanel>
                 </Disclosure>
                 <Disclosure as="div" className="md:p-4 p-3">
                   <DisclosureButton className="group flex w-full text-start justify-between gap-5">
                     <span className="text-base md:font-semibold font-normal text-gray5 group-data-[open]:text-magenta1">
-                      How does the referral system work?
+                      How does the invite system work?
                     </span>
 
                     <svg
@@ -498,7 +498,7 @@ const How = () => {
                     This platform allows users to participate in various stages
                     of investment or staking using cryptocurrency. Participants
                     earn rewards over time, and additional benefits may include
-                    referral bonuses and upgrade options.
+                    invite bonuses and upgrade options.
                   </DisclosurePanel>
                 </Disclosure>
                 <Disclosure as="div" className="md:p-4 p-3">
@@ -522,7 +522,7 @@ const How = () => {
                     This platform allows users to participate in various stages
                     of investment or staking using cryptocurrency. Participants
                     earn rewards over time, and additional benefits may include
-                    referral bonuses and upgrade options.
+                    invite bonuses and upgrade options.
                   </DisclosurePanel>
                 </Disclosure>
                 <Disclosure as="div" className="md:p-4 p-3">
@@ -547,7 +547,7 @@ const How = () => {
                     This platform allows users to participate in various stages
                     of investment or staking using cryptocurrency. Participants
                     earn rewards over time, and additional benefits may include
-                    referral bonuses and upgrade options.
+                    invite bonuses and upgrade options.
                   </DisclosurePanel>
                 </Disclosure>
                 <Disclosure as="div" className="md:p-4 p-3">
@@ -571,7 +571,7 @@ const How = () => {
                     This platform allows users to participate in various stages
                     of investment or staking using cryptocurrency. Participants
                     earn rewards over time, and additional benefits may include
-                    referral bonuses and upgrade options.
+                    invite bonuses and upgrade options.
                   </DisclosurePanel>
                 </Disclosure>
               </div>

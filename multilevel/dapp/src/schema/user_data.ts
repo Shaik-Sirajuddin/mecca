@@ -287,7 +287,7 @@ export class UserData implements IUserData {
       new Date(),
       new Date(this.enrolled_at.toNumber() * 1000)
     );
-    return Math.max(0, userPlan?.validity_days - passedDays);
+    return Math.max(0, userPlan?.validity_days - passedDays - 1);
   };
 
   static getUserCrew(level: number) {

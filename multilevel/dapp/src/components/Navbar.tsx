@@ -2,6 +2,7 @@ import { useState } from "react";
 import { Link, useLocation } from "react-router-dom";
 import { clsx } from "clsx";
 import { WalletMultiButton } from "@solana/wallet-adapter-react-ui";
+import useIsMobile from "./isMobile";
 
 const navLinks = [
   { id: 1, title: "Home", href: "/" },
@@ -16,13 +17,18 @@ export const Navbar = () => {
 
   const [toggleMenu, setToggleMenu] = useState(false);
 
+  const isMobile = useIsMobile();
   const handleToggleMenu = () => {
     setToggleMenu((pre) => !pre);
   };
 
   return (
-    <header className="absolute top-0 lg:top-9 w-full left-0 z-50">
-      <nav className="w-full max-w-[1162px] px-4 mx-auto bg-pink10 lg:rounded-lg py-3 backdrop-blur-lg border border-white/20">
+    // removed lg:top-9
+    <header className="fixed top-0 w-full left-0 z-50">
+      {/* 
+      removed : max-w-[1162px]
+       */}
+      <nav className="w-full px-10 mx-auto bg-pink10  py-5 backdrop-blur-lg lg:border-b border-white/20 border-0">
         <div className="w-full flex items-center justify-between gap-10">
           <Link
             to="/"
@@ -36,22 +42,39 @@ export const Navbar = () => {
           </Link>
           <ul
             className={clsx(
-              "flex lg:flex-row overflow-hidden lg:py-3 lg:translate-y-0 transition-all duration-300 flex-col py-16 lg:h-auto h-screen top-[62px] lg:static absolute lg:bg-transparent lg:bg-none bg-[url(mecca-banner-bg.png)] bg-no-repeat bg-cover bg-center lg:top-auto  lg:w-fit w-full lg:left-auto left-0 items-center gap-8 lg:gap-10 ",
+              "flex lg:flex-row overflow-hidden lg:py-3 lg:translate-y-0 transition-all duration-300 flex-col lg:h-auto top-[88px] lg:static absolute lg:bg-transparent lg:bg-none bg-no-repeat lg:top-auto  lg:w-fit w-full lg:left-auto left-0 items-start  lg:gap-10 bg-header",
               toggleMenu ? "translate-y-[0vh]" : "-translate-y-[120vh]"
+              // location != "/organization-chart" ? "pb-4" : "",
+              // location != "/" ? "pt-4" : ""
             )}
+            style={
+              {
+                // background: "#454247",
+              }
+            }
           >
-            <li className="w-full lg:hidden h-screen bg-black4/30 absolute top-0 left-0 z-0"></li>
+            <li className="w-full lg:hidden h-screen  bg-black4/30 absolute top-0 left-0 z-0"></li>
             {navLinks.map((link) => {
               const isActive = location === link.href;
               return (
-                <li key={link.id} className="relative">
+                <li
+                  key={link.id}
+                  className={clsx("relative", isMobile ? "w-full" : "")}
+                >
                   <Link
                     to={link.href}
-                    className={`text-gray2 lg:text-sm text-2xl font-poppins hover:text-gray1 transition-all duration-200 ${
-                      isActive
-                        ? "text-magenta1 lg:text-base text-2xl font-semibold hover:text-magenta1"
-                        : ""
-                    }`}
+                    className={`text-gray2 lg:text-sm text-xl font-poppins hover:text-gray1 transition-all duration-200 
+                       ${isMobile ? "p-4" : ""}
+                      ${
+                        isActive
+                          ? clsx(
+                              " lg:text-base text-xl font-semibold",
+                              isMobile
+                                ? "text-white bg-magenta1 block"
+                                : "text-magenta1  hover:text-magenta1"
+                            )
+                          : ""
+                      } ${isMobile ? "p-4 block" : ""}`}
                     aria-current={isActive ? "page" : undefined}
                     onClick={() => {
                       handleToggleMenu();
@@ -59,7 +82,7 @@ export const Navbar = () => {
                   >
                     {link.title}
                   </Link>
-                  {isActive && (
+                  {isActive && !isMobile && (
                     <div className="bg-nav-active w-full absolute h-1 -bottom-1 z-10"></div>
                   )}
                 </li>
@@ -68,6 +91,7 @@ export const Navbar = () => {
           </ul>
           <div className="flex items-center gap-4 relative z-20">
             <WalletMultiButton
+              className="connect-wallet"
               style={{
                 // background: "rgb(209 7 251)",
                 whiteSpace: "nowrap",

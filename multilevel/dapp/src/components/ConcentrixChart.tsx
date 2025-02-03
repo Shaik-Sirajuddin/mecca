@@ -53,10 +53,10 @@ export const ConcentrixChart = ({ plan_id }: Props) => {
             <div
               className={`level-30 ${maxFillLevel >= 30 ? "fill-text" : ""}`}
               style={{
-                display: maxFillLevel >= 30 ? "block" : "none",
+                display: maxFillLevel == 30 ? "block" : "none",
               }}
             >
-              <div className="level-21-30">Level 21 -30</div>
+              <div className="level-21-30">Level 7 -30</div>
               <div className="_302">{plan.deep_referral_percentage}%</div>
             </div>
           </div>
@@ -74,11 +74,11 @@ export const ConcentrixChart = ({ plan_id }: Props) => {
             })}
             <div
               style={{
-                display: maxFillLevel >= 20 ? "block" : "none",
+                display: maxFillLevel == 20 ? "block" : "none",
               }}
               className={`level-20 ${maxFillLevel >= 20 ? "fill-text" : ""}`}
             >
-              <div className="level-11-20">Level 11 -20</div>
+              <div className="level-11-20">Level 7 -20</div>
               <div className="_20">{plan.deep_referral_percentage}%</div>
             </div>
           </div>
@@ -94,7 +94,14 @@ export const ConcentrixChart = ({ plan_id }: Props) => {
                 ></div>
               );
             })}
-            <div className="level-10 fill-text">
+            <div
+              style={{
+                display: maxFillLevel == 10 ? "block" : "none",
+              }}
+              className={`level-10 ${
+                maxFillLevel == 10 ? "fill-text" : ""
+              }`}
+            >
               <div className="level-7-10">Level 7 - 10</div>
               <div className="_102">{1}%</div>
             </div>
@@ -118,7 +125,7 @@ export const ConcentrixChart = ({ plan_id }: Props) => {
       <div className="flex gap-4 mt-4 mb-4 justify-between">
         <div className="lg:px-11 px-5 py-6 lg:py-8 bg-[url(withdrawl-frame.png)] bg-full bg-center bg-no-repeat">
           <div className="text-white text-center">
-            <div>Direct (Level 1)</div>
+            <div>Start</div>
             <div className="font-bold">{plan.direct_referral_percentage} %</div>
           </div>
         </div>

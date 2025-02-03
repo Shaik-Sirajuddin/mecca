@@ -67,20 +67,22 @@ export const Footer = () => {
             <h3 className="text-gray2 text-xs mb-10 uppercase font-bold tracking-widest">
               contact
             </h3>
+            <p className="text-sm text-gray1 font-normal mb-3">PANAMÁ</p>
             <p className="text-sm text-gray1 font-normal mb-3">
-              43252 Borer Mountains
+              CORREGIMIENTO CIUDAD DE PANAMÁ
             </p>
             <p className="text-sm text-gray1 font-normal mb-3">
-              Zackerychester
+              DISTRITO PANAMÁ
             </p>
-            <p className="text-sm text-gray1 font-normal mb-3">Bahamas</p>
-            <p className="text-sm text-gray1 font-normal mb-3">732-528-4945</p>
+            <p className="text-sm text-gray1 font-normal mb-3">
+              PROVINCIA PANAMÁ
+            </p>
           </div>
         </div>
         <div className="w-full flex sm:flex-row flex-col items-start justify-between gap-3 sm:gap-8 sm:items-center py-6 relative md:mt-0 mt-[40px]">
           <hr className="md:border-t md:border-black3 border-transparent absolute top-0 w-screen left-1/2 -translate-x-1/2" />
           <p className="text-xs text-gray1 font-poppins pr-12">
-            Copyright © 2021 UI8 LLC. All rights reserved
+            Copyright © 2025 Mecca Planet Corp. All rights reserved
           </p>
           <ul className="flex items-center gap-6">
             <li>
