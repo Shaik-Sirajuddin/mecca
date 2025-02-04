@@ -45,6 +45,15 @@ func Stats(c *gin.Context) {
 		return
 	}
 
+	totalWithdrawn := 0
+
+	if err := db.DB.Raw(
+		`SELECT COALESCE(SUM(amount), 0) AS total_withdrawn FROM withdrawls where status = 1;`).
+		Scan(&totalWithdrawn).Error; err != nil {
+		utils.ResIntenalError(c)
+		return
+	}
+
 	c.IndentedJSON(http.StatusOK, gin.H{
 		"message": "Data Fetched",
 		"data": gin.H{
@@ -53,6 +62,7 @@ func Stats(c *gin.Context) {
 			"holdingsValue":    holdingsValue.Value.String(),
 			"totalCoins":       holdingsValue.Coins.String(),
 			"exportInProgress": ExportInProgress,
+			"totalWithdrawn":   totalWithdrawn,
 		},
 	})
 }
