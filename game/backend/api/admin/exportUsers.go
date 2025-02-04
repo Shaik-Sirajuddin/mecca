@@ -36,7 +36,7 @@ func ExportUsers(c *gin.Context) {
 	var belugaHoldings []HoldingResult
 
 	result := db.DB.Model(&models.BelugaHolding{}).
-		Select("beluga_holdings.quantity,beluga_holdings.beluga_id,beluga_holdings.user_id").
+		Select("beluga_holdings.quantity,beluga_holdings.beluga_id as level,beluga_holdings.user_id").
 		Find(&belugaHoldings)
 
 	if result.Error != nil {
@@ -51,7 +51,7 @@ func ExportUsers(c *gin.Context) {
 	headers := []string{"ID", "Name", "WalletAddress", "Coins", "Claimed", "HoldingValue", "TotalReferrals"}
 
 	for i := 0; i < 10; i++ {
-		headers = append(headers, fmt.Sprintf("Levevl-%d", i+1))
+		headers = append(headers, fmt.Sprintf("Level-%d", i+1))
 	}
 
 	for i, header := range headers {
