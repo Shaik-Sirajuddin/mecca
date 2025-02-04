@@ -150,7 +150,7 @@ func TransferSPLTokens(toAddr string, amount string) (bool, string) {
 	))
 
 	// Create a new WS client (used for confirming transactions)
-	wsClient, err := ws.Connect(context.Background(), rpc.DevNet_WS)
+	wsClient, err := ws.Connect(context.Background(), cluster.WS)
 	if err != nil {
 		return false, ""
 	}
