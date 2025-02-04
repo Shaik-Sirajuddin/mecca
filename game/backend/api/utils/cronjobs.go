@@ -55,7 +55,7 @@ func queueWithdrawl() {
 	}
 
 	defer func() {
-		time.Sleep(15 * time.Second) // Sleep for 2 seconds before unlocking
+		time.Sleep(2 * time.Second) // Sleep for 2 seconds before unlocking
 		mu.Unlock()
 	}()
 
@@ -101,5 +101,5 @@ func StartJob() {
 	})
 
 	// Start the cron scheduler
-	// c.Start()
+	c.Start()
 }

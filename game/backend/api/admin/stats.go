@@ -45,11 +45,15 @@ func Stats(c *gin.Context) {
 		return
 	}
 
-	totalWithdrawn := 0
+	type TotalWithdrawn struct {
+		Value decimal.Decimal `json:"total_withdrawn"`
+	}
+
+	totalWithdrawn := TotalWithdrawn{}
 
 	if err := db.DB.Raw(
 		`SELECT COALESCE(SUM(amount), 0) AS total_withdrawn FROM withdrawls where status = 1;`).
-		Scan(&totalWithdrawn).Error; err != nil {
+		Scan(&totalWithdrawn.Value).Error; err != nil {
 		utils.ResIntenalError(c)
 		return
 	}
@@ -62,7 +66,7 @@ func Stats(c *gin.Context) {
 			"holdingsValue":    holdingsValue.Value.String(),
 			"totalCoins":       holdingsValue.Coins.String(),
 			"exportInProgress": ExportInProgress,
-			"totalWithdrawn":   totalWithdrawn,
+			"totalWithdrawn":   totalWithdrawn.Value,
 		},
 	})
 }

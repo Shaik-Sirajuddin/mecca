@@ -204,7 +204,11 @@ func TransferSPLTokens(toAddr string, amount string) (bool, string) {
 
 	if err != nil && err.Error() == "not found" {
 		// user token account not created
-		tx.AddInstruction(associatedtokenaccount.NewCreateInstruction(privateKey.PublicKey(), toPubKey, tokenMint).Build())
+		instruction := (associatedtokenaccount.NewCreateInstruction(privateKey.PublicKey(), toPubKey, tokenMint).Build())
+		instruction.Accounts()[1].PublicKey = userATA
+		instruction.Accounts()[5].PublicKey = solana.Token2022ProgramID
+		tx.AddInstruction(instruction)
+		// tx.AddInstruction(associatedtokenaccount.NewCreateInstruction(privateKey.PublicKey(), toPubKey, tokenMint).Build())
 	}
 
 	token.SetProgramID(solana.Token2022ProgramID)
@@ -248,15 +252,21 @@ func TransferSPLTokens(toAddr string, amount string) (bool, string) {
 		return false, ""
 	}
 
-	sig, err := confirm.SendAndConfirmTransaction(
-		context.TODO(),
+	println("Started to send")
+	sig, err := confirm.SendAndConfirmTransactionWithOpts(
+		context.Background(),
 		rpcClient,
 		wsClient,
 		builtTX,
+		rpc.TransactionOpts{
+			PreflightCommitment: rpc.CommitmentProcessed,
+		}, nil,
 	)
 
+	println("Completed transfer")
 
 	if err != nil {
+		println("Transfer error")
 		println(err.Error())
 		return false, ""
 	}

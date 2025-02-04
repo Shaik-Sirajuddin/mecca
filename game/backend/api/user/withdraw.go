@@ -124,6 +124,7 @@ func Withdraw(c *gin.Context) {
 
 	_, err = solana.PublicKeyFromBase58(user.WalletAddress)
 
+	println(user.WalletAddress)
 	if err != nil {
 		c.IndentedJSON(http.StatusBadRequest, gin.H{
 			"error": "Please update your wallet address first",
