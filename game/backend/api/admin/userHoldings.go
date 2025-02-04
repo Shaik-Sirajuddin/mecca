@@ -13,7 +13,7 @@ import (
 
 type HoldingResult struct {
 	UserId   uint
-	Level    string
+	Level    uint
 	Value    decimal.Decimal
 	Quantity uint
 }

@@ -17,7 +17,8 @@ func Init() {
 	router = gin.Default()
 
 	router.Use(middleware.CORSMiddleware())
-
+	router.Static("/assets", "./assets")
+	
 	authR := router.Group("/auth")
 	{
 		authR.POST("/login", auth.Login)
@@ -54,6 +55,7 @@ func Init() {
 		adminR.GET("/user-count", admin.UserCount)
 		adminR.GET("/users", admin.Users)
 		adminR.GET("/user-holding", admin.UserHoliding)
+		adminR.GET("/export-users", admin.ExportUsers)
 	}
 
 	router.Run("localhost:8002")

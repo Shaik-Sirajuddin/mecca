@@ -11,14 +11,14 @@ import (
 	"github.com/shopspring/decimal"
 )
 
-type User struct {
-	ID            uint            `json:"id"`
-	Name          string          `json:"name"`
-	WalletAddress string          `json:"wallet_address"`
-	Coins         decimal.Decimal `json:"coins"`
-	ClaimedCoins  decimal.Decimal `json:"claimed_coins"`
-	HoldingValue  decimal.Decimal `json:"holding_value"`
-	TotalReferrals uint           `json:"total_referrals"`
+type UserResponseItem struct {
+	ID             uint            `json:"id"`
+	Name           string          `json:"name"`
+	WalletAddress  string          `json:"wallet_address"`
+	Coins          decimal.Decimal `json:"coins"`
+	ClaimedCoins   decimal.Decimal `json:"claimed_coins"`
+	HoldingValue   decimal.Decimal `json:"holding_value"`
+	TotalReferrals uint            `json:"total_referrals"`
 }
 
 // StatsWithPagination fetches users and their holdings with pagination
@@ -32,7 +32,7 @@ func Users(c *gin.Context) {
 	offset := (page - 1) * limit
 
 	// Slice to store results
-	var usersHoldings []User
+	var usersHoldings []UserResponseItem
 
 	// Query to fetch users and their holdings
 	if err := db.DB.Raw(`
