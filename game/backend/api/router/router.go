@@ -18,7 +18,7 @@ func Init() {
 
 	router.Use(middleware.CORSMiddleware())
 	router.Static("/assets", "./assets")
-	
+
 	authR := router.Group("/auth")
 	{
 		authR.POST("/login", auth.Login)
@@ -56,6 +56,8 @@ func Init() {
 		adminR.GET("/users", admin.Users)
 		adminR.GET("/user-holding", admin.UserHoliding)
 		adminR.GET("/export-users", admin.ExportUsers)
+		adminR.GET("/variants", admin.GetVariants)
+		adminR.POST("/update-variants", admin.UpdateVariants)
 	}
 
 	router.Run("localhost:8002")
