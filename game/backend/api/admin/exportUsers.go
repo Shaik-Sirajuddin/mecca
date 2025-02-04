@@ -12,9 +12,22 @@ import (
 	"github.com/xuri/excelize/v2"
 )
 
+var ExportInProgress = false
+
 // StatsWithPagination fetches users and their holdings with pagination
 func ExportUsers(c *gin.Context) {
 	// Slice to store results
+	if ExportInProgress {
+		c.IndentedJSON(http.StatusBadGateway, gin.H{
+			"error": "Export is in progress",
+		})
+		return
+	}
+	defer func() {
+		ExportInProgress = false
+	}()
+	ExportInProgress = true
+
 	var usersHoldings []UserResponseItem
 
 	// Query to fetch users and their holdings

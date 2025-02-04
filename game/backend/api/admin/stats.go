@@ -48,10 +48,11 @@ func Stats(c *gin.Context) {
 	c.IndentedJSON(http.StatusOK, gin.H{
 		"message": "Data Fetched",
 		"data": gin.H{
-			"dau":           dau,
-			"totalUsers":    userCount,
-			"holdingsValue": holdingsValue.Value.String(),
-			"totalCoins":    holdingsValue.Coins.String(),
+			"dau":              dau,
+			"totalUsers":       userCount,
+			"holdingsValue":    holdingsValue.Value.String(),
+			"totalCoins":       holdingsValue.Coins.String(),
+			"exportInProgress": ExportInProgress,
 		},
 	})
 }
