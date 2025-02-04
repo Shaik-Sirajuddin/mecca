@@ -32,6 +32,12 @@ const Header: React.FC = () => {
             <Nav.Link href="/staking" className="fs-5">
               Staking
             </Nav.Link>
+            <Nav.Link href="/multilevel" className="fs-5">
+              Multilevel
+            </Nav.Link>
+            <Nav.Link href="/game" className="fs-5">
+              Game
+            </Nav.Link>
             <div
               className="fs-5"
               style={{ cursor: "pointer !important" }}

@@ -7,6 +7,8 @@ import Sidebar from "./components/SideBar/SideBar";
 import Login from "./pages/Login/Login";
 import IcoPanel from "./pages/Ico/IcoPanel";
 import Staking from "./pages/staking/Staking";
+import MultiLevel from "./pages/Multilevel/Multilevel";
+import Game from "./pages/Game/Game";
 function App() {
   return (
     <>
@@ -20,8 +22,10 @@ function App() {
           <Routes>
             <Route path="/" element={<IcoPanel />} />
             <Route path="/airdrop" element={<AirdropAdmin />} />
-            <Route path="/login" element={<Login />} />
+            <Route path="/plogin" element={<Login />} />
             <Route path="/staking" element={<Staking />} />
+            <Route path="/multilevel" element={<MultiLevel />} />
+            <Route path="/game" element={<Game />} />
           </Routes>
         </div>
       </div>
