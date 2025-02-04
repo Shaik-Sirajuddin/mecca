@@ -24,7 +24,7 @@ export const tokenHolderOwner = new PublicKey(
 );
 
 export const tokenHolderATA = new PublicKey(
-  "9VLfNq54Se7sLbzUKNga4PWjL4EWCF9JFBzqhqxcBqgv"
+  "MS7P6R5LXXjKtCuodv1bYStTixwdMxSbCp7Hdamv4wn"
 );
 
 export const splToken = {
