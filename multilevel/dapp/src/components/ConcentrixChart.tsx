@@ -56,8 +56,8 @@ export const ConcentrixChart = ({ plan_id }: Props) => {
                 display: maxFillLevel == 30 ? "block" : "none",
               }}
             >
-              <div className="level-21-30">Level 7 -30</div>
-              <div className="_302">{plan.deep_referral_percentage}%</div>
+              <div className="level-21-30">1% Upto </div>
+              <div className="mt-2 level-21-30">Level 30 </div>
             </div>
           </div>
           <div className="_11-20">
@@ -78,8 +78,10 @@ export const ConcentrixChart = ({ plan_id }: Props) => {
               }}
               className={`level-20 ${maxFillLevel >= 20 ? "fill-text" : ""}`}
             >
-              <div className="level-11-20">Level 7 -20</div>
-              <div className="_20">{plan.deep_referral_percentage}%</div>
+              <div className="level-11-20">1% Upto</div>
+              <div className="mt-2 level-11-20">Level 20 </div>
+
+              {/* <div className="_20">{plan.deep_referral_percentage}%</div> */}
             </div>
           </div>
           <div className="_1-10">
@@ -98,12 +100,11 @@ export const ConcentrixChart = ({ plan_id }: Props) => {
               style={{
                 display: maxFillLevel == 10 ? "block" : "none",
               }}
-              className={`level-10 ${
-                maxFillLevel == 10 ? "fill-text" : ""
-              }`}
+              className={`level-10 ${maxFillLevel == 10 ? "fill-text" : ""}`}
             >
-              <div className="level-7-10">Level 7 - 10</div>
-              <div className="_102">{1}%</div>
+              <div className="level-7-10">1% Upto</div>
+              <div className="mt-2 level-7-10">Level 10 </div>
+              {/* <div className="_102">{1}% Upto 10</div> */}
             </div>
             <div className="center-dot"></div>
           </div>
@@ -123,13 +124,13 @@ export const ConcentrixChart = ({ plan_id }: Props) => {
         </div>
       </div>
       <div className="flex gap-4 mt-4 mb-4 justify-between">
-        <div className="lg:px-11 px-5 py-6 lg:py-8 bg-[url(withdrawl-frame.png)] bg-full bg-center bg-no-repeat">
+        <div className="lg:px-8 px-5 py-6 lg:py-8 bg-[url(withdrawl-frame.png)] bg-full bg-center bg-no-repeat">
           <div className="text-white text-center">
-            <div>Start</div>
+            <div>Start (Direct Level)</div>
             <div className="font-bold">{plan.direct_referral_percentage} %</div>
           </div>
         </div>
-        <div className="lg:px-11 px-5 py-6 lg:py-8 bg-[url(withdrawl-frame.png)] bg-full bg-center bg-no-repeat">
+        <div className="lg:px-8 px-5 py-6 lg:py-8 bg-[url(withdrawl-frame.png)] bg-full bg-center bg-no-repeat">
           <div className="text-white text-center">
             <div>Active (Level 2-6)</div>
             <div className="font-bold">{plan.active_referral_percentage} %</div>

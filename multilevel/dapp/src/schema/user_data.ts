@@ -209,14 +209,17 @@ export class UserData implements IUserData {
     let accumulatedFee = new Decimal(0);
     if (userCurPlan) {
       const curTime = new Decimal(Math.floor(Date.now() / 1000));
-      unaccountedDays = Decimal.floor(
+      unaccountedDays = Math.floor(
         Decimal.min(
           curTime,
           this.enrolled_at.add((userCurPlan.validity_days - 1) * 86400)
         )
           .sub(this.last_accounted_time)
           .div(86400)
-      ).toNumber();
+          .toNumber()
+      );
+
+      console.log("unaccounted" , unaccountedDays , this.acc_fee.toString())
 
       const totalUnaccountedDays = unaccountedDays;
 

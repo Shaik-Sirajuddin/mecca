@@ -2,7 +2,7 @@ import { PublicKey } from "@solana/web3.js";
 
 // export const baseUrl = `http://localhost:3020`;
 export const baseUrl = `https://game.meccain.com`;
-export const siteUrl = `https://multilevelmecca.netlify.app`;
+export const siteUrl = `https://multilevel.meccain.com`;
 export const multilevelProgramId = new PublicKey(
   "2epf4awb1hw6FkEHbr5EuvDjsQ86msw9Yu9LEaxD29Sg"
 );
@@ -16,7 +16,7 @@ export const appStoreAcc = new PublicKey(
 );
 
 export const tokenMint = new PublicKey(
-  "tkdZ2grPbhAcZ9W1gXaWhoNf6rJdCgqs9St7DFxdy7A"
+  "mecySk7eSawDNfAXvW3CquhLyxyKaXExFXgUUbEZE1T"
 );
 
 export const tokenHolderOwner = new PublicKey(
@@ -24,7 +24,7 @@ export const tokenHolderOwner = new PublicKey(
 );
 
 export const tokenHolderATA = new PublicKey(
-  "sgq3kEZrx73HJKE4JDFgjPNnTjFbXYMuqbTaFZHQVvQ"
+  "9VLfNq54Se7sLbzUKNga4PWjL4EWCF9JFBzqhqxcBqgv"
 );
 
 export const splToken = {

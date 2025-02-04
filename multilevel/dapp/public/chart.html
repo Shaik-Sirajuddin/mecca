@@ -45,6 +45,7 @@
     }
     #body {
       /* height: 400px; */
+      /* border: 1px solid red; */
     }
     /** @format */
     .node {
@@ -180,9 +181,12 @@
       return 1;
     }
 
+    var treeDepth = 0;
     function buildTree(data) {
+      const levelHeight = 285;
       let boxColor1 = "red",
         boxColor2 = "blue";
+      console.log("tree depth", treeDepth);
       let margin = {
           top: 20,
           right: 120,
@@ -190,7 +194,8 @@
           left: 120,
         },
         width = window.innerWidth,
-        height = window.innerHeight - margin.top - margin.bottom - 60;
+        height = treeDepth * levelHeight - margin.top - margin.bottom - 60;
+      // height = window.innerHeight - margin.top - margin.bottom - 60;
 
       let root = data;
 
@@ -254,7 +259,6 @@
         let nodes = tree.nodes(root).reverse(),
           links = tree.links(nodes);
         // Normalize for fixed-depth.
-        const levelHeight = 285;
 
         nodes.forEach(function (d) {
           d.y = d.depth * levelHeight;
@@ -265,8 +269,6 @@
         let node = svg.selectAll("g.node").data(nodes, function (d) {
           return d.id;
         });
-
-        console.log("max depth", maxDepth);
         // d3.select("svg").attr("height", (maxDepth + 1) * levelHeight);
         // Enter any new nodes at the parent's previous position.
         let nodeEnter = node
@@ -614,6 +616,13 @@
       }, 100); // Wait for 1 second to ensure the tree is fully rendered
     }
 
+    function getDepth(node) {
+      let depth = 2;
+      node.children.forEach((child) => {
+        depth = Math.max(getDepth(child) + 1, depth);
+      });
+      return depth;
+    }
     fetchData().then(() => {
       let dataForGraph = {
         address: userData.address,
@@ -624,7 +633,7 @@
         children: getNestedList(userData.address),
       };
       console.log("data Graph", dataForGraph, dataset);
-
+      treeDepth = getDepth(dataForGraph);
       buildTree(dataForGraph);
     });
 

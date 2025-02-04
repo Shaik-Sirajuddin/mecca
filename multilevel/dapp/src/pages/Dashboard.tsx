@@ -8,6 +8,7 @@ import {
   deci,
   formatBalance,
   formatLocalDateString,
+  shortenAddress,
   updateIfValid,
 } from "../utils/utils";
 import { AppState } from "../schema/app_state";
@@ -33,6 +34,7 @@ import {
   setUserData,
 } from "../features/user/userSlice";
 import { userJoined } from "../network/api";
+import useIsMobile from "../components/isMobile";
 
 const Dashboard = () => {
   const { connection } = useConnection();
@@ -67,6 +69,9 @@ const Dashboard = () => {
     return AppState.fromJSON(appStateRaw);
   }, [appStateRaw]);
 
+  const isMobile = useIsMobile();
+
+  
   const rewardPercent = useMemo(() => {
     return userData.referral_reward
       .add(userData.accumulated.referral_reward)
@@ -275,9 +280,19 @@ const Dashboard = () => {
                       </button>
                     </div>
                     <div className="w-full flex items-center justify-between gap-6 flex-wrap">
-                      <p className="text-sm text-white uppercase font-medium flex flex-1 justify-between">
+                      <p className="text-sm text-white uppercase font-medium flex flex-1 justify-between whitespace-nowrap">
                         Invite Link
-                        {/* <b>{shortenAddress(userData.address.toString())}</b> */}
+                        {/* <b>https://www..</b> */}
+                        <b
+                          style={{
+                            fontSize: "12px",
+                          }}
+                        >
+                          {shortenAddress(
+                            `multilevel.netlify.app?r=${userData.id}`,
+                             isMobile ? 5 : 15
+                          )}
+                        </b>
                       </p>
                       <button
                         type="button"
