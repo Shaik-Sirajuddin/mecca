@@ -44,6 +44,9 @@ func ExportUsers(c *gin.Context) {
 		return
 	}
 
+	var totalUsers int64
+	db.DB.Model(&models.User{}).Count(&totalUsers)
+
 	//create excel sheet
 
 	file := excelize.NewFile()
@@ -54,13 +57,17 @@ func ExportUsers(c *gin.Context) {
 		headers = append(headers, fmt.Sprintf("Level-%d", i+1))
 	}
 
+	file.SetCellValue("Sheet1", "A1", "User List")
+	file.SetCellValue("Sheet1", "A2", "Total Users")
+	file.SetCellValue("Sheet1", "B2", totalUsers)
+
 	for i, header := range headers {
-		file.SetCellValue("Sheet1", fmt.Sprintf("%s%d", string(rune(65+i)), 1), header)
+		file.SetCellValue("Sheet1", fmt.Sprintf("%s%d", string(rune(65+i)), 4), header)
 	}
 	userIndexMap := make(map[uint]int)
 
 	for i, row := range usersHoldings {
-		dataRow := i + 2
+		dataRow := i + 5
 		file.SetCellValue("Sheet1", fmt.Sprintf("%s%d", string(rune(65+0)), dataRow), row.ID)
 		file.SetCellValue("Sheet1", fmt.Sprintf("%s%d", string(rune(65+1)), dataRow), row.Name)
 		file.SetCellValue("Sheet1", fmt.Sprintf("%s%d", string(rune(65+2)), dataRow), row.WalletAddress)
@@ -81,7 +88,6 @@ func ExportUsers(c *gin.Context) {
 
 	c.IndentedJSON(http.StatusOK, gin.H{
 		"message": "File Created",
-		"data": gin.H{
-		},
+		"data":    gin.H{},
 	})
 }
