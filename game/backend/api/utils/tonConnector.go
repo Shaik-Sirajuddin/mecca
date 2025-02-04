@@ -130,8 +130,6 @@ func Transfer(toAddr string, amount string) (bool, string) {
 }
 
 func TransferSPLTokens(toAddr string, amount string) (bool, string) {
-	//temporary disable withdrawls 
-	return false , ""
 
 	defer func() {
 		if r := recover(); r != nil {
@@ -139,7 +137,11 @@ func TransferSPLTokens(toAddr string, amount string) (bool, string) {
 		}
 	}()
 
-	cluster := rpc.DevNet
+	cluster := rpc.Cluster{
+		Name: "mainnet-beta",
+		RPC:  os.Getenv("HTTPS_RPC_URL"),
+		WS:   os.Getenv("WSS_RPC_URL"),
+	}
 
 	rpcClient := rpc.NewWithCustomRPCClient(rpc.NewWithLimiter(
 		cluster.RPC,
@@ -253,7 +255,6 @@ func TransferSPLTokens(toAddr string, amount string) (bool, string) {
 		builtTX,
 	)
 
-	println("nice")
 
 	if err != nil {
 		println(err.Error())
