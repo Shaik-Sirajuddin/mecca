@@ -9,9 +9,9 @@ import (
 	"strconv"
 	"time"
 
+	"github.com/gagliardetto/solana-go"
 	"github.com/gin-gonic/gin"
 	"github.com/shopspring/decimal"
-	"github.com/xssnick/tonutils-go/address"
 	"gorm.io/gorm/clause"
 )
 
@@ -101,12 +101,12 @@ func Withdraw(c *gin.Context) {
 		return
 	}
 
-	if body.Amount.LessThan(decimal.NewFromInt(100)) {
-		c.IndentedJSON(http.StatusBadRequest, gin.H{
-			"error": "Minimum of 100 coins are required for withdrawl",
-		})
-		return
-	}
+	// if body.Amount.LessThan(decimal.NewFromInt(100)) {
+	// 	c.IndentedJSON(http.StatusBadRequest, gin.H{
+	// 		"error": "Minimum of 100 coins are required for withdrawl",
+	// 	})
+	// 	return
+	// }
 
 	if user.Coins.LessThan((body.Amount)) {
 		c.IndentedJSON(http.StatusBadRequest, gin.H{
@@ -122,7 +122,7 @@ func Withdraw(c *gin.Context) {
 		return
 	}
 
-	_, err = address.ParseAddr(user.WalletAddress)
+	_, err = solana.PublicKeyFromBase58(user.WalletAddress)
 
 	if err != nil {
 		c.IndentedJSON(http.StatusBadRequest, gin.H{
