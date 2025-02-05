@@ -40,8 +40,8 @@ const Sidebar: React.FC = () => {
         <Nav.Link href="/staking" style={styles.navLink}>
           Staking
         </Nav.Link>
-        <Nav.Link href="/multilevel" style={styles.navLink}>
-          Multilevel
+        <Nav.Link href="/mecca" style={styles.navLink}>
+          Mecca Crypto
         </Nav.Link>
         <Nav.Link href="/game" style={styles.navLink}>
           Game

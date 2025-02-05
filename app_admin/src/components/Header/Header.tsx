@@ -33,7 +33,7 @@ const Header: React.FC = () => {
               Staking
             </Nav.Link>
             <Nav.Link href="/multilevel" className="fs-5">
-              Multilevel
+              Mecca Crypto
             </Nav.Link>
             <Nav.Link href="/game" className="fs-5">
               Game

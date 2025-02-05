@@ -90,9 +90,9 @@ const MultiLevel: React.FC = () => {
   return (
     <div>
       <Container className="py-4">
-        <h1 className="mb-4 text-center">Multilevel</h1>
+        <h1 className="mb-4 text-center">Mecca Crypto</h1>
         <Row className="mb-4">
-          <h2 className="mb-4">Multilevel Contract State</h2>
+          <h2 className="mb-4">Mecca Crypto Contract State</h2>
           <Col>
             <p>
               <strong>Total Participants:</strong>{" "}

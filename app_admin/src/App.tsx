@@ -22,9 +22,9 @@ function App() {
           <Routes>
             <Route path="/" element={<IcoPanel />} />
             <Route path="/airdrop" element={<AirdropAdmin />} />
-            <Route path="/plogin" element={<Login />} />
+            <Route path="/login" element={<Login />} />
             <Route path="/staking" element={<Staking />} />
-            <Route path="/multilevel" element={<MultiLevel />} />
+            <Route path="/mecca" element={<MultiLevel />} />
             <Route path="/game" element={<Game />} />
           </Routes>
         </div>

@@ -195,7 +195,7 @@ const Game: React.FC = () => {
               <p className="d-flex align-items-center" style={{ gap: "10px" }}>
                 <div
                   style={{
-                    background: stats.exportInProgress ? "green" : "darkred",
+                    background: stats.exportInProgress ? "darkred" : "greenp",
                     width: "fit-content",
                     padding: "8px 12px",
                     borderRadius: "4px",
