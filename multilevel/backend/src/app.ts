@@ -11,7 +11,7 @@ server.listen(port, () => {
   console.log(`server listening at ${port}`);
 });
 
-makeConnection().then((res) => {
+makeConnection().then(async (res) => {
   redisConnect().then(() => {
     setUpCron();
   });

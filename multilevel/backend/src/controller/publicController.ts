@@ -10,11 +10,12 @@ import Decimal from "decimal.js";
 import { Plan } from "../schema/plan";
 import { UserData } from "../schema/user_data";
 import { connection, fetchAppState } from "../utils/web3";
+import { AppState } from "../schema/app_state";
 
 //called when user joins a new plan or upgrades
 export const join = async (req: Request, res: Response) => {
   try {
-    //TODO : rate limit endpoint for an address 
+    //TODO : rate limit endpoint for an address
     let { address } = req.body;
     if (!address) {
       throw "Invalid Address";
@@ -26,7 +27,7 @@ export const join = async (req: Request, res: Response) => {
     if (!(await queueManager.verifyAndAdd(userPubKey))) {
       throw "User is invalid or already distributed";
     }
-    console.log("user Queued" , queueManager.top())
+    console.log("user Queued", queueManager.top());
     responseHandler.success(res, "User Queued for distribution", {});
   } catch (error) {
     console.log(error);
@@ -155,6 +156,44 @@ export const getUserStats = async (req: Request, res: Response) => {
     data.accFee = accFee.toString();
 
     responseHandler.success(res, "Fetched", data);
+  } catch (error) {
+    console.log(error);
+    responseHandler.error(res, error);
+  }
+};
+
+const getRewardPercent = (userData: UserData, appState: AppState) => {
+  userData.referral_reward
+    .add(userData.accumulated.referral_reward)
+    .add(
+      userData.totalDailyReward(appState).sub(userData.accumulated.daily_reward)
+    )
+    .div(appState.getPlan(userData.plan_id)!.investment_required)
+    .mul(100)
+    .toFixed(2);
+};
+
+export const getUsers = async (req: Request, res: Response) => {
+  try {
+    let users = await MUserData.findAll({
+      where: {},
+    });
+    let appstate = await fetchAppState(connection);
+    let parsedUsers = [];
+    for (let i = 0; i < users.length; i++) {
+      let user = users[i];
+      let userData = new UserData(JSON.parse(user.dataValues.data).data);
+      let reward_percent = getRewardPercent(userData, appstate);
+      parsedUsers.push({
+        address: userData.address.toString(),
+        id: userData.id,
+        plan_id: userData.plan_id,
+        enrolled_at: userData.enrolled_at.toString(),
+        referrer: userData.referrer.toString(),
+        reward_percent,
+      });
+    }
+    responseHandler.success(res, "Fetched", parsedUsers);
   } catch (error) {
     console.log(error);
     responseHandler.error(res, error);

@@ -41,6 +41,7 @@ export interface IUserData {
   referral_distribution: ReferralDistributionState;
   upgrade_deduction: UpgradeDeduction[];
   accumulated: Accumulated;
+  upgrade_state: Accumulated;
 }
 
 // Classes
@@ -160,6 +161,7 @@ export class UserData implements IUserData {
   referral_distribution: ReferralDistributionState;
   upgrade_deduction: UpgradeDeduction[];
   accumulated: Accumulated;
+  upgrade_state: Accumulated;
 
   constructor(data: any) {
     this.id = data.id || "";
@@ -186,6 +188,8 @@ export class UserData implements IUserData {
       (ud: any) => new UpgradeDeduction(ud)
     );
     this.accumulated = new Accumulated(data.accumulated || {});
+    this.upgrade_state = new Accumulated(data.upgrade_state || {});
+    console.log(data.upgrade_deduction, "here");
   }
 
   applyUpgradeDeduction = (
@@ -208,14 +212,17 @@ export class UserData implements IUserData {
     let accumulatedFee = new Decimal(0);
     if (userCurPlan) {
       const curTime = new Decimal(Math.floor(Date.now() / 1000));
-      unaccountedDays = Decimal.floor(
+      unaccountedDays = Math.floor(
         Decimal.min(
           curTime,
           this.enrolled_at.add((userCurPlan.validity_days - 1) * 86400)
         )
           .sub(this.last_accounted_time)
           .div(86400)
-      ).toNumber();
+          .toNumber()
+      );
+
+      console.log("unaccounted", unaccountedDays, this.acc_fee.toString());
 
       const totalUnaccountedDays = unaccountedDays;
 
@@ -286,13 +293,13 @@ export class UserData implements IUserData {
       new Date(),
       new Date(this.enrolled_at.toNumber() * 1000)
     );
-    return Math.max(0, userPlan?.validity_days - passedDays);
+    return Math.max(0, userPlan?.validity_days - passedDays - 1);
   };
 
   static getUserCrew(level: number) {
     if (level === 1) {
       return CREW.DIRECT;
-    } else if (level <= 7) {
+    } else if (level <= 6) {
       return CREW.ACTIVE;
     } else {
       return CREW.DEEP;
