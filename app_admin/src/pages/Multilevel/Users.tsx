@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { Table, Pagination, Spinner, Container } from "react-bootstrap";
+import { Table, Pagination, Spinner } from "react-bootstrap";
 import { apiBaseUrl } from "./utils/constants";
 import { Link } from "react-router-dom";
 import { Plan } from "../../schema/multilevel/plan";
@@ -101,7 +101,7 @@ const UsersPage = () => {
                       src="/copy-file-icon.svg"
                       height={18}
                       width={18}
-                  p    style={{ cursor: "pointer" }}
+                      style={{ cursor: "pointer" }}
                       alt=""
                       onClick={() => {
                         performCopy(user.address);

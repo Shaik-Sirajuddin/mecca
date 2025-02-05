@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import { apiBaseUrl, authKey } from "./utils/constants";
 import toast from "react-hot-toast";
-import { Button, Col, Container, Form, Row, Table } from "react-bootstrap";
+import { Button, Container, Form, Table } from "react-bootstrap";
 import { updateIfValid } from "../../utils/utils";
 
 interface Variant {
