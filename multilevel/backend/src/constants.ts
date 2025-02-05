@@ -1,6 +1,8 @@
 import { PublicKey } from "@solana/web3.js";
+import * as dotenv from "dotenv";
+dotenv.config();
 
-export const rpcUrl = process.env.RPC_URL;
+export const rpcUrl = process.env.RPC_URL || '';
 export const multilevelProgramId = new PublicKey(
   "2epf4awb1hw6FkEHbr5EuvDjsQ86msw9Yu9LEaxD29Sg"
 );

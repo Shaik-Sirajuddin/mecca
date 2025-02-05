@@ -41,15 +41,18 @@ export const getUserStoreAcc = (address: PublicKey) => {
   return pda;
 };
 
-export const sendDistributeTransaction = async (accounts: AccountMeta[]) => {
+export const sendDistributeTransaction = async (accountList : AccountMeta[][])=> {
   try {
-    let instruction = new TransactionInstruction({
-      keys: accounts,
-      programId: multilevelProgramId,
-      data: Buffer.from(new Uint8Array([4])),
-    });
+
     let tx = new Transaction();
-    tx.add(instruction);
+    for(let i = 0;i<accountList.length;i++){
+      let instruction = new TransactionInstruction({
+        keys: accountList[i],
+        programId: multilevelProgramId,
+        data: Buffer.from(new Uint8Array([4])),
+      });
+      tx.add(instruction);
+    }
     return await sendAndConfirmTransaction(connection, tx, [wallet]);
   } catch (error) {
     console.log(error);
