@@ -122,8 +122,16 @@ const Home = () => {
   const parseReferrerInput = useCallback(
     (code = inviteCode, showModal = true) => {
       if (!code) {
-        //user user address
-        return publicKey;
+        //referral code is required
+        if (showModal) {
+          setModalData({
+            title: "Invalid Invite Code",
+            description: "Enter valid invite code or address",
+            show: true,
+            type: "error",
+          });
+        }
+        return undefined;
       }
       if (!isValidPublicKey(code)) {
         const parsedAddress = appStore.referral_id_map.get(code);
@@ -143,7 +151,7 @@ const Home = () => {
       }
       return new PublicKey(code);
     },
-    [appStore.referral_id_map, inviteCode, publicKey]
+    [appStore.referral_id_map, inviteCode]
   );
 
   const enroll = async () => {
@@ -237,11 +245,10 @@ const Home = () => {
         setInvideCode(text);
       }
     }
-    console.log("called1");
   }, [parseReferrerInput]);
   useEffect(() => {
     getReferralFromClipboard();
-  }, [getReferralFromClipboard]);
+  }, []);
 
   useEffect(() => {
     const referrer = searchParams.get("r");
@@ -280,12 +287,12 @@ const Home = () => {
                 </h1>
               </div>
               <p className="text-base leading-6 font-semibold text-white max-w-[944px] mx-auto mt-2">
-                MECA Crypto is an innovative platform designed to provide
+              MECCA Crypto is an innovative platform designed to provide
                 ecosystem participants with unlimited and perpetual monetization
                 opportunities.The space combines blockchain technology with a
                 sponsorship reward system to help participants gain sustainable
                 value in a transparent and fair manner. Experience a new
-                blockchain-based economic model with MECA Crypto today and
+                blockchain-based economic model with MECCA Crypto today and
                 explore a world of endless possibilities.
               </p>
             </div>
@@ -460,7 +467,8 @@ const Home = () => {
                       className="min-h-button text-base relative flex items-center justify-center text-center w-full mt-6 uppercase text-white font-semibold"
                       onClick={handleEnrollClick}
                       disabled={
-                        userPDAExists && selectedPlan <= userData.plan_id
+                        (userPDAExists && selectedPlan <= userData.plan_id) ||
+                        !inviteCode
                       }
                     >
                       <svg
@@ -523,6 +531,13 @@ const Home = () => {
                         <p className="text-gray3 text-sm font-normal">
                           The bonus pool will incur a daily fee of 1 MEA
                           (deduction)
+                        </p>
+                      </li>
+                      <li>
+                        <p className="text-gray3 text-sm font-normal">
+                          If you want to receive an invitation code , please
+                          contact us <br />
+                          <b>meccacrew@gmail.com</b>
                         </p>
                       </li>
                     </ul>

@@ -6,10 +6,10 @@ import useIsMobile from "./isMobile";
 
 const navLinks = [
   { id: 1, title: "Home", href: "/" },
-  { id: 3, title: "My Dashboard", href: "/dashboard" },
-  { id: 2, title: "How", href: "/how" },
-  { id: 4, title: "My CREW", href: "/crew" },
-  { id: 5, title: "Organization Chart", href: "/organization-chart" },
+  { id: 2, title: "My Dashboard", href: "/dashboard" },
+  { id: 3, title: "My CREW", href: "/crew" },
+  { id: 4, title: "Organization Chart", href: "/organization-chart" },
+  { id: 5, title: "How", href: "/how" },
 ];
 
 export const Navbar = () => {
