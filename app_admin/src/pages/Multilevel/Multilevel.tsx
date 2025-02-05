@@ -15,6 +15,7 @@ import { splToken } from "../staking/utils/constants";
 import { parsePubKey } from "../Ico/utils/web3";
 import toast from "react-hot-toast";
 import { AppState } from "../../schema/multilevel/app_state";
+import { Link } from "react-router-dom";
 const MultiLevel: React.FC = () => {
   const { connection } = useConnection();
   const { publicKey, sendTransaction } = useWallet();
@@ -166,6 +167,27 @@ const MultiLevel: React.FC = () => {
           </Col>
         </Row>
       </Container>
+      <Row className="justify-content-center align-items-center">
+        <Link to={"./users"} style={{ width: "fit-content" }}>
+          <Button
+            style={{
+              width: "fit-content",
+              fontWeight: "bold",
+              fontSize: "20px",
+            }}
+          >
+            User List
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              width="24"
+              height="24"
+              fill="white"
+            >
+              <path d="M7.293 4.707 14.586 12l-7.293 7.293 1.414 1.414L17.414 12 8.707 3.293 7.293 4.707z" />
+            </svg>
+          </Button>
+        </Link>
+      </Row>
       <Row>
         <Form.Group controlId="depositAddress" className="mb-3">
           <Form.Label>

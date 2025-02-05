@@ -9,6 +9,8 @@ import IcoPanel from "./pages/Ico/IcoPanel";
 import Staking from "./pages/staking/Staking";
 import MultiLevel from "./pages/Multilevel/Multilevel";
 import Game from "./pages/Game/Game";
+import Users from "./pages/Game/Users";
+import UsersPage from "./pages/Multilevel/Users";
 function App() {
   return (
     <>
@@ -25,7 +27,9 @@ function App() {
             <Route path="/login" element={<Login />} />
             <Route path="/staking" element={<Staking />} />
             <Route path="/mecca" element={<MultiLevel />} />
-            <Route path="/game" element={<Game />} />
+            <Route path="/mecca/users" element={<UsersPage />} />
+            <Route path="/game/" element={<Game />} />
+            <Route path="/game/users" element={<Users />} />
           </Routes>
         </div>
       </div>
