@@ -41,6 +41,7 @@ export interface IUserData {
   referral_distribution: ReferralDistributionState;
   upgrade_deduction: UpgradeDeduction[];
   accumulated: Accumulated;
+  upgrade_state: Accumulated;
 }
 
 // Classes
@@ -160,6 +161,7 @@ export class UserData implements IUserData {
   referral_distribution: ReferralDistributionState;
   upgrade_deduction: UpgradeDeduction[];
   accumulated: Accumulated;
+  upgrade_state: Accumulated;
 
   constructor(data: any) {
     this.id = data.id || "";
@@ -186,6 +188,7 @@ export class UserData implements IUserData {
       (ud: any) => new UpgradeDeduction(ud)
     );
     this.accumulated = new Accumulated(data.accumulated || {});
+    this.upgrade_state = new Accumulated(data.upgrade_state || {});
     console.log(data.upgrade_deduction, "here");
   }
 
@@ -219,7 +222,7 @@ export class UserData implements IUserData {
           .toNumber()
       );
 
-      console.log("unaccounted" , unaccountedDays , this.acc_fee.toString())
+      console.log("unaccounted", unaccountedDays, this.acc_fee.toString());
 
       const totalUnaccountedDays = unaccountedDays;
 

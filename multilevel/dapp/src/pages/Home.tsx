@@ -287,7 +287,7 @@ const Home = () => {
                 </h1>
               </div>
               <p className="text-base leading-6 font-semibold text-white max-w-[944px] mx-auto mt-2">
-              MECCA Crypto is an innovative platform designed to provide
+                MECCA Crypto is an innovative platform designed to provide
                 ecosystem participants with unlimited and perpetual monetization
                 opportunities.The space combines blockchain technology with a
                 sponsorship reward system to help participants gain sustainable

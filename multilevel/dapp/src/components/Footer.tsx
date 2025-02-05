@@ -28,14 +28,7 @@ export const Footer = () => {
                   Home
                 </Link>
               </li>
-              <li>
-                <Link
-                  to="/how"
-                  className="text-sm lg:whitespace-nowrap font-bold font-dm-sans uppercase text-gray1 transition-all duration-200 hover:text-gray2"
-                >
-                  HOW
-                </Link>
-              </li>
+              
               <li>
                 <Link
                   to="/dashboard"
@@ -57,7 +50,15 @@ export const Footer = () => {
                   to="/organization-chart"
                   className="text-sm lg:whitespace-nowrap font-bold font-dm-sans uppercase text-gray1 transition-all duration-200 hover:text-gray2"
                 >
-                  ORGANISATION CHART
+                  ORGANIZATION CHART
+                </Link>
+              </li>
+              <li>
+                <Link
+                  to="/how"
+                  className="text-sm lg:whitespace-nowrap font-bold font-dm-sans uppercase text-gray1 transition-all duration-200 hover:text-gray2"
+                >
+                  HOW
                 </Link>
               </li>
             </ul>

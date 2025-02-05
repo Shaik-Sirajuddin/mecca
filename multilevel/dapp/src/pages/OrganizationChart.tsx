@@ -40,14 +40,14 @@ const OrganizationChart = () => {
 
       <div className="w-full bg-black5 relative">
         <div className="w-full max-w-[1162px] mx-auto absolute h-[623px] rounded-full blur-[200px] -top-[400px] left-1/2 -translate-x-1/2 bg-[#6E3359]"></div>
-        <section className="w-full relative md:min-h-[600px] lg:min-h-[753px]  pb-28 pt-32 lg:pt-[120px]">
-          <div className="w-full h-screen absolute top-0 left-0 bg-black5/50 z-10"></div>
-          <div className="w-full bg-xl-gradient top-[80vh] absolute h-[185px] z-10 -bottom-1"></div>{" "}
+        <section className="w-full relative md:min-h-[600px] bg-black5/50  lg:min-h-[753px]  pb-28 pt-32 lg:pt-[120px]">
+          <div className="w-full h-screen absolute top-0 left-0 bg-black z-10"></div>
+          <div className="w-ful top-[80vh absolute h-[185px] z-10 -bottom-1"></div>{" "}
           <div className="w-full mx-auto px-5 relative z-20">
             <iframe
               ref={iframeRef}
               src={`./chart.html?address=${publicKey?.toString()}`}
-              // src={`./chart.html?address=${"4oAPmx3Sz3pAZSegFbQY1Hk5MqhW2LcxrnQQWWENzjgN"}`}
+              // src={`./chart.html?address=${"4oAPmx3S3pAZSegFbQY1Hk5MqhW2LcxrnQQWWENzjgN"}`}
               width={"100%"}
               // height={"1000px"}
               scrolling="no"

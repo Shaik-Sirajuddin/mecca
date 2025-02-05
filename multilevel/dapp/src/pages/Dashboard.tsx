@@ -71,7 +71,6 @@ const Dashboard = () => {
 
   const isMobile = useIsMobile();
 
-  
   const rewardPercent = useMemo(() => {
     return userData.referral_reward
       .add(userData.accumulated.referral_reward)
@@ -290,7 +289,7 @@ const Dashboard = () => {
                         >
                           {shortenAddress(
                             `mc.meccain.com?r=${userData.id}`,
-                             isMobile ? 5 : 15
+                            isMobile ? 5 : 15
                           )}
                         </b>
                       </p>
