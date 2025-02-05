@@ -101,7 +101,7 @@ const UsersPage = () => {
                       src="/copy-file-icon.svg"
                       height={18}
                       width={18}
-                      style={{ cursor: "pointer" }}
+                  p    style={{ cursor: "pointer" }}
                       alt=""
                       onClick={() => {
                         performCopy(user.address);
