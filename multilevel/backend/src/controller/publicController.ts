@@ -207,7 +207,7 @@ export const getUsers = async (req: Request, res: Response) => {
       total: count,
       totalPages: Math.ceil(count / limitNumber),
       currentPage: pageNumber,
-      users: users,
+      users: parsedUsers,
     });
   } catch (error) {
     console.log(error);
