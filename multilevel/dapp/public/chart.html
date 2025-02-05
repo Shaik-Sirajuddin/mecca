@@ -294,7 +294,7 @@
         nodeEnter
           .append("image")
           .attr("xlink:href", function (d) {
-            return "https://multilevelmecca.netlify.app/tree-chart-bg.png";
+            return "https://mc.meccain.com/tree-chart-bg.png";
           })
           .attr("width", rectW)
           .attr("height", rectH)
@@ -628,7 +628,7 @@
         address: userData.address,
         referrer: userData.referrer,
         amount: "0",
-        current_plan: 0,
+        current_plan: userData.current_plan,
         id: userData.id,
         children: getNestedList(userData.address),
       };

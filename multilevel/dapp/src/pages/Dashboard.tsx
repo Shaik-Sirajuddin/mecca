@@ -289,7 +289,7 @@ const Dashboard = () => {
                           }}
                         >
                           {shortenAddress(
-                            `multilevel.netlify.app?r=${userData.id}`,
+                            `mc.meccain.com?r=${userData.id}`,
                              isMobile ? 5 : 15
                           )}
                         </b>
