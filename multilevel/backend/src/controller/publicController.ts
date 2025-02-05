@@ -175,8 +175,18 @@ const getRewardPercent = (userData: UserData, appState: AppState) => {
 
 export const getUsers = async (req: Request, res: Response) => {
   try {
-    let users = await MUserData.findAll({
+    let { page, limit } = req.query;
+
+    // Convert query parameters to integers and set defaults
+    const pageNumber = parseInt(page as string) || 1;
+    const limitNumber = parseInt(limit as string) || 10;
+    const offset = (pageNumber - 1) * limitNumber;
+
+    const { rows: users, count } = await MUserData.findAndCountAll({
       where: {},
+      limit: limitNumber,
+      offset: offset,
+      order: [["createdAt", "DESC"]],
     });
     let appstate = await fetchAppState(connection);
     let parsedUsers = [];
@@ -193,7 +203,12 @@ export const getUsers = async (req: Request, res: Response) => {
         reward_percent,
       });
     }
-    responseHandler.success(res, "Fetched", parsedUsers);
+    responseHandler.success(res, "Fetched", {
+      total: count,
+      totalPages: Math.ceil(count / limitNumber),
+      currentPage: pageNumber,
+      users: users,
+    });
   } catch (error) {
     console.log(error);
     responseHandler.error(res, error);
