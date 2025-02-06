@@ -18,7 +18,7 @@ use crate::{
         app_state::AppState,
         app_store::AppStore,
         token_store::TokenStore,
-        user::{ReferralDistributionState, UserData, UserStore},
+        user::{Accumulated, ReferralDistributionState, UserData, UserStore},
     },
 };
 
@@ -113,7 +113,6 @@ pub fn join(
 
     assert!(app_state.paused == false, "New enrollments are paused");
 
-    msg!("Reached here");
     if join_instruction.referrer != *payer_acc.key {
         //check if referrer data account provided match the provided referrer
         validate_user_data_acc(
@@ -172,11 +171,12 @@ pub fn join(
             last_level: 0,
             invested_amount: plan.investment_required,
         };
+        user.upgrade_state = Accumulated::new();
         user
     };
     assert!(
-        new_user || user_data.referral_distribution.completed,
-        "Distribution not completed for previous enrollments"
+        new_user || (!user_data.is_plan_active),
+        "User already enrolled in plan"
     );
     let mut user_store = if new_user {
         UserStore::new(payer_acc.key.clone())

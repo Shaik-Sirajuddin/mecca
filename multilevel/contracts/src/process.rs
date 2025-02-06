@@ -37,11 +37,10 @@ pub fn process_instruction(
     instruction_data: &[u8],
 ) -> ProgramResult {
     let (instruction_id, instruction_data) = instruction_data.split_at(1);
-    // init_appstate(program_id, accounts)
     let instruction_id = InstructionID::try_from_slice(instruction_id)?;
 
     match instruction_id {
-        InstructionID::InitState => re_init_state(program_id, accounts, instruction_data),
+        InstructionID::InitState => init_state(program_id, accounts, instruction_data),
         InstructionID::Distribute => distribute_referral_rewards(program_id, accounts),
         InstructionID::Join => join(program_id, accounts, instruction_data),
         InstructionID::UpdateState => update_state(program_id, accounts, instruction_data),
@@ -51,33 +50,6 @@ pub fn process_instruction(
     }
 }
 
-pub fn re_init_state(
-    program_id: &Pubkey,
-    accounts: &[AccountInfo],
-    _instruction_data: &[u8],
-) -> ProgramResult {
-    let accounts_iter = &mut accounts.iter();
-    let payer = next_account_info(accounts_iter)?;
-    let app_state_acc = next_account_info(accounts_iter)?;
-
-    assert!(
-        *payer.key == Pubkey::from_str_const(AppState::OWNER),
-        "Unauthorized"
-    );
-
-    let (derived_app_state_acc, _) =
-        Pubkey::find_program_address(&[AppState::SEED.as_bytes()], program_id);
-
-    assert!(
-        derived_app_state_acc == *app_state_acc.key,
-        "Mismatched app state acc"
-    );
-
-    let app_state = AppState::new(payer.key);
-    app_state.save(app_state_acc)?;
-
-    Ok(())
-}
 pub fn init_state(
     program_id: &Pubkey, //TODO : check if a user can send different program address than defined
     accounts: &[AccountInfo],

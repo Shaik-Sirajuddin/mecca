@@ -3,7 +3,6 @@ use solana_program::{
     account_info::{next_account_info, AccountInfo},
     clock::Clock,
     entrypoint::ProgramResult,
-    msg,
     pubkey::Pubkey,
     sysvar::Sysvar,
 };
@@ -11,7 +10,7 @@ use solana_program::{
 use crate::{
     instructions::pda_validator::validate_app_state,
     state::{
-        app_state::{self, AppState},
+        app_state::AppState,
         reward::Reward,
         user::{UserData, UserStore},
     },
@@ -41,6 +40,9 @@ fn distribute_rewards_to_user(
             * (receivable_percentage as u64))
             / 100;
         user_to_dis_data.referral_reward += receivable_amount;
+        //the call might be redundant , as reward function is called internally by
+        //get_receivable_reward_percentage before reaching reward block
+        user_to_dis_data.verify_profit_limit(app_state);
         user_to_dis_store.rewards.reserve_exact(1);
         user_to_dis_store.rewards.push(Reward {
             invested_amount: user_data.referral_distribution.invested_amount,
@@ -83,7 +85,7 @@ pub fn distribute_referral_rewards(program_id: &Pubkey, accounts: &[AccountInfo]
         previous_distributed_user.address == user_data.referral_distribution.last_distributed_user,
         "Mismatch last distribution account"
     );
-    assert!(user_data.is_plan_active, "User not enrolled in plan");
+    //distribution is possible is after plan expiry
     assert!(
         !user_data.referral_distribution.completed,
         "Distribution already completed"

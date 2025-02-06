@@ -19,6 +19,7 @@ impl AppState {
         AppState {
             daily_fee: 1 * 10u64.pow(*TokenStore::DECIMALS as u32),
             paused: false,
+            //plans are fixed , cannot be modified by admin
             plans: vec![
                 Plan {
                     id: 0,

@@ -28,6 +28,16 @@ pub struct Accumulated {
     pub referral_reward: u64,
 }
 
+impl Accumulated {
+    pub fn new() -> Self {
+        Accumulated {
+            daily_reward: 0,
+            fee: 0,
+            referral_reward: 0,
+        }
+    }
+}
+
 #[derive(BorshSerialize, BorshDeserialize)]
 pub struct UserData {
     pub id: string::String,
@@ -47,6 +57,7 @@ pub struct UserData {
     pub referral_distribution: ReferralDistributionState,
     pub upgrade_deduction: [UpgradeDeduction; 2],
     pub accumulated: Accumulated,
+    pub upgrade_state: Accumulated, //used to track current plan accumlations
 }
 
 impl UserData {
@@ -88,7 +99,8 @@ impl UserData {
                     days: 0,
                 },
             ],
-            accumulated: Accumulated {
+            accumulated: Accumulated::new(),
+            upgrade_state: Accumulated {
                 daily_reward: 0,
                 fee: 0,
                 referral_reward: 0,
@@ -113,6 +125,26 @@ impl UserData {
             reduced_reward_days * (plan.daily_reward - upgrade_deduction.daily_amount);
         unaccounted_days -= reduced_reward_days;
         return unaccounted_days;
+    }
+    /*
+       Unenroll ( mark plan as inactive)  When user profit reaches 1000% (10x)
+       the original investment amount
+    */
+    pub fn verify_profit_limit(&mut self, app_state: &AppState) {
+        //fee is ommited in reward calculation
+        if !self.is_plan_active {
+            return;
+        }
+
+        let accumulated_reward = self.acc_daily_reward
+            + self.referral_reward
+            + self.upgrade_state.daily_reward
+            + self.upgrade_state.referral_reward;
+        let plan = app_state.get_plan(self.plan_id).unwrap();
+
+        if accumulated_reward >= 10 * plan.investment_required {
+            self.is_plan_active = false;
+        }
     }
     /**
      * Charge fee and provide daily reward until specified time if applicable
@@ -146,6 +178,7 @@ impl UserData {
         if time >= (plan_expiry_date + 86400) {
             self.is_plan_active = false;
         }
+        self.verify_profit_limit(app_state);
     }
 
     pub fn get_withdrawable_amount(&self) -> u64 {

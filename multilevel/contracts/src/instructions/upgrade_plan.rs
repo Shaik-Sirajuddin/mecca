@@ -108,6 +108,10 @@ pub fn upgrade_plan(
         user_data.upgrade_deduction[1] = upgrade_deduction;
     }
 
+    user_data.upgrade_state.daily_reward += user_data.acc_daily_reward;
+    user_data.upgrade_state.fee += user_data.acc_fee;
+    user_data.upgrade_state.referral_reward += user_data.referral_reward;
+
     user_data.accumulated.daily_reward += user_data.acc_daily_reward;
     user_data.accumulated.fee += user_data.acc_fee;
     user_data.accumulated.referral_reward += user_data.referral_reward;
