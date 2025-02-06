@@ -1,27 +1,51 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { Link, useLocation } from "react-router-dom";
 import { clsx } from "clsx";
 import { WalletMultiButton } from "@solana/wallet-adapter-react-ui";
 import useIsMobile from "./isMobile";
+import { useSelector } from "react-redux";
+import { IRootState } from "../app/store";
 
 const navLinks = [
-  { id: 1, title: "Home", href: "/" },
+  { id: 1, title: "Participate", href: "/" },
   { id: 2, title: "My Dashboard", href: "/dashboard" },
   { id: 3, title: "My CREW", href: "/crew" },
   { id: 4, title: "Organization Chart", href: "/organization-chart" },
   { id: 5, title: "How", href: "/how" },
 ];
 
+//navlist for enrolled users
+const enrolledNavList = [
+  navLinks[1],
+  navLinks[2],
+  navLinks[3],
+  navLinks[4],
+  navLinks[0],
+];
+
 export const Navbar = () => {
   const location = useLocation().pathname;
 
   const [toggleMenu, setToggleMenu] = useState(false);
+  const [navList, setNavList] = useState(navLinks);
 
   const isMobile = useIsMobile();
   const handleToggleMenu = () => {
     setToggleMenu((pre) => !pre);
   };
 
+  const userEnrolled = useSelector(
+    (state: IRootState) => state.user.dataAccExists
+  );
+  const dataSynced = useSelector((state: IRootState) => state.user.dataSynced);
+
+  useEffect(() => {
+    if (dataSynced && userEnrolled) {
+      setNavList(enrolledNavList);
+    } else {
+      setNavList(navLinks);
+    }
+  }, [dataSynced, userEnrolled]);
   return (
     // removed lg:top-9
     <header className="fixed top-0 w-full left-0 z-50">
@@ -54,7 +78,7 @@ export const Navbar = () => {
             }
           >
             <li className="w-full lg:hidden h-screen  bg-black4/30 absolute top-0 left-0 z-0"></li>
-            {navLinks.map((link) => {
+            {navList.map((link) => {
               const isActive = location === link.href;
               return (
                 <li

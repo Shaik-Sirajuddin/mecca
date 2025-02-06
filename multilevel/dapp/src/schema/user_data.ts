@@ -336,6 +336,7 @@ export class UserData implements IUserData {
     ReferralDistributionState.schema.replicate("referral_distribution"),
     borsh.array(UpgradeDeduction.schema, 2, "upgrade_deduction"),
     Accumulated.schema.replicate("accumulated"),
+    Accumulated.schema.replicate("upgrade_state"),
   ]);
 
   toJSON() {

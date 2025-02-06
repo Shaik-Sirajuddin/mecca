@@ -1,9 +1,16 @@
 import { useEffect } from "react";
+import { useSelector } from "react-redux";
 import { Link, useLocation } from "react-router-dom";
+import { IRootState } from "../app/store";
 
 export const Footer = () => {
   const location = useLocation();
   const { pathname } = location;
+  const userEnrolled = useSelector(
+    (state: IRootState) => state.user.dataAccExists
+  );
+  const dataSynced = useSelector((state: IRootState) => state.user.dataSynced);
+
   useEffect(() => {
     console.log("patha name here", pathname);
   }, [pathname]);
@@ -20,15 +27,17 @@ export const Footer = () => {
               />
             </Link>
             <ul className="flex flex-col gap-3">
-              <li>
-                <Link
-                  to="/"
-                  className="text-sm  lg:whitespace-nowrap font-bold font-dm-sans uppercase text-gray1 transition-all duration-200 hover:text-gray2"
-                >
-                  Home
-                </Link>
-              </li>
-              
+              {!(dataSynced && userEnrolled) && (
+                <li>
+                  <Link
+                    to="/"
+                    className="text-sm  lg:whitespace-nowrap font-bold font-dm-sans uppercase text-gray1 transition-all duration-200 hover:text-gray2"
+                  >
+                    Participate
+                  </Link>
+                </li>
+              )}
+
               <li>
                 <Link
                   to="/dashboard"
@@ -61,6 +70,16 @@ export const Footer = () => {
                   HOW
                 </Link>
               </li>
+              {dataSynced && userEnrolled && (
+                <li>
+                  <Link
+                    to="/"
+                    className="text-sm  lg:whitespace-nowrap font-bold font-dm-sans uppercase text-gray1 transition-all duration-200 hover:text-gray2"
+                  >
+                    Participate
+                  </Link>
+                </li>
+              )}
             </ul>
           </div>
 
