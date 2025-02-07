@@ -57,7 +57,7 @@ export const ConcentrixChart = ({ plan_id }: Props) => {
               }}
             >
               <div className="level-21-30">1% Upto </div>
-              <div className="mt-2 level-21-30">Level 30 </div>
+              <div className="mt-1 level-21-30">Level 30 </div>
             </div>
           </div>
           <div className="_11-20">
@@ -79,7 +79,7 @@ export const ConcentrixChart = ({ plan_id }: Props) => {
               className={`level-20 ${maxFillLevel >= 20 ? "fill-text" : ""}`}
             >
               <div className="level-11-20">1% Upto</div>
-              <div className="mt-2 level-11-20">Level 20 </div>
+              <div className="mt-1 level-11-20">Level 20 </div>
 
               {/* <div className="_20">{plan.deep_referral_percentage}%</div> */}
             </div>
@@ -103,7 +103,7 @@ export const ConcentrixChart = ({ plan_id }: Props) => {
               className={`level-10 ${maxFillLevel == 10 ? "fill-text" : ""}`}
             >
               <div className="level-7-10">1% Upto</div>
-              <div className="mt-2 level-7-10">Level 10 </div>
+              <div className="mt-1 level-7-10">Level 10 </div>
               {/* <div className="_102">{1}% Upto 10</div> */}
             </div>
             <div className="center-dot"></div>
