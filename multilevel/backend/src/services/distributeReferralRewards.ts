@@ -15,7 +15,7 @@ let distributing = false;
 
 const getDistributeTransactonAccountList = async(user : PublicKey , userData : UserData ,prevDistributed : PublicKey) => {
     let accountList : AccountMeta[][] = []
-    let i = 5;
+    let i = 8;
     while(i>0){
        let instructionMetaData = await getReferrerAccountsForInstruction(prevDistributed)
        if(instructionMetaData.referrerAccounts.length == 0)break;
@@ -57,7 +57,7 @@ const getDistributeTransactonAccountList = async(user : PublicKey , userData : U
 }
 const getReferrerAccountsForInstruction = async (prevDistributed : PublicKey) => {
   let referrerAccounts: AccountMeta[] = [];
-  for (let i = 0; i < 2; i++) {
+  for (let i = 0; i < 1; i++) {
     let prevUserDataAccount = new UserData(
       await getUserData(prevDistributed)
     );
