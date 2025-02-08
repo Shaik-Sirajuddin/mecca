@@ -95,7 +95,7 @@ pub fn distribute_referral_rewards(program_id: &Pubkey, accounts: &[AccountInfo]
     let mut previous_distributed_user = previous_distributed_user.address;
 
     let cur_time = Clock::get().unwrap().unix_timestamp as u64;
-    for _ in 1..=2 {
+    for _ in 1..=1 {
         if previous_distributed_user == previous_distributed_referrer {
             user_data.referral_distribution.completed = true;
             break;

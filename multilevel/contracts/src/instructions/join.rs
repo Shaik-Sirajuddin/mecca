@@ -112,8 +112,9 @@ pub fn join(
     let app_store = &mut AppStore::try_from_slice(&app_store_acc.try_borrow_mut_data().unwrap())?;
 
     assert!(app_state.paused == false, "New enrollments are paused");
+    let new_user = user_data_acc.lamports() == 0 || *user_data_acc.owner == system_program::ID;
 
-    if join_instruction.referrer != *payer_acc.key {
+    if new_user {
         //check if referrer data account provided match the provided referrer
         validate_user_data_acc(
             program_id,
@@ -129,7 +130,6 @@ pub fn join(
 
     let plan = app_state.get_plan(join_instruction.plan_id).unwrap();
     //check if user data account already exists
-    let new_user = user_data_acc.lamports() == 0 || *user_data_acc.owner == system_program::ID;
 
     let cur_time = Clock::get().unwrap().unix_timestamp as u64;
     let user_data = if new_user {
