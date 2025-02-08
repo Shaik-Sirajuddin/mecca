@@ -16,7 +16,7 @@ export const appStoreId = new PublicKey(
 );
 
 export const payerAcc = new PublicKey(
-  "9tFmeBvKhr3PhgdUYYSUuVZTzSrFDB5GzkD8H2DnmMhG"
+  "ahSUozSv5vWRrX79wqGrfQzJwugrbKdMu6PBgEkLhnT"
 );
 
 export const splToken = {
