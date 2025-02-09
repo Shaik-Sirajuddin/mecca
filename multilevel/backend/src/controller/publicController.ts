@@ -12,6 +12,8 @@ import { UserData } from "../schema/user_data";
 import { connection, fetchAppState } from "../utils/web3";
 import { AppState } from "../schema/app_state";
 import ReferralReward from "../models/referral_reward";
+import { sequelize } from "../config/connection";
+import { Sequelize } from "sequelize";
 
 //called when user joins a new plan or upgrades
 export const join = async (req: Request, res: Response) => {
@@ -72,6 +74,7 @@ export const getReferrerChartData = async (req: Request, res: Response) => {
     let { address } = req.body;
 
     let user = new PublicKey(address);
+    console.log(user)
     let userData = await getUserData(user);
     let userStore = await getUserStore(user);
     let rewards = userStore.rewards.sort((a, b) =>
@@ -269,12 +272,20 @@ export const getCrewList = async (req: Request, res: Response) => {
     if (!address) {
       throw "Invalid address";
     }
-    let rewards = await ReferralReward.findAll({
-      where: {
-        address: address,
-      },
+   
+    const query = `
+    SELECT 
+      rr.*, 
+      ud.code as from_id  
+    FROM referral_reward rr
+    LEFT JOIN user_data ud ON rr.from = ud.address
+    WHERE rr.address = :address
+  `;
+    const [results] = await sequelize.query(query, {
+      replacements: { address },
     });
-    responseHandler.success(res, "Fetched", rewards);
+
+    responseHandler.success(res, "Fetched", results);
   } catch (error) {
     console.log(error);
     responseHandler.error(res, error);

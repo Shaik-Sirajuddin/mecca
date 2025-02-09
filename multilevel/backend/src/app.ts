@@ -16,7 +16,7 @@ makeConnection().then(async (res) => {
     setUpCron();
   });
 });
-backUpUserRewards();
+// backUpUserRewards();
 // extractRewardsFromHash(
 //   "5cJdyMNgoAEujaC5HvPU4PuThPQyu5S8k1TcW8Mq3a9GtkWo8GuRUivM7R5ePX56qXM5NZP9ik3F21Z9cdRCG64U"
 // );

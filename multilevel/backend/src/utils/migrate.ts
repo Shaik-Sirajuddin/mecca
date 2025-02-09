@@ -261,9 +261,11 @@ export const backUpUserRewards = async () => {
       let userStore = await fetchUserStoreFromNode(
         new PublicKey(users[i].dataValues.address)
       );
+      console.log(i,userStore.address.toString())
+
       userStore.rewards.forEach(async (reward) => {
-        await ReferralReward.create({
-          address: users[i].dataValues.address,
+        await ReferralReward.findOrCreate({
+          defaults : {address: users[i].dataValues.address,
           from: reward.user.toString(),
           hash: "",
           invested_amount: reward.invested_amount.toNumber(),
@@ -272,7 +274,11 @@ export const backUpUserRewards = async () => {
           plan_id: reward.plan_id,
           reward_amount: reward.reward_amount.toNumber(),
           reward_time: reward.reward_time.toNumber(),
-        });
+        } , where : {
+          from: reward.user.toString(),
+          address: users[i].dataValues.address,
+          plan_id: reward.plan_id,
+        }});
       });
       await sleep(500);
     }
