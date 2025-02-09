@@ -225,7 +225,7 @@ async function migrateUsers() {
     console.log(error);
   }
 }
-async function test() {
+export async function test() {
   let tx = await connection.getTransaction(
     "29mcpJGtGBR5D535Nu72axL7KC5AjXNQaPgLcfpK5bvhTGaYsT8V5GCGqSdym5QxyyDNAhT16dQkrb8GbxhEUgbM",
     {
@@ -243,6 +243,7 @@ async function test() {
   ]);
   let buffer = Buffer.from(returnData[0], "base64");
   console.log(returnData[0], buffer);
+  console.log(tx?.meta)
 
   const parsedData = schema.decode(buffer);
   console.log(parsedData);

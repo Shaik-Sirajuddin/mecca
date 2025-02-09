@@ -64,6 +64,7 @@ export const sendDistributeTransaction = async (
   } catch (error) {
     console.log(error);
     console.log(JSON.stringify(error, null, 2));
+    return null;
   }
 };
 

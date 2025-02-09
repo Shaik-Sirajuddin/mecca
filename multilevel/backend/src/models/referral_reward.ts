@@ -3,6 +3,7 @@ import { sequelize } from "../config/connection";
 
 interface ReferralRewardAttributes {
   id: number;
+  hash: string;
   address: string;
   from: string;
   invested_amount: number; // Amount invested during enroll or upgrade (u64)
@@ -26,6 +27,10 @@ const ReferralReward = sequelize.define<
       autoIncrement: true,
       allowNull: false,
       primaryKey: true,
+    },
+    hash: {
+      type: DataTypes.STRING,
+      allowNull: false,
     },
     address: {
       type: DataTypes.STRING,

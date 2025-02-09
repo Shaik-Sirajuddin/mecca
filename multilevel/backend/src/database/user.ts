@@ -3,7 +3,11 @@ import { UserData } from "../schema/user_data";
 import MUserData from "../models/user_data";
 import MUserStore from "../models/user_store";
 
-import { getCacheData, setCacheData, setCacheDataWithoutExpiration } from "../config/redis";
+import {
+  getCacheData,
+  setCacheData,
+  setCacheDataWithoutExpiration,
+} from "../config/redis";
 import { CACHE_KEY } from "../enums/CacheKeys";
 import { fetchUserDataFromNode, fetchUserStoreFromNode } from "../utils/web3";
 import { UserStore } from "../schema/user_store";
@@ -14,61 +18,55 @@ export const storeUserData = async (user: PublicKey, userData: UserData) => {
     userData
   );
   let userDataEntry = await MUserData.findOne({
-    attributes : ['id'],
-    where : {
+    attributes: ["id"],
+    where: {
       address: user.toString(),
-    }
-  })
-  if(userDataEntry){
+    },
+  });
+  if (userDataEntry) {
     await MUserData.update(
       {
         data: JSON.stringify({ data: userData }),
       },
       {
         where: {
-          id : userDataEntry.dataValues.id,
+          id: userDataEntry.dataValues.id,
         },
       }
     );
-  }
-  else{
-    await MUserData.create(
-      {
-        address : user.toString(),
-        data: JSON.stringify({ data: userData }),
-      },
-    );
+  } else {
+    await MUserData.create({
+      address: user.toString(),
+      data: JSON.stringify({ data: userData }),
+      code: userData.id,
+    });
   }
 };
 
 export const storeUserStore = async (user: PublicKey, userStore: UserStore) => {
-  await setCacheData(
-    CACHE_KEY.USER_STORE(user.toString()),
-    userStore
-  );
+  await setCacheData(CACHE_KEY.USER_STORE(user.toString()), userStore);
   let userStoreEntry = await MUserStore.findOne({
-    attributes : ['id'],
-    where : {
+    attributes: ["id"],
+    where: {
       address: user.toString(),
-    }
-  })
-  if(userStoreEntry){
+    },
+  });
+  if (userStoreEntry) {
     await MUserStore.update(
       {
         data: JSON.stringify({ data: UserStore }),
       },
       {
         where: {
-          id : userStoreEntry.dataValues.id,
+          id: userStoreEntry.dataValues.id,
         },
       }
     );
-  }
-  else{
+  } else {
     await MUserStore.create({
       address: user.toString(),
       data: JSON.stringify({ data: userStore }),
-    })
+    });
   }
 };
 export const getUserData = async (user: PublicKey) => {

@@ -1,8 +1,14 @@
 import * as dotenv from "dotenv";
-import server, { app } from "./config/server";
+import server from "./config/server";
 import { redisConnect } from "./config/redis";
 import { setUpCron } from "./services/cronjobs";
 import { makeConnection } from "./config/connection";
+import { test } from "./utils/migrate";
+import { PublicKey } from "@solana/web3.js";
+import {
+  distributeRewardsOfUser,
+  extractRewardsFromHash,
+} from "./services/distributeReferralRewards";
 dotenv.config();
 const port = 3050;
 
@@ -15,3 +21,11 @@ makeConnection().then(async (res) => {
     setUpCron();
   });
 });
+// extractRewardsFromHash(
+//   "5cJdyMNgoAEujaC5HvPU4PuThPQyu5S8k1TcW8Mq3a9GtkWo8GuRUivM7R5ePX56qXM5NZP9ik3F21Z9cdRCG64U"
+// );
+//48xqFkckqsJLtzeQmBx5bjNpLqi5sQpkgYu48iFJd3pkPMpZh49qLPVXUk4rCZHVXDR8mS3rbYeyd7txBMY3Cm3e
+// distributeRewardsOfUser(new PublicKey('FMvVHZGRg82fNuLJMYDmYxFDPt1U6jvyEDS55FGrYzxT'))
+//
+// test()
+//
