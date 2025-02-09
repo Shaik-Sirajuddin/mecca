@@ -14,6 +14,7 @@ import { AppState } from "../schema/app_state";
 import ReferralReward from "../models/referral_reward";
 import { sequelize } from "../config/connection";
 import { Sequelize } from "sequelize";
+import { DisReward, IDisReward } from "../schema/distributed_rewards";
 
 //called when user joins a new plan or upgrades
 export const join = async (req: Request, res: Response) => {
@@ -74,23 +75,26 @@ export const getReferrerChartData = async (req: Request, res: Response) => {
     let { address } = req.body;
 
     let user = new PublicKey(address);
-    console.log(user)
     let userData = await getUserData(user);
-    let userStore = await getUserStore(user);
-    let rewards = userStore.rewards.sort((a, b) =>
+    const _userRewards: any[] = await getUserRewards(user.toString());
+    const userRewards: DisReward[] = [];
+    _userRewards.forEach((reward) => {
+      userRewards.push(new DisReward(reward));
+    });
+    let rewards = userRewards.sort((a, b) =>
       a.plan_entry_time.sub(b.plan_entry_time).toNumber()
     );
     let groupedRewards: Reward[] = [];
     let accountedUsers = new Set<string>();
     for (let i = 0; i < rewards.length; i++) {
-      if (accountedUsers.has(rewards[i].user.toString())) continue;
+      if (accountedUsers.has(rewards[i].from.toString())) continue;
       let accumulatedReward = Reward.fromJSON(rewards[i].toJSON());
       for (let j = i + 1; j < rewards.length; j++) {
-        if (rewards[i].user.equals(rewards[j].user)) {
+        if (rewards[i].from.equals(rewards[j].from)) {
           accumulatedReward.invested_amount.add(rewards[j].reward_amount);
         }
       }
-      accountedUsers.add(rewards[i].user.toString());
+      accountedUsers.add(rewards[i].from.toString());
       groupedRewards.push(accumulatedReward);
     }
     let sortedRewards = groupedRewards.sort((a, b) => a.level - b.level);
@@ -226,12 +230,12 @@ export const getAddressFromCode = async (req: Request, res: Response) => {
       throw "Invalid code";
     }
     let user = await MUserData.findOne({
-      attributes: ["code", "id" , 'address'],
+      attributes: ["code", "id", "address"],
       where: {
         code: code,
       },
     });
-    console.log("user here" , user?.dataValues)
+    console.log("user here", user?.dataValues);
     responseHandler.success(res, "Fetched", {
       address: user ? user?.dataValues.address : "",
     });
@@ -266,24 +270,28 @@ export const getUniqueCodeForUser = async (req: Request, res: Response) => {
   }
 };
 
+const getUserRewards = async (address: string) => {
+  const query = `
+  SELECT 
+    rr.*, 
+    ud.code as from_id  
+  FROM referral_reward rr
+  LEFT JOIN user_data ud ON rr.from = ud.address
+  WHERE rr.address = :address
+`;
+  const [results] = await sequelize.query(query, {
+    replacements: { address },
+  });
+
+  return results;
+};
 export const getCrewList = async (req: Request, res: Response) => {
   try {
     let { address } = req.body;
     if (!address) {
       throw "Invalid address";
     }
-   
-    const query = `
-    SELECT 
-      rr.*, 
-      ud.code as from_id  
-    FROM referral_reward rr
-    LEFT JOIN user_data ud ON rr.from = ud.address
-    WHERE rr.address = :address
-  `;
-    const [results] = await sequelize.query(query, {
-      replacements: { address },
-    });
+    const results = await getUserRewards(address);
 
     responseHandler.success(res, "Fetched", results);
   } catch (error) {
