@@ -4,7 +4,7 @@ import { PublicKey } from "@solana/web3.js";
 import queueManager from "../utils/distributeQueue";
 import { Reward } from "../schema/reward";
 import { getUserData, getUserStore } from "../database/user";
-import { formatBalance } from "../utils/utils";
+import { formatBalance, generateReferralCode } from "../utils/utils";
 import MUserData from "../models/user_data";
 import Decimal from "decimal.js";
 import { Plan } from "../schema/plan";
@@ -209,6 +209,52 @@ export const getUsers = async (req: Request, res: Response) => {
       currentPage: pageNumber,
       users: parsedUsers,
     });
+  } catch (error) {
+    console.log(error);
+    responseHandler.error(res, error);
+  }
+};
+
+export const getAddressFromCode = async (req: Request, res: Response) => {
+  try {
+    let { code } = req.body;
+    if (!code) {
+      throw "Invalid code";
+    }
+    let user = await MUserData.findOne({
+      attributes: ["code", "id"],
+      where: {
+        code: code,
+      },
+    });
+    responseHandler.success(res, "Fetched", {
+      address: user ? user?.dataValues.address : "",
+    });
+  } catch (error) {
+    console.log(error);
+    responseHandler.error(res, error);
+  }
+};
+
+export const getUniqueCodeForUser = async (req: Request, res: Response) => {
+  try {
+    let code = "";
+    while (true) {
+      code = generateReferralCode();
+      let user = await MUserData.findOne({
+        attributes: ["code", "id"],
+        where: {
+          code: code,
+        },
+      });
+      if (!user) {
+        break;
+      }
+    }
+    responseHandler.success(res, "Fetched", {
+      code: code,
+    });
+    //TODO : implement code catching to be valid for a maximum of 1 minute
   } catch (error) {
     console.log(error);
     responseHandler.error(res, error);

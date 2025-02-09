@@ -5,6 +5,7 @@ interface UserDataAttributes {
   id: number;
   address: string;
   data: string;
+  code: string;
 }
 
 interface UserDataCreationAttributes
@@ -21,10 +22,15 @@ const UserData = sequelize.define<
       allowNull: false,
       primaryKey: true,
     },
+    code: {
+      type: DataTypes.STRING,
+      allowNull: false,
+      unique: true,
+    },
     address: {
       type: DataTypes.STRING,
       allowNull: false,
-      unique : true,
+      unique: true,
     },
     data: {
       type: DataTypes.TEXT,

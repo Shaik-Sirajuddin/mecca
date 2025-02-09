@@ -42,6 +42,7 @@ export interface IUserData {
   upgrade_deduction: UpgradeDeduction[];
   accumulated: Accumulated;
   upgrade_state: Accumulated;
+  direct_referred: Decimal;
 }
 
 // Classes
@@ -162,6 +163,7 @@ export class UserData implements IUserData {
   upgrade_deduction: UpgradeDeduction[];
   accumulated: Accumulated;
   upgrade_state: Accumulated;
+  direct_referred: Decimal;
 
   constructor(data: any) {
     this.id = data.id || "";
@@ -189,7 +191,7 @@ export class UserData implements IUserData {
     );
     this.accumulated = new Accumulated(data.accumulated || {});
     this.upgrade_state = new Accumulated(data.upgrade_state || {});
-    console.log(data.upgrade_deduction, "here");
+    this.direct_referred = new Decimal((data.direct_referred || 0).toString());
   }
 
   applyUpgradeDeduction = (
@@ -336,6 +338,8 @@ export class UserData implements IUserData {
     ReferralDistributionState.schema.replicate("referral_distribution"),
     borsh.array(UpgradeDeduction.schema, 2, "upgrade_deduction"),
     Accumulated.schema.replicate("accumulated"),
+    Accumulated.schema.replicate("upgrade_state"),
+    borsh.u64("direct_referred"),
   ]);
 
   toJSON() {

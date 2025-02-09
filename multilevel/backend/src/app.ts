@@ -1,9 +1,8 @@
 import * as dotenv from "dotenv";
-import server from "./config/server";
+import server, { app } from "./config/server";
 import { redisConnect } from "./config/redis";
 import { setUpCron } from "./services/cronjobs";
 import { makeConnection } from "./config/connection";
-
 dotenv.config();
 const port = 3050;
 

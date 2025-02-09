@@ -30,3 +30,13 @@ export function getDaysDifference(date1: Date, date2: Date): number {
   // Convert milliseconds to days
   return Math.floor(diffInMs / (1000 * 60 * 60 * 24));
 }
+
+//includes of both min , max
+function randomInRange(min: number, max: number) {
+  const randomNum = Math.floor(Math.random() * (max - min + 1)) + min;
+  return randomNum.toString().padStart(8, "0"); // Ensure the result has 8 digits
+}
+export const generateReferralCode = () => {
+  const referralId = "MC" + randomInRange(1, 99999999).padStart(8, "0");
+  return referralId;
+};
