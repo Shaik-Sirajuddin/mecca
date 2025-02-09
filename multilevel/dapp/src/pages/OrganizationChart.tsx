@@ -47,7 +47,7 @@ const OrganizationChart = () => {
             <iframe
               ref={iframeRef}
               src={`./chart.html?address=${publicKey?.toString()}`}
-              // src={`./chart.html?address=${"4oAPmx3S3pAZSegFbQY1Hk5MqhW2LcxrnQQWWENzjgN"}`}
+              // src={`./chart.html?address=${"4oAPmx3Sz3pAZSegFbQY1Hk5MqhW2LcxrnQQWWENzjgN"}`}
               width={"100%"}
               // height={"1000px"}
               scrolling="no"

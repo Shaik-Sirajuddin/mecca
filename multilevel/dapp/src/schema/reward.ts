@@ -10,6 +10,7 @@ export interface IReward {
   reward_amount: Decimal; // Reward amount (u64)
   reward_time: Decimal; // Reward time (u64)
   plan_entry_time: Decimal; // Plan entry time (u64)
+  from_id: string;
 }
 
 export class Reward implements IReward {
@@ -21,6 +22,7 @@ export class Reward implements IReward {
   plan_entry_time: Decimal;
   address: PublicKey;
   from: PublicKey;
+  from_id: string;
 
   constructor(data: any) {
     this.address = new PublicKey(data.address || new Uint8Array(32));
@@ -31,6 +33,7 @@ export class Reward implements IReward {
     this.reward_amount = new Decimal((data.reward_amount || 0).toString());
     this.reward_time = new Decimal((data.reward_time || 0).toString());
     this.plan_entry_time = new Decimal((data.plan_entry_time || 0).toString());
+    this.from_id = data.from_id || "";
   }
 
   // Static method to parse raw data into Reward
@@ -64,6 +67,7 @@ export class Reward implements IReward {
       reward_amount: this.reward_amount.toString(),
       reward_time: this.reward_time.toString(),
       plan_entry_time: this.plan_entry_time.toString(),
+      from_id: this.from_id.toString(),
     };
   }
 
@@ -78,6 +82,7 @@ export class Reward implements IReward {
       reward_amount: new Decimal(json.reward_amount),
       reward_time: new Decimal(json.reward_time),
       plan_entry_time: new Decimal(json.plan_entry_time),
+      from_id: json.from_id || "",
     });
   }
 }

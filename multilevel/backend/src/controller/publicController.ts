@@ -16,6 +16,7 @@ import { sequelize } from "../config/connection";
 import { Sequelize } from "sequelize";
 import { DisReward, IDisReward } from "../schema/distributed_rewards";
 
+const codeMap: Map<string, boolean> = new Map();
 //called when user joins a new plan or upgrades
 export const join = async (req: Request, res: Response) => {
   try {
@@ -250,16 +251,26 @@ export const getUniqueCodeForUser = async (req: Request, res: Response) => {
     let code = "";
     while (true) {
       code = generateReferralCode();
+      if (codeMap.has(code)) {
+        continue;
+      }
       let user = await MUserData.findOne({
         attributes: ["code", "id"],
         where: {
           code: code,
         },
       });
+
       if (!user) {
         break;
       }
     }
+
+    //add to cache
+    codeMap.set(code, true);
+    setTimeout(() => {
+      codeMap.delete(code);
+    }, 2500);
     responseHandler.success(res, "Fetched", {
       code: code,
     });
