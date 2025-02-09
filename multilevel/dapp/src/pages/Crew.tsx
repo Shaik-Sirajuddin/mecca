@@ -177,11 +177,12 @@ const Crew = () => {
                           </td>
                           <td className="text-sm border text-gray5 border-gray3 py-3.5 font-poppins font-semibold px-2.5">
                             <p>
-                              {getUserCode(item.user, appStore.referral_id_map)}
+                              this
+                              {/* {getUserCode(item.user, appStore.referral_id_map)} */}
                             </p>
                           </td>
                           <td className="text-sm border text-gray5 border-gray3 py-3.5 font-poppins font-semibold px-2.5">
-                            <p>{shortenAddress(item.user.toString())}</p>
+                            <p>{shortenAddress(item.from.toString())}</p>
                           </td>
                           <td className="text-xs border text-gray5 border-gray3 py-3.5 font-poppins font-semibold px-2.5">
                             <p className="bg-pink1 inline-block rounded py-1 px-1.5">
