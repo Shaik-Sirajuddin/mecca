@@ -62,14 +62,14 @@ export const fetchUserStore = async (
     return null;
   }
 };
-export const fetchAppStore = async (connection: Connection) => {
-  const appStoreInfo = await connection.getAccountInfo(appStoreAcc);
-  return new AppStore(AppStoreSchema.decode(appStoreInfo?.data));
-};
 
 export const fetchAppState = async (connection: Connection) => {
   const appStateInfo = await connection.getAccountInfo(appStateAcc);
   return new AppState(AppStateSchema.decode(appStateInfo?.data));
+};
+export const fetchAppStore = async (connection: Connection) => {
+  const appStoreInfo = await connection.getAccountInfo(appStoreAcc);
+  return new AppStore(AppStoreSchema.decode(appStoreInfo?.data));
 };
 
 export const getUserDataAcc = (user: PublicKey) => {
@@ -145,20 +145,11 @@ export const getJoinTransaction = (
         isWritable: false,
       },
       {
-        pubkey: appStoreAcc,
-        isSigner: false,
-        isWritable: true,
-      },
-      {
         pubkey: getUserDataAcc(user),
         isSigner: false,
         isWritable: true,
       },
-      {
-        pubkey: getUserStoreAcc(user),
-        isSigner: false,
-        isWritable: true,
-      },
+      
       {
         pubkey: getUserDataAcc(referrer),
         isSigner: false,
@@ -238,11 +229,6 @@ export const getWithdrawTransaction = (user: PublicKey, amount: Decimal) => {
         isWritable: true,
       },
       {
-        pubkey: getUserStoreAcc(user),
-        isSigner: false,
-        isWritable: true,
-      },
-      {
         pubkey: tokenMint,
         isSigner: false,
         isWritable: false,
@@ -310,11 +296,7 @@ export const getUpgradeTransaction = (user: PublicKey, plan: PlanID) => {
         isSigner: false,
         isWritable: true,
       },
-      {
-        pubkey: getUserStoreAcc(user),
-        isSigner: false,
-        isWritable: true,
-      },
+    
       {
         pubkey: appStateAcc,
         isSigner: false,

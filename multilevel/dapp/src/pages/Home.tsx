@@ -14,12 +14,8 @@ import { IRootState } from "../app/store";
 // import { UserData } from "../schema/user_data";
 import { AppStore } from "../schema/app_store";
 import { AppState } from "../schema/app_state";
-import {
-  formatBalance,
-  generateReferralCode,
-  getClipBoardText,
-} from "../utils/utils";
-import { splToken } from "../utils/constants";
+import { formatBalance, getClipBoardText } from "../utils/utils";
+import { baseUrl, splToken } from "../utils/constants";
 import { userJoined } from "../network/api";
 import ModalSuccess from "../components/models/ModelSuccess";
 import ModelFailure from "../components/models/ModelFailure";
@@ -30,7 +26,7 @@ import { useSearchParams } from "react-router-dom";
 
 const Home = () => {
   const { connection } = useConnection();
-  const { publicKey, sendTransaction } = useWallet();
+  const { publicKey, sendTransaction, signTransaction } = useWallet();
   const [inviteCode, setInvideCode] = useState("");
   const [pieChartSelected, setPieChartSelected] = useState(false);
   const userDataRaw = useSelector((state: IRootState) => state.user.data);
@@ -71,6 +67,29 @@ const Home = () => {
   function handlePlanSwitch(planId: PlanID) {
     setSelectedPlan(planId);
   }
+
+  const getUniqueReferralCode = async () => {
+    const res = await fetch(baseUrl + "/public/code");
+    const code = (await res.json()).body.code;
+    return code;
+  };
+
+  const getAddressFromCode = async (code: string) => {
+    const res = await fetch(baseUrl + "/public/address-from-code", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({
+        code: code,
+      }),
+    });
+    const address = (await res.json()).body.address;
+    if (address) {
+      return new PublicKey(address);
+    }
+    return null;
+  };
 
   const upgrade = async () => {
     try {
@@ -120,7 +139,7 @@ const Home = () => {
     }
   };
   const parseReferrerInput = useCallback(
-    (code = inviteCode, showModal = true) => {
+    async (code = inviteCode, showModal = true) => {
       if (!code) {
         //referral code is required
         if (showModal) {
@@ -134,7 +153,7 @@ const Home = () => {
         return undefined;
       }
       if (!isValidPublicKey(code)) {
-        const parsedAddress = appStore.referral_id_map.get(code);
+        const parsedAddress = await getAddressFromCode(code);
         if (!parsedAddress) {
           //invalid invite code
           if (showModal) {
@@ -149,22 +168,33 @@ const Home = () => {
         }
         return parsedAddress;
       }
+      if (publicKey && new PublicKey(code).equals(publicKey)) {
+        if (showModal) {
+          setModalData({
+            title: "Invite address",
+            description: "Invite Address cannot be same as user",
+            show: true,
+            type: "error",
+          });
+        }
+        return undefined;
+      }
       return new PublicKey(code);
     },
-    [appStore.referral_id_map, inviteCode]
+    [appStore.referral_id_map, inviteCode, publicKey]
   );
 
   const enroll = async () => {
     try {
       setTxLoading(true);
       if (!publicKey) return;
-      const referrerAddress = parseReferrerInput();
+      const referrerAddress = await parseReferrerInput();
       if (!referrerAddress) return;
       const tx = getJoinTransaction(
         publicKey,
         referrerAddress,
         selectedPlan,
-        generateReferralCode(appStore.referral_id_map)
+        await getUniqueReferralCode()
       );
       if (
         userBalance.lessThan(
@@ -182,7 +212,10 @@ const Home = () => {
       const { blockhash } = await connection.getLatestBlockhash();
       tx.recentBlockhash = blockhash;
       tx.feePayer = publicKey;
-
+      const signedTx = await signTransaction!(tx);
+      const res = await connection.simulateTransaction(signedTx);
+      console.log(res);
+      return;
       await sendTransaction(tx, connection);
       userJoined(publicKey);
       setModalData({
@@ -241,7 +274,7 @@ const Home = () => {
   const getReferralFromClipboard = useCallback(async () => {
     const text = await getClipBoardText();
     if (text != null) {
-      if (parseReferrerInput(text, false)) {
+      if (await parseReferrerInput(text, false)) {
         setInvideCode(text);
       }
     }
@@ -250,12 +283,14 @@ const Home = () => {
     getReferralFromClipboard();
   }, []);
 
-  useEffect(() => {
+  const handleQuery = async () => {
     const referrer = searchParams.get("r");
-    if (referrer && parseReferrerInput(referrer, false)) {
+    if (referrer && (await parseReferrerInput(referrer, false))) {
       setInvideCode(referrer);
     }
-    console.log("called2");
+  };
+  useEffect(() => {
+    handleQuery();
   }, [searchParams, parseReferrerInput]);
   return (
     <>
