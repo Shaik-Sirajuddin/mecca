@@ -84,11 +84,11 @@ export const getReferrerChartData = async (req: Request, res: Response) => {
     let rewards = userRewards.sort((a, b) =>
       a.plan_entry_time.sub(b.plan_entry_time).toNumber()
     );
-    let groupedRewards: Reward[] = [];
+    let groupedRewards: DisReward[] = [];
     let accountedUsers = new Set<string>();
     for (let i = 0; i < rewards.length; i++) {
       if (accountedUsers.has(rewards[i].from.toString())) continue;
-      let accumulatedReward = Reward.fromJSON(rewards[i].toJSON());
+      let accumulatedReward = DisReward.fromJSON(rewards[i].toJSON());
       for (let j = i + 1; j < rewards.length; j++) {
         if (rewards[i].from.equals(rewards[j].from)) {
           accumulatedReward.invested_amount.add(rewards[j].reward_amount);
@@ -114,7 +114,7 @@ export const getReferrerChartData = async (req: Request, res: Response) => {
     for (let i = 0; i < sortedRewards.length; i++) {
       let reward = sortedRewards[i];
       await appendUserPath(
-        reward.user,
+        reward.from,
         formatBalance(reward.reward_amount),
         userSet,
         userList
