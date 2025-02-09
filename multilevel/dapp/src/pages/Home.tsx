@@ -26,7 +26,7 @@ import { useSearchParams } from "react-router-dom";
 
 const Home = () => {
   const { connection } = useConnection();
-  const { publicKey, sendTransaction, signTransaction } = useWallet();
+  const { publicKey, sendTransaction } = useWallet();
   const [inviteCode, setInvideCode] = useState("");
   const [pieChartSelected, setPieChartSelected] = useState(false);
   const userDataRaw = useSelector((state: IRootState) => state.user.data);
@@ -212,10 +212,6 @@ const Home = () => {
       const { blockhash } = await connection.getLatestBlockhash();
       tx.recentBlockhash = blockhash;
       tx.feePayer = publicKey;
-      const signedTx = await signTransaction!(tx);
-      const res = await connection.simulateTransaction(signedTx);
-      console.log(res);
-      return;
       await sendTransaction(tx, connection);
       userJoined(publicKey);
       setModalData({
