@@ -11,6 +11,7 @@ import { Plan } from "../schema/plan";
 import { UserData } from "../schema/user_data";
 import { connection, fetchAppState } from "../utils/web3";
 import { AppState } from "../schema/app_state";
+import ReferralReward from "../models/referral_reward";
 
 //called when user joins a new plan or upgrades
 export const join = async (req: Request, res: Response) => {
@@ -256,6 +257,24 @@ export const getUniqueCodeForUser = async (req: Request, res: Response) => {
       code: code,
     });
     //TODO : implement code catching to be valid for a maximum of 1 minute
+  } catch (error) {
+    console.log(error);
+    responseHandler.error(res, error);
+  }
+};
+
+export const getCrewList = async (req: Request, res: Response) => {
+  try {
+    let { address } = req.body;
+    if (!address) {
+      throw "Invalid address";
+    }
+    let rewards = await ReferralReward.findAll({
+      where: {
+        address: address,
+      },
+    });
+    responseHandler.success(res, "Fetched", rewards);
   } catch (error) {
     console.log(error);
     responseHandler.error(res, error);

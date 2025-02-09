@@ -16,7 +16,6 @@ const syncUserData = async () => {
     );
     await storeUserData(new PublicKey(users[i].dataValues.address), userData);
     await sleep(500);
-
   }
 };
 export const setUpCron = async () => {
@@ -30,5 +29,4 @@ export const setUpCron = async () => {
     // Add your task logic here
     syncUserData();
   });
-
 };

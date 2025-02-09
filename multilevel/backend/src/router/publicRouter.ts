@@ -8,4 +8,5 @@ publicRouter.get("/user-stats", publicController.getUserStats);
 publicRouter.get("/users", publicController.getUsers);
 publicRouter.get("/code", publicController.getUniqueCodeForUser);
 publicRouter.post("/address-from-code", publicController.getAddressFromCode);
+publicRouter.post("/crew", publicController.getCrewList);
 export default publicRouter;

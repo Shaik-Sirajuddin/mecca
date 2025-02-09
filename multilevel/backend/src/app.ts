@@ -3,9 +3,7 @@ import server from "./config/server";
 import { redisConnect } from "./config/redis";
 import { setUpCron } from "./services/cronjobs";
 import { makeConnection } from "./config/connection";
-import MUserData from "./models/user_data";
-import { UserData } from "./schema/user_data";
-
+import { backUpUserRewards, test } from "./utils/migrate";
 dotenv.config();
 const port = 3050;
 
@@ -18,22 +16,12 @@ makeConnection().then(async (res) => {
     setUpCron();
   });
 });
-
-const extractUserData = async()=>{
-  const { rows: users, count } = await MUserData.findAndCountAll({
-    where: {},
-    order: [["createdAt", "DESC"]],
-  });
-  for (let i = 0; i < users.length; i++) {
-    let user = users[i];
-    let userData = new UserData(JSON.parse(user.dataValues.data).data);
-    await MUserData.update({
-      code : userData.id
-    } , {
-      where : {
-        id : user.dataValues.id
-      }
-    })    
-  }
-}
-// extractUserData()
+backUpUserRewards();
+// extractRewardsFromHash(
+//   "5cJdyMNgoAEujaC5HvPU4PuThPQyu5S8k1TcW8Mq3a9GtkWo8GuRUivM7R5ePX56qXM5NZP9ik3F21Z9cdRCG64U"
+// );
+//48xqFkckqsJLtzeQmBx5bjNpLqi5sQpkgYu48iFJd3pkPMpZh49qLPVXUk4rCZHVXDR8mS3rbYeyd7txBMY3Cm3e
+// distributeRewardsOfUser(new PublicKey('FMvVHZGRg82fNuLJMYDmYxFDPt1U6jvyEDS55FGrYzxT'))
+//
+// test()
+//
