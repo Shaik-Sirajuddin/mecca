@@ -3,7 +3,7 @@ import server from "./config/server";
 import { redisConnect } from "./config/redis";
 import { setUpCron } from "./services/cronjobs";
 import { makeConnection } from "./config/connection";
-import { test } from "./utils/migrate";
+import { backUpUserRewards, test } from "./utils/migrate";
 import { PublicKey } from "@solana/web3.js";
 import {
   distributeRewardsOfUser,
@@ -21,6 +21,7 @@ makeConnection().then(async (res) => {
     setUpCron();
   });
 });
+backUpUserRewards();
 // extractRewardsFromHash(
 //   "5cJdyMNgoAEujaC5HvPU4PuThPQyu5S8k1TcW8Mq3a9GtkWo8GuRUivM7R5ePX56qXM5NZP9ik3F21Z9cdRCG64U"
 // );

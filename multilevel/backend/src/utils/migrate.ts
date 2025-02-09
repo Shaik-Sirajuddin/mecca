@@ -21,6 +21,9 @@ import {
 import { RewardSchema } from "../schema/reward";
 import { multilevelProgramId, payerAcc } from "../constants";
 import { secretKey } from "../key";
+import UserData from "../models/user_data";
+import ReferralReward from "../models/referral_reward";
+import { sleep } from "./utils";
 const wallet = Keypair.fromSecretKey(secretKey);
 
 //write test scripts
@@ -243,8 +246,37 @@ export async function test() {
   ]);
   let buffer = Buffer.from(returnData[0], "base64");
   console.log(returnData[0], buffer);
-  console.log(tx?.meta)
+  console.log(tx?.meta);
 
   const parsedData = schema.decode(buffer);
   console.log(parsedData);
 }
+
+export const backUpUserRewards = async () => {
+  try {
+    let users = await UserData.findAll({
+      where: {},
+    });
+    for (let i = 0; i < users.length; i++) {
+      let userStore = await fetchUserStoreFromNode(
+        new PublicKey(users[i].dataValues.address)
+      );
+      userStore.rewards.forEach(async (reward) => {
+        await ReferralReward.create({
+          address: users[i].dataValues.address,
+          from: reward.user.toString(),
+          hash: "",
+          invested_amount: reward.invested_amount.toNumber(),
+          level: reward.level,
+          plan_entry_time: reward.plan_entry_time.toNumber(),
+          plan_id: reward.plan_id,
+          reward_amount: reward.reward_amount.toNumber(),
+          reward_time: reward.reward_time.toNumber(),
+        });
+      });
+      await sleep(500);
+    }
+  } catch (error) {
+    console.log(error);
+  }
+};
