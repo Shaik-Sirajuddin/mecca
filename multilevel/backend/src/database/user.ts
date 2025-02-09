@@ -36,6 +36,7 @@ export const storeUserData = async (user: PublicKey, userData: UserData) => {
       {
         address : user.toString(),
         data: JSON.stringify({ data: userData }),
+        code : userData.id,
       },
     );
   }

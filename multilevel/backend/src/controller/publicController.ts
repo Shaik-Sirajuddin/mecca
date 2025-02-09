@@ -222,11 +222,12 @@ export const getAddressFromCode = async (req: Request, res: Response) => {
       throw "Invalid code";
     }
     let user = await MUserData.findOne({
-      attributes: ["code", "id"],
+      attributes: ["code", "id" , 'address'],
       where: {
         code: code,
       },
     });
+    console.log("user here" , user?.dataValues)
     responseHandler.success(res, "Fetched", {
       address: user ? user?.dataValues.address : "",
     });
