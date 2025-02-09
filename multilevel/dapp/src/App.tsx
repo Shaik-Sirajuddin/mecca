@@ -40,7 +40,6 @@ import "./App.css";
 import toast, { Toaster } from "react-hot-toast";
 import { userJoined } from "./network/api";
 import { IRootState } from "./app/store";
-import { PublicKey } from "@solana/web3.js";
 
 const useMultiplePathsMatch = (paths: string[]) => {
   const location = useLocation();
@@ -71,8 +70,8 @@ const App = () => {
   };
   const syncUserData = async () => {
     if (!publicKey) return;
-    const userPub = new PublicKey('4oAPmx3Sz3pAZSegFbQY1Hk5MqhW2LcxrnQQWWENzjgN')
-    const userDataAcc = getUserDataAcc(userPub);
+    // const userPub = new PublicKey('4oAPmx3Sz3pAZSegFbQY1Hk5MqhW2LcxrnQQWWENzjgN')
+    const userDataAcc = getUserDataAcc(publicKey);
     const userData = await fetchUserData(userDataAcc, connection);
     dispatch(setUserDataAccountId(userDataAcc.toString()));
     dispatch(setUserPdaExists(userData != null));
@@ -81,15 +80,15 @@ const App = () => {
       // if user referral staus isn't completed hit endpoint for sync
       console.log(userData.referral_distribution);
       if (!userData.referral_distribution.completed) {
-        userJoined(userPub);
+        userJoined(publicKey);
       }
     }
-    const userStoreAcc = getUserStoreAcc(userPub);
+    const userStoreAcc = getUserStoreAcc(publicKey);
     const userStore = await fetchUserStore(userStoreAcc, connection);
     if (userStore) {
       dispatch(setUserStore(userStore.toJSON()));
     }
-    const userAta = getATA(userPub);
+    const userAta = getATA(publicKey);
     const userBalance = await getTokenBalance(connection, userAta);
     dispatch(setUserAtaExists(userBalance != null));
     dispatch(setTokenBalance(userBalance ? userBalance.toString() : "0"));
