@@ -1,27 +1,20 @@
-import * as borsh from "@coral-xyz/borsh";
 import { PublicKey } from "@solana/web3.js";
-import { Reward, RewardSchema } from "./reward";
-import { UserAction, UserActionSchema } from "./action";
+import { Reward } from "./reward";
 import Decimal from "decimal.js";
 
 export interface IUserStore {
   address: PublicKey;
   rewards: Reward[];
-  actions: UserAction[];
 }
 
 export class UserStore implements IUserStore {
   address: PublicKey;
   rewards: Reward[];
-  actions: UserAction[];
 
   constructor(data: any) {
     this.address = new PublicKey(data.address || PublicKey.default);
     this.rewards = (data.rewards || []).map(
       (reward: any) => new Reward(reward)
-    );
-    this.actions = (data.actions || []).map(
-      (action: any) => new UserAction(action)
     );
   }
 
@@ -67,18 +60,11 @@ export class UserStore implements IUserStore {
     return new UserStore({});
   }
 
-  static schema = borsh.struct([
-    borsh.publicKey("address"),
-    borsh.vec(RewardSchema, "rewards"),
-    borsh.vec(UserActionSchema, "actions"),
-  ]);
-
   // Convert UserStore instance to JSON
   toJSON() {
     return {
       address: this.address.toBase58(),
       rewards: this.rewards.map((reward) => reward.toJSON()),
-      actions: this.actions.map((action) => action.toJSON()),
     };
   }
 
@@ -88,9 +74,6 @@ export class UserStore implements IUserStore {
       address: new PublicKey(json.address),
       rewards: (json.rewards || []).map((reward: any) =>
         Reward.fromJSON(reward)
-      ),
-      actions: (json.actions || []).map((action: any) =>
-        UserAction.fromJSON(action)
       ),
     });
   }

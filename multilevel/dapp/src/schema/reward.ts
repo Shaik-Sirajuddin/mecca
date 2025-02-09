@@ -1,9 +1,9 @@
-import * as borsh from "@coral-xyz/borsh";
 import { PublicKey } from "@solana/web3.js";
 import Decimal from "decimal.js";
 
 export interface IReward {
-  user: PublicKey; // Public key of the user
+  address: PublicKey; // Public key of the user
+  from: PublicKey; // Public key of the user
   invested_amount: Decimal; // Amount invested during enroll or upgrade (u64)
   level: number; // Level (u8)
   plan_id: number; // Plan ID (u8)
@@ -13,16 +13,18 @@ export interface IReward {
 }
 
 export class Reward implements IReward {
-  user: PublicKey;
   invested_amount: Decimal;
   level: number;
   plan_id: number;
   reward_amount: Decimal;
   reward_time: Decimal;
   plan_entry_time: Decimal;
+  address: PublicKey;
+  from: PublicKey;
 
   constructor(data: any) {
-    this.user = new PublicKey(data.user || new Uint8Array(32));
+    this.address = new PublicKey(data.address || new Uint8Array(32));
+    this.from = new PublicKey(data.from || new Uint8Array(32));
     this.invested_amount = new Decimal((data.invested_amount || 0).toString());
     this.level = data.level || 0;
     this.plan_id = data.plan_id || 0;
@@ -39,7 +41,7 @@ export class Reward implements IReward {
   // Example dummy Reward for testing purposes
   static dummy(): Reward {
     return new Reward({
-      user: new PublicKey("6u...example_pubkey"),
+      from: new PublicKey("6u...example_pubkey"),
       invested_amount: new Decimal(1000),
       level: 1,
       plan_id: 2,
@@ -54,7 +56,8 @@ export class Reward implements IReward {
   // Serialize to JSON
   toJSON(): Record<string, any> {
     return {
-      user: this.user.toBase58(),
+      from: this.from.toBase58(),
+      address: this.address.toBase58(),
       invested_amount: this.invested_amount.toString(),
       level: this.level,
       plan_id: this.plan_id,
@@ -67,7 +70,8 @@ export class Reward implements IReward {
   // Deserialize from JSON
   static fromJSON(json: Record<string, any>): Reward {
     return new Reward({
-      user: new PublicKey(json.user),
+      from: new PublicKey(json.from),
+      address: new PublicKey(json.address),
       invested_amount: new Decimal(json.invested_amount),
       level: json.level,
       plan_id: json.plan_id,
@@ -77,14 +81,3 @@ export class Reward implements IReward {
     });
   }
 }
-
-// Define Reward schema for borsh
-export const RewardSchema = borsh.struct([
-  borsh.publicKey("user"), // Pubkey (32 bytes)
-  borsh.u64("invested_amount"), // u64
-  borsh.u8("level"), // u8
-  borsh.u8("plan_id"), // u8
-  borsh.u64("reward_amount"), // u64
-  borsh.u64("reward_time"), // u64
-  borsh.u64("plan_entry_time"), // u64
-]);
