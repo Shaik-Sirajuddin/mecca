@@ -18,11 +18,9 @@ import {
   fetchAppState,
   fetchAppStore,
   fetchUserData,
-  fetchUserStore,
   getATA,
   getTokenBalance,
   getUserDataAcc,
-  getUserStoreAcc,
 } from "./utils/web3";
 import { useConnection, useWallet } from "@solana/wallet-adapter-react";
 import { useDispatch, useSelector } from "react-redux";

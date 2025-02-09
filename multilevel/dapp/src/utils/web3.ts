@@ -28,7 +28,6 @@ import { WithdrawInstructionSchema } from "../schema/instructions/withdraw_instr
 import Decimal from "decimal.js";
 import { UpgradeInstructionSchema } from "../schema/instructions/upgrade_instruction";
 import { AppStore, AppStoreSchema } from "../schema/app_store";
-import { UserStore } from "../schema/user_store";
 
 export const isValidPublicKey = (value: string) => {
   try {
@@ -47,18 +46,6 @@ export const fetchUserData = async (
     return new UserData(UserData.schema.decode(userDataAccInfo?.data));
   } catch (error: any) {
     console.log("Fetch user data error : ", error);
-    return null;
-  }
-};
-export const fetchUserStore = async (
-  storeAcc: PublicKey,
-  connection: Connection
-) => {
-  try {
-    const userStoreAccInfo = await connection.getAccountInfo(storeAcc);
-    return new UserStore(UserStore.schema.decode(userStoreAccInfo?.data));
-  } catch (error: any) {
-    console.log("Fetch user store error : ", error);
     return null;
   }
 };

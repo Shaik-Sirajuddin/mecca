@@ -5,8 +5,6 @@ import { useMemo } from "react";
 import { IRootState } from "../app/store";
 import { formatBalance, shortenAddress } from "../utils/utils";
 import { splToken } from "../utils/constants";
-import { AppStore } from "../schema/app_store";
-import { PublicKey } from "@solana/web3.js";
 import { UserData } from "../schema/user_data";
 
 const Crew = () => {
@@ -15,23 +13,6 @@ const Crew = () => {
     return UserStore.fromJSON(userStoreRaw);
   }, [userStoreRaw]);
 
-  const appStoreRaw = useSelector((state: IRootState) => state.global.store);
-
-  const appStore = useMemo(() => {
-    return AppStore.fromJSON(appStoreRaw);
-  }, [appStoreRaw]);
-
-  const getUserCode = (
-    user: PublicKey,
-    referralMap: Map<string, PublicKey>
-  ) => {
-    for (const [key, value] of referralMap) {
-      if (value.equals(user)) {
-        return key;
-      }
-    }
-    return "";
-  };
 
   return (
     <>
