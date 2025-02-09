@@ -13,7 +13,6 @@ const Crew = () => {
     return UserStore.fromJSON(userStoreRaw);
   }, [userStoreRaw]);
 
-
   return (
     <>
       <Helmet>
@@ -158,7 +157,7 @@ const Crew = () => {
                           </td>
                           <td className="text-sm border text-gray5 border-gray3 py-3.5 font-poppins font-semibold px-2.5">
                             <p>
-                              this
+                              {item.from_id}
                               {/* {getUserCode(item.user, appStore.referral_id_map)} */}
                             </p>
                           </td>

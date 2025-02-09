@@ -237,14 +237,6 @@ const Home = () => {
   };
 
   const handleEnrollClick = () => {
-    setModalData({
-      title: "Sorry for inconvenience",
-      description:
-        "The Platform is undergoing an upgrade , we will be back shortly",
-      show: true,
-      type: "error",
-    });
-    return;
     if (!publicKey) {
       setModalData({
         title: "Not Connected",
