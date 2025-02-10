@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import { Table, Pagination, Spinner } from "react-bootstrap";
 import { apiBaseUrl } from "./utils/constants";
-import { Link } from "react-router-dom";
+import { Link, useFetcher } from "react-router-dom";
 import { Plan } from "../../schema/multilevel/plan";
 import { copyToClipboard, shortenAddress } from "../../utils/utils";
 import toast from "react-hot-toast";
@@ -19,11 +19,35 @@ const UsersPage = () => {
   const [currentPage, setCurrentPage] = useState<number>(1);
   const [totalPages, setTotalPages] = useState<number>(1);
   const [loading, setLoading] = useState<boolean>(false);
+  const [searchKey, setSearchKey] = useState("");
 
   useEffect(() => {
     fetchUsers(currentPage);
   }, [currentPage]);
 
+  const searchUser = async (key: string) => {
+    setLoading(true);
+    if (!key) {
+      fetchUsers(currentPage);
+      return;
+    }
+    try {
+      const response = await fetch(
+        `${apiBaseUrl}/public/search-user?key=${key}`
+      );
+      const data = await response.json();
+      if (data.body) {
+        setUsers(data.body);
+      } else {
+        setUsers([]);
+      }
+      // setTotalPages(data.body.totalPages);
+    } catch (error) {
+      console.error("Error fetching users:", error);
+    } finally {
+      setLoading(false);
+    }
+  };
   const fetchUsers = async (page: number) => {
     setLoading(true);
     try {
@@ -48,6 +72,10 @@ const UsersPage = () => {
       toast.error("Failed to copy");
     }
   };
+  useEffect(() => {
+    console.log("users here", users);
+  }, [users]);
+
   return (
     <div>
       <div className="d-flex align-items-center mb-4">
@@ -72,6 +100,28 @@ const UsersPage = () => {
         </Link>
 
         <h2 className="ms-3">Users</h2>
+        <div
+          className="d-flex align-items-center"
+          style={{
+            flex: "1",
+            justifyContent: "end",
+          }}
+        >
+          <input
+            type="text"
+            style={{
+              width: "200px",
+            }}
+            className="form-control me-2"
+            placeholder="Enter Address or ID"
+            value={searchKey}
+            onChange={(e) => {
+              setSearchKey(e.target.value);
+              searchUser(e.target.value);
+            }}
+          />
+          {/* <button className="btn btn-primary">Search</button> */}
+        </div>
       </div>
       {loading ? (
         <div className="d-flex justify-content-center">
@@ -121,7 +171,7 @@ const UsersPage = () => {
                       style={{ cursor: "pointer" }}
                       alt=""
                       onClick={() => {
-                        performCopy(user.address);
+                        performCopy(user.referrer);
                       }}
                     />
                   </td>
