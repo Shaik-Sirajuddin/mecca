@@ -13,7 +13,7 @@ import { connection, fetchAppState } from "../utils/web3";
 import { AppState } from "../schema/app_state";
 import ReferralReward from "../models/referral_reward";
 import { sequelize } from "../config/connection";
-import { Sequelize } from "sequelize";
+import { Op, Sequelize } from "sequelize";
 import { DisReward, IDisReward } from "../schema/distributed_rewards";
 
 const codeMap: Map<string, boolean> = new Map();
@@ -225,6 +225,46 @@ export const getUsers = async (req: Request, res: Response) => {
   }
 };
 
+export const searchUser = async (req: Request, res: Response) => {
+  try {
+    let { key } = req.query;
+    key = key?.toString();
+    //key can be address or id
+    let user = await MUserData.findOne({
+      where: {
+        [Op.or]: [
+          {
+            address: {
+              [Op.startsWith]: key,
+            },
+          },
+          {
+            code: {
+              [Op.startsWith]: key,
+            },
+          },
+        ],
+      },
+    });
+
+    if (!user) {
+      responseHandler.success(res, "Fetched", {});
+      return;
+    }
+    let userData = new UserData(JSON.parse(user.dataValues.data).data);
+    let parsedUser = {
+      address: userData.address.toString(),
+      id: userData.id,
+      plan_id: userData.plan_id,
+      enrolled_at: userData.enrolled_at.toString(),
+      referrer: userData.referrer.toString(),
+    };
+    responseHandler.success(res, "Fetched", parsedUser);
+  } catch (error) {
+    console.log(error);
+    responseHandler.error(res, error);
+  }
+};
 export const getAddressFromCode = async (req: Request, res: Response) => {
   try {
     let { code } = req.body;
