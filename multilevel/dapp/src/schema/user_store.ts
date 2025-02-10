@@ -24,8 +24,11 @@ export class UserStore implements IUserStore {
       active: 0,
       deep: 0,
     };
+    const accounted = new Set<string>();
     for (let i = 0; i < this.rewards.length; i++) {
       const reward = this.rewards[i];
+      if (accounted.has(reward.from.toString())) continue;
+      accounted.add(reward.from.toString());
       if (reward.level === 1) {
         crewCount.direct++;
       } else if (reward.level <= 6) {

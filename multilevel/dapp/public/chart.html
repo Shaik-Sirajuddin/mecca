@@ -396,7 +396,14 @@
             .attr("height", bbox.height + 10) // Add padding to height
             .attr("rx", 5) // Border radius for rounded corners
             .attr("ry", 5) // Same as rx for y direction
-            .style("fill", "#58BD7D"); // Background color
+            .style(
+              "fill",
+              d.current_plan === 0
+                ? "#58BD7D"
+                : d.current_plan === 1
+                ? "#d107fb"
+                : "#9707b5"
+            ); // Background color
           // .style("stroke", "white") // Border color
           // .style("stroke-width", "1px"); // Border width
         });
