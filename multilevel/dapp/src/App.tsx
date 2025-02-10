@@ -40,7 +40,6 @@ import { userJoined } from "./network/api";
 import { IRootState } from "./app/store";
 import { baseUrl } from "./utils/constants";
 import { UserStore } from "./schema/user_store";
-import { PublicKey } from "@solana/web3.js";
 
 const useMultiplePathsMatch = (paths: string[]) => {
   const location = useLocation();
