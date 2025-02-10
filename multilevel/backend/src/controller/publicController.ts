@@ -92,7 +92,8 @@ export const getReferrerChartData = async (req: Request, res: Response) => {
       let accumulatedReward = DisReward.fromJSON(rewards[i].toJSON());
       for (let j = i + 1; j < rewards.length; j++) {
         if (rewards[i].from.equals(rewards[j].from)) {
-          accumulatedReward.invested_amount.add(rewards[j].reward_amount);
+          accumulatedReward.reward_amount = accumulatedReward.reward_amount.add(rewards[j].reward_amount);
+          accumulatedReward.plan_id = rewards[j].plan_id;
         }
       }
       accountedUsers.add(rewards[i].from.toString());
