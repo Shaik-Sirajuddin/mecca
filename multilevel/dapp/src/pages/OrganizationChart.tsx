@@ -1,6 +1,7 @@
 import { useWallet } from "@solana/wallet-adapter-react";
 import { useEffect, useRef } from "react";
 import { Helmet } from "react-helmet-async";
+import toast from "react-hot-toast";
 
 const OrganizationChart = () => {
   const { publicKey } = useWallet();
@@ -30,6 +31,13 @@ const OrganizationChart = () => {
       adjustHeight();
     }, 2000);
     return () => window.removeEventListener("resize", adjustHeight);
+  }, []);
+
+  useEffect(() => {
+    //@ts-expect-error this
+    window.showToastNotFound = () => {
+      toast.error("User not found ");
+    };
   }, []);
   return (
     <>

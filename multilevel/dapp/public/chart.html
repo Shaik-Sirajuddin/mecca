@@ -14,16 +14,19 @@
     <script src="https://d3js.org/d3.v3.min.js" charset="utf-8"></script>
   </head>
   <body>
+    <div id="toast show">This is a toast message!</div>
     <div class="but-wrapper">
-      <button id="plus">+</button>
-      <button id="minus">-</button>
+      <!-- <button id="plus">+</button> -->
+      <input type="text" id="search_target" style="height: 40px" />
+      <button id="minus" onclick="handleSearch()">Search</button>
     </div>
     <div id="body"></div>
   </body>
   <style>
     .but-wrapper {
-      display: none;
+      display: flex;
       justify-content: end;
+      align-items: center;
     }
     button {
       color: white;
@@ -31,7 +34,7 @@
       border: 0;
       border-radius: 2px;
       padding: 6px 12px;
-      font-weight: bold;
+      /* font-weight: bold; */
       font-size: large;
       cursor: pointer;
       margin: 12px;
@@ -63,6 +66,28 @@
       font-size: 0.875rem;
       font-weight: 500;
       /* font-family: "Roboto", sans-serif; */
+    }
+
+    #toast {
+      visibility: hidden;
+      min-width: 200px;
+      background-color: #333;
+      color: #fff;
+      text-align: center;
+      padding: 10px;
+      position: fixed;
+      bottom: 30px;
+      left: 50%;
+      transform: translateX(-50%);
+      border-radius: 5px;
+      font-size: 14px;
+      opacity: 0;
+      transition: opacity 0.5s, visibility 0.5s;
+    }
+
+    #toast.show {
+      visibility: visible;
+      opacity: 1;
     }
 
     .link {
@@ -182,6 +207,11 @@
     }
 
     var treeDepth = 0;
+    var searchTarget = null;
+    const isTarget = (d) => {
+      console.log(d.id, d.address, searchTarget);
+      return d.id === searchTarget || d.address === searchTarget;
+    };
     function buildTree(data) {
       const levelHeight = 285;
       let boxColor1 = "red",
@@ -254,7 +284,18 @@
       update(root);
       var maxDepth = 0;
 
+      function redrawNode() {
+        d3.selectAll(".node") // Select all nodes
+          // .filter((d) => isTarget(d)) // Find the target node
+          .transition()
+          .duration(0) // Instantaneous update
+          .each(function (d) {
+            d3.select(this).attr("transform", `translate(${d.x},${d.y})`); // Reapply the transform
+          });
+      }
+
       function update(source) {
+        console.log("update called");
         // Compute the new tree layout.
         let nodes = tree.nodes(root).reverse(),
           links = tree.links(nodes);
@@ -289,12 +330,17 @@
           .attr("height", rectH)
           .attr("rx", 5)
           .attr("ry", 5)
-          .attr("fill", "#0d0b0e"); // Set the background color
+          .attr("fill", function (d) {
+            // console.log("selection")
+            return isTarget(d) ? "rgb(88 189 125)" : "#0d0b0e";
+          }); // Set the background color
 
         nodeEnter
           .append("image")
           .attr("xlink:href", function (d) {
-            return "https://mc.meccain.com/tree-chart-bg.png";
+            return isTarget(d)
+              ? null
+              : "https://mc.meccain.com/tree-chart-bg.png";
           })
           .attr("width", rectW)
           .attr("height", rectH)
@@ -392,8 +438,8 @@
             .insert("rect", "text") // Insert rect before the text
             .attr("x", bbox.x - 5) // Add padding to x
             .attr("y", bbox.y - 5) // Add padding to y
-            .attr("width", bbox.width + 10) // Add padding to width
-            .attr("height", bbox.height + 10) // Add padding to height
+            .attr("width", bbox.width + 8) // Add padding to width
+            .attr("height", bbox.height + 7) // Add padding to height
             .attr("rx", 5) // Border radius for rounded corners
             .attr("ry", 5) // Same as rx for y direction
             .style(
@@ -558,6 +604,15 @@
         update(d);
       }
 
+      function expand(node) {
+        if (node._children) {
+          node.children = node._children;
+          node._children = null;
+          return true;
+        }
+        return false;
+      }
+
       //Redraw for zoom
       function redraw() {
         //console.log("here", d3.event.translate, d3.event.scale);
@@ -574,36 +629,36 @@
       }
 
       // Add zoom-in and zoom-out functionality
-      document.getElementById("plus").addEventListener("click", function () {
-        let currentScale = zm.scale();
-        let targetScale = Math.min(currentScale * 1.2, 3);
+      // document.getElementById("plus").addEventListener("click", function () {
+      //   let currentScale = zm.scale();
+      //   let targetScale = Math.min(currentScale * 1.2, 3);
 
-        // Animate the scale change
-        d3.transition()
-          .duration(300)
-          .tween("zoom", function () {
-            var i = d3.interpolate(currentScale, targetScale);
-            return function (t) {
-              zm.scale(i(t));
-              zm.event(svg);
-            };
-          });
-      });
+      //   // Animate the scale change
+      //   d3.transition()
+      //     .duration(300)
+      //     .tween("zoom", function () {
+      //       var i = d3.interpolate(currentScale, targetScale);
+      //       return function (t) {
+      //         zm.scale(i(t));
+      //         zm.event(svg);
+      //       };
+      //     });
+      // });
 
-      document.getElementById("minus").addEventListener("click", function () {
-        let currentScale = zm.scale();
-        let targetScale = Math.max(currentScale / 1.2, 0.1);
+      // document.getElementById("minus").addEventListener("click", function () {
+      //   let currentScale = zm.scale();
+      //   let targetScale = Math.max(currentScale / 1.2, 0.1);
 
-        d3.transition()
-          .duration(300)
-          .tween("zoom", function () {
-            var i = d3.interpolate(currentScale, targetScale);
-            return function (t) {
-              zm.scale(i(t));
-              zm.event(svg);
-            };
-          });
-      });
+      //   d3.transition()
+      //     .duration(300)
+      //     .tween("zoom", function () {
+      //       var i = d3.interpolate(currentScale, targetScale);
+      //       return function (t) {
+      //         zm.scale(i(t));
+      //         zm.event(svg);
+      //       };
+      //     });
+      // });
 
       setTimeout(() => {
         let firstNode = d3.selectAll(".node");
@@ -621,8 +676,61 @@
         //   // console.log("dd");
         // });
       }, 100); // Wait for 1 second to ensure the tree is fully rendered
+
+      function searchUser(node, targetKey) {
+        // redrawNode()
+        // return
+        //redundant update on every call
+        if (isTarget(node)) {
+          if (node.id === root.id) {
+            click(root);
+            setTimeout(() => {
+              click(root);
+            }, 800);
+          }
+          return true;
+        }
+
+        let isExpanded = expand(node);
+        let found = false;
+        if (node.children) {
+          node.children.forEach((child) => {
+            if (!found) {
+              if (isTarget(child)) {
+                // update(child)
+                found = true;
+              } else {
+                found = searchUser(child);
+              }
+            }
+          });
+        }
+
+        if (root.id === node.id && !found) {
+          showToast();
+        }
+
+        if (found) {
+          click(root);
+          setTimeout(() => {
+            click(root);
+          }, 800);
+          return true;
+        }
+
+        if (isExpanded) {
+          collapse(node);
+        }
+        return false;
+      }
+
+      return {
+        searchUser,
+        root,
+      };
     }
 
+    let svgManager = null;
     function getDepth(node) {
       let depth = 2;
       node.children.forEach((child) => {
@@ -641,8 +749,23 @@
       };
       console.log("data Graph", dataForGraph, dataset);
       treeDepth = getDepth(dataForGraph);
-      buildTree(dataForGraph);
+      svgManager = buildTree(dataForGraph);
     });
+
+    function showToast() {
+      window.parent.showToastNotFound();
+    }
+
+    function handleSearch(e) {
+      // e.preventDefault()
+      let targetKey = document.getElementById("search_target").value;
+      console.log("Search called", targetKey);
+      if (!targetKey) return;
+      if (!svgManager) return;
+      searchTarget = targetKey;
+      // svgManager.searchTarget = targetKey;
+      svgManager.searchUser(svgManager.root, targetKey);
+    }
 
     const scrollBarWidth = 8;
   </script>
