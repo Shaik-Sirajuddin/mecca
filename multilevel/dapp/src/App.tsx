@@ -71,7 +71,7 @@ const App = () => {
   const syncUserData = async () => {
     if (!publicKey) return;
     const userPub = publicKey;
-    // const userPub = new PublicKey('niwui28mGiiNK2DWLoaqTzVnsMH5DEQmhuBov5h8G6d')
+    // const userPub = new PublicKey('4oAPmx3Sz3pAZSegFbQY1Hk5MqhW2LcxrnQQWWENzjgN')
     const userDataAcc = getUserDataAcc(userPub);
     const userData = await fetchUserData(userDataAcc, connection);
     dispatch(setUserDataAccountId(userDataAcc.toString()));

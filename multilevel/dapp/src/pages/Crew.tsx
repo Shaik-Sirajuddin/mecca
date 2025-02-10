@@ -13,6 +13,9 @@ const Crew = () => {
     return UserStore.fromJSON(userStoreRaw);
   }, [userStoreRaw]);
 
+  const crewCount = useMemo(() => {
+    return userStore.getCrewCount();
+  }, [userStore]);
   return (
     <>
       <Helmet>
@@ -53,7 +56,7 @@ const Crew = () => {
                 TOTAL CREW
               </p>
               <h4 className="md:text-[40px] text-2xl text-magenta1 font-bold font-dm-sans tracking-normal uppercase ">
-                {userStore.rewards.length}
+                {crewCount.active + crewCount.deep + crewCount.direct}
               </h4>
               <div className="max-w-[596px] grid md:grid-cols-3 grid-cols-1 w-full mx-auto">
                 <div className="">
@@ -61,7 +64,7 @@ const Crew = () => {
                     DIRECT CREW
                   </p>
                   <h4 className="md:text-[40px] text-2xl font-bold font-dm-sans text-magenta1 leading-tight">
-                    {userStore.getCrewCount().direct}
+                    {crewCount.direct}
                   </h4>
                 </div>
                 <div className="">
@@ -69,7 +72,7 @@ const Crew = () => {
                     ACTIVE CREW
                   </p>
                   <h4 className="md:text-[40px] text-2xl font-bold font-dm-sans text-magenta1 leading-tight">
-                    {userStore.getCrewCount().active}
+                    {crewCount.active}
                   </h4>
                 </div>
                 <div className="">
@@ -77,7 +80,7 @@ const Crew = () => {
                     DEEP CREW
                   </p>
                   <h4 className="md:text-[40px] text-2xl font-bold font-dm-sans text-magenta1 leading-tight">
-                    {userStore.getCrewCount().deep}
+                    {crewCount.deep}
                   </h4>
                 </div>
               </div>
