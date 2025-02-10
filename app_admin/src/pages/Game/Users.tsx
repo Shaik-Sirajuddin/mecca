@@ -12,7 +12,24 @@ const Users: React.FC = () => {
   const [showModal, setShowModal] = useState(false);
   const [loading, setLoading] = useState(false);
   const [holdings, setHoldings] = useState([]);
+  const [searchKey, setSearchKey] = useState("");
 
+  const searchUser = async (key: string) => {
+    if (!key) {
+      fetchUsersData(currentPage);
+      return;
+    }
+    setLoading(true);
+    const response = await fetch(`${apiBaseUrl}/admin/users?key=${key}`, {
+      headers: {
+        Authorization: authKey,
+      },
+    });
+    const data = await response.json();
+    setUsers(data.data.users ?? []);
+    console.log(data.data.users);
+    setLoading(false);
+  };
   const fetchUsersData = async (page: number) => {
     setLoading(true);
     const response = await fetch(
@@ -71,6 +88,28 @@ const Users: React.FC = () => {
         </Link>
 
         <h2 className="ms-3">Users</h2>
+        <div
+          className="d-flex align-items-center"
+          style={{
+            flex: "1",
+            justifyContent: "end",
+          }}
+        >
+          <input
+            type="text"
+            style={{
+              width: "200px",
+            }}
+            className="form-control me-2"
+            placeholder="Enter Address or ID"
+            value={searchKey}
+            onChange={(e) => {
+              setSearchKey(e.target.value);
+              searchUser(e.target.value);
+            }}
+          />
+          {/* <button className="btn btn-primary">Search</button> */}
+        </div>
       </div>
       {loading ? (
         <p>Loading users...</p>
