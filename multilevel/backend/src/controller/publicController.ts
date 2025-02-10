@@ -92,7 +92,9 @@ export const getReferrerChartData = async (req: Request, res: Response) => {
       let accumulatedReward = DisReward.fromJSON(rewards[i].toJSON());
       for (let j = i + 1; j < rewards.length; j++) {
         if (rewards[i].from.equals(rewards[j].from)) {
-          accumulatedReward.reward_amount = accumulatedReward.reward_amount.add(rewards[j].reward_amount);
+          accumulatedReward.reward_amount = accumulatedReward.reward_amount.add(
+            rewards[j].reward_amount
+          );
           accumulatedReward.plan_id = rewards[j].plan_id;
         }
       }
@@ -230,7 +232,7 @@ export const searchUser = async (req: Request, res: Response) => {
     let { key } = req.query;
     key = key?.toString();
     //key can be address or id
-    let user = await MUserData.findOne({
+    let users = await MUserData.findAll({
       where: {
         [Op.or]: [
           {
@@ -245,21 +247,21 @@ export const searchUser = async (req: Request, res: Response) => {
           },
         ],
       },
+      limit: 10,
     });
-
-    if (!user) {
-      responseHandler.success(res, "Fetched", {});
-      return;
+    let parsedUsers = [];
+    for (let i = 0; i < users.length; i++) {
+      let user = users[i];
+      let userData = new UserData(JSON.parse(user.dataValues.data).data);
+      parsedUsers.push({
+        address: userData.address.toString(),
+        id: userData.id,
+        plan_id: userData.plan_id,
+        enrolled_at: userData.enrolled_at.toString(),
+        referrer: userData.referrer.toString(),
+      });
     }
-    let userData = new UserData(JSON.parse(user.dataValues.data).data);
-    let parsedUser = {
-      address: userData.address.toString(),
-      id: userData.id,
-      plan_id: userData.plan_id,
-      enrolled_at: userData.enrolled_at.toString(),
-      referrer: userData.referrer.toString(),
-    };
-    responseHandler.success(res, "Fetched", parsedUser);
+    responseHandler.success(res, "Fetched", parsedUsers);
   } catch (error) {
     console.log(error);
     responseHandler.error(res, error);
