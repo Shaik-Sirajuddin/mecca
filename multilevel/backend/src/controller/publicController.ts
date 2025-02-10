@@ -247,6 +247,7 @@ export const searchUser = async (req: Request, res: Response) => {
           },
         ],
       },
+      order: [["createdAt", "DESC"]],
       limit: 10,
     });
     let parsedUsers = [];
