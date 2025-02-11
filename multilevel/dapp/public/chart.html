@@ -14,7 +14,6 @@
     <script src="https://d3js.org/d3.v3.min.js" charset="utf-8"></script>
   </head>
   <body>
-    <div id="toast show">This is a toast message!</div>
     <div class="but-wrapper">
       <!-- <button id="plus">+</button> -->
       <input type="text" id="search_target" style="height: 40px" />
@@ -27,6 +26,8 @@
       display: flex;
       justify-content: end;
       align-items: center;
+      position: absolute;
+      right: 10;
     }
     button {
       color: white;
@@ -182,7 +183,7 @@
       if (!address || address.length <= chars * 2 + 2) {
         return address; // Return the original address if it's too short to shorten
       }
-      const prefix = address.slice(0, chars + 2); // First `chars` + "0x"
+      const prefix = address.slice(0, chars ); // First `chars` + "0x"
       const suffix = address.slice(-chars); // Last `chars`
       return `${prefix}...${suffix}`;
     }
@@ -387,7 +388,7 @@
           });
         nodeEnter
           .append("text")
-          .attr("x", rectW - 128)
+          .attr("x", rectW - 120)
           .attr("y", baseYText + lineHeight)
           .attr("dy", ".35em")
           .attr("dx", "1em")
