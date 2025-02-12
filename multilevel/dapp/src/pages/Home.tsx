@@ -288,6 +288,12 @@ const Home = () => {
   useEffect(() => {
     handleQuery();
   }, [searchParams, parseReferrerInput]);
+
+  useEffect(() => {
+    if (userPDAExists) {
+      setInvideCode(userData.referrer.toString());
+    }
+  }, [userData, userPDAExists]);
   return (
     <>
       <Helmet>
@@ -489,6 +495,7 @@ const Home = () => {
                         onChange={(e) => {
                           setInvideCode(e.target.value);
                         }}
+                        disabled={userPDAExists}
                         placeholder="Enter the Invite code or Address"
                         className="bg-black1 text-xs rounded border border-black2 w-full py-2.5 px-3 placeholder:text-gray1 text-white"
                       />

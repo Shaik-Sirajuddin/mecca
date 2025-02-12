@@ -40,6 +40,7 @@ import { userJoined } from "./network/api";
 import { IRootState } from "./app/store";
 import { baseUrl } from "./utils/constants";
 import { UserStore } from "./schema/user_store";
+// import { PublicKey } from "@solana/web3.js";
 
 const useMultiplePathsMatch = (paths: string[]) => {
   const location = useLocation();
@@ -71,7 +72,7 @@ const App = () => {
   const syncUserData = async () => {
     if (!publicKey) return;
     const userPub = publicKey;
-    // const userPub = new PublicKey('4oAPmx3Sz3pAZSegFbQY1Hk5MqhW2LcxrnQQWWENzjgN')
+    // const userPub = new PublicKey('7oWYGTGQWDDvpT77Q3KzDuXu74kTbwBgxuEcktEGB2tU')
     const userDataAcc = getUserDataAcc(userPub);
     const userData = await fetchUserData(userDataAcc, connection);
     dispatch(setUserDataAccountId(userDataAcc.toString()));
