@@ -45,9 +45,9 @@ const AirdropAdmin: React.FC = () => {
       const response = await fetch(`${airdropBaseUrl}/admin/claims`, {
         method: "POST",
         headers: {
-          authorization: localStorage.getItem("auth-key")!,
           "Content-Type": "application/json",
         },
+        credentials: "include",
         body: JSON.stringify({
           date: claimsDate.getTime(),
         }),
@@ -82,6 +82,7 @@ const AirdropAdmin: React.FC = () => {
         headers: {
           authorization: localStorage.getItem("auth-key"),
         },
+        withCredentials: true,
       })
       .then((res) => {
         setTotalClaimsToday(res.data.body.count);
@@ -98,6 +99,7 @@ const AirdropAdmin: React.FC = () => {
         headers: {
           authorization: localStorage.getItem("auth-key"),
         },
+        withCredentials: true,
       })
       .then(() => {
         toast.success("Airdrop configuration updated successfully!");

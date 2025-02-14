@@ -2,11 +2,14 @@ import React from "react";
 import { Navbar, Nav, Container } from "react-bootstrap";
 import "bootstrap/dist/css/bootstrap.min.css";
 import { useNavigate } from "react-router-dom";
+import { airdropBaseUrl } from "../../utils/constants";
 
 const Header: React.FC = () => {
   const navigate = useNavigate();
-  const logout = () => {
-    localStorage.removeItem("auth-key");
+  const logout = async () => {
+    await fetch(airdropBaseUrl + "/admin/logout", {
+      credentials: "include",
+    });
     navigate("/login");
   };
   return (
