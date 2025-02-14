@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import { Table, Pagination, Spinner } from "react-bootstrap";
 import { apiBaseUrl } from "./utils/constants";
-import { Link, useFetcher } from "react-router-dom";
+import { Link } from "react-router-dom";
 import { Plan } from "../../schema/multilevel/plan";
 import { copyToClipboard, shortenAddress } from "../../utils/utils";
 import toast from "react-hot-toast";
