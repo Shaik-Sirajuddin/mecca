@@ -1,6 +1,9 @@
 import { Router } from "express";
 import * as adminController from "../controller/adminController";
-import { adminMiddleware } from "../middleware/adminMiddleware";
+import {
+  adminMiddleware,
+  passwordResetLimiter,
+} from "../middleware/adminMiddleware";
 
 const adminRouter = Router();
 
@@ -9,8 +12,7 @@ adminRouter.post(
   adminMiddleware,
   adminController.updateConfig
 );
-adminRouter.post("/login", adminController.login);
-adminRouter.get("/logout", adminController.logout);
+
 adminRouter.post("/claims", adminMiddleware, adminController.claimsByDate);
 adminRouter.get(
   "/verify-login",
@@ -22,5 +24,16 @@ adminRouter.get(
   adminMiddleware,
   adminController.getTotalClaims
 );
+
+adminRouter.post("/login", adminController.login);
+adminRouter.post("/2fa", adminController.twoFactorAuth);
+adminRouter.get("/logout", adminController.logout);
+
+adminRouter.post(
+  "/reset-password",
+  passwordResetLimiter,
+  adminController.requestPasswordReset
+);
+adminRouter.post("/confirm-reset-password", adminController.resetPassword);
 
 export default adminRouter;

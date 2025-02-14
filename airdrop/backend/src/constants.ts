@@ -11,6 +11,7 @@ export const tokenHolderAtaId = new PublicKey(
 export const tokenProgramId = new PublicKey(
   `TokenzQdBNbLqP5VEhdkAS6EPFLC1PHnBqCXEpPxuEb`
 );
+export const adminAppUrl = `https://appadmin.meccain.com`;
 export const token = {
   decimals: 6,
 };
