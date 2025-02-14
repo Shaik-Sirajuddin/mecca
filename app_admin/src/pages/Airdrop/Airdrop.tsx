@@ -14,7 +14,6 @@ import "bootstrap/dist/css/bootstrap.min.css";
 import { AirdropConfig } from "../../schema/AirdropConfig";
 import { airdropBaseUrl } from "../../utils/constants";
 import toast from "react-hot-toast";
-import { useNavigate } from "react-router-dom";
 import Decimal from "decimal.js";
 import { useConnection } from "@solana/wallet-adapter-react";
 import { tokenHolderAta, tokenHolderOwner } from "./utils/constants";
@@ -30,7 +29,6 @@ const AirdropAdmin: React.FC = () => {
   const { connection } = useConnection();
   const [tokenBalance, setTokenBalance] = useState(new Decimal("0"));
   const [solBalance, setSolBalance] = useState(new Decimal("0"));
-  const navigate = useNavigate();
   const [claims, setClaims] = useState<AidropRequest[]>([]);
   const [claimsDate, setClaimsDate] = useState(new Date());
   const [totalClaimsToday, setTotalClaimsToday] = useState(0);
@@ -109,12 +107,6 @@ const AirdropAdmin: React.FC = () => {
         toast.error(error.toString());
       });
   };
-
-  useEffect(() => {
-    if (!localStorage.getItem("auth-key")) {
-      navigate("/login");
-    }
-  }, [navigate]);
 
   if (!airdropConfig) {
     return <div className="text-center">Loading...</div>;
