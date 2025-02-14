@@ -21,7 +21,7 @@ const corsOptions = {
 app.use(cors(corsOptions));
 
 app.use("/public", publicRouter);
-app.use("/admin", adminMiddleware, adminRouter);
+app.use("/admin", adminRouter);
 
 const server = createServer(app);
 export { app };

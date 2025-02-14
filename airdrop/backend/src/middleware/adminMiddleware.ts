@@ -1,5 +1,6 @@
 import { NextFunction, Request, Response } from "express";
 import { responseHandler } from "../utils/helper";
+import * as jwt from "jsonwebtoken";
 
 export const adminMiddleware = (
   req: Request,
@@ -7,18 +8,18 @@ export const adminMiddleware = (
   next: NextFunction
 ) => {
   try {
-    let authKey = process.env.AUTH_KEY!;
-    let authSecret = req.headers.authorization?.trim();
-
-    console.log(authSecret , req.query)
-
-    if (!authSecret || authSecret != authKey) {
-      throw "Unauthorized";
+    const token = req.cookies.token;
+    if (!token) {
+      res.status(401).json({ message: "Unauthorized" });
+      return;
     }
 
-    next()
-  } catch (error : any) {
-    responseHandler.error(res, error.toString());
-    console.log(error);
+    const user = jwt.verify(token, process.env.JWT_SECRET!);
+    if (user !== "ADMIN") {
+      throw "Unauthorized User";
+    }
+    next();
+  } catch (err: any) {
+    responseHandler.error(res, err);
   }
 };
