@@ -1,6 +1,6 @@
 import "./App.css";
 import "bootstrap/dist/css/bootstrap.min.css";
-import { Route, Routes } from "react-router-dom";
+import { Route, Routes, useNavigate } from "react-router-dom";
 import AirdropAdmin from "./pages/Airdrop/Airdrop";
 import Header from "./components/Header/Header";
 import Sidebar from "./components/SideBar/SideBar";
@@ -11,7 +11,10 @@ import MultiLevel from "./pages/Multilevel/Multilevel";
 import Game from "./pages/Game/Game";
 import Users from "./pages/Game/Users";
 import UsersPage from "./pages/Multilevel/Users";
+import ProtectedPage from "./pages/ProtectedPage";
 function App() {
+  const navigate = useNavigate();
+
   return (
     <>
       <div style={{ display: "flex" }} className="app-wrapper">
@@ -22,14 +25,25 @@ function App() {
           className="routes-wrapper"
         >
           <Routes>
-            <Route path="/" element={<IcoPanel />} />
-            <Route path="/airdrop" element={<AirdropAdmin />} />
             <Route path="/login" element={<Login />} />
-            <Route path="/staking" element={<Staking />} />
-            <Route path="/mecca" element={<MultiLevel />} />
-            <Route path="/mecca/users" element={<UsersPage />} />
-            <Route path="/game/" element={<Game />} />
-            <Route path="/game/users" element={<Users />} />
+
+            {/* Wrap all other routes inside ProtectedPage */}
+            <Route
+              path="/*"
+              element={
+                <ProtectedPage>
+                  <Routes>
+                    <Route path="/" element={<IcoPanel />} />
+                    <Route path="/airdrop" element={<AirdropAdmin />} />
+                    <Route path="/staking" element={<Staking />} />
+                    <Route path="/mecca" element={<MultiLevel />} />
+                    <Route path="/mecca/users" element={<UsersPage />} />
+                    <Route path="/game" element={<Game />} />
+                    <Route path="/game/users" element={<Users />} />
+                  </Routes>
+                </ProtectedPage>
+              }
+            />
           </Routes>
         </div>
       </div>

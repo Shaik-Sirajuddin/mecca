@@ -13,15 +13,21 @@ const Login: React.FC = () => {
     try {
       //assuming same secret key for airdrop and ico
       const res = await fetch(`${airdropBaseUrl}/admin/login`, {
+        method: "POST",
         headers: {
-          authorization: secretKey,
+          // authorization: secretKey,
+          "Content-Type": "application/json",
         },
+        credentials: "include",
+        body: JSON.stringify({
+          otp: secretKey,
+        }),
       });
       const data = await res.json();
       if (!data.success) {
         throw data.message;
       }
-      localStorage.setItem("auth-key", secretKey);
+      // localStorage.setItem("auth-key", secretKey);
       navigate("/");
     } catch (error: any) {
       console.log(error);
@@ -54,10 +60,10 @@ const Login: React.FC = () => {
             </Form.Group>
 
             <Form.Group controlId="secretKey" className="mb-3">
-              <Form.Label>Secret Key</Form.Label>
+              <Form.Label>OTP</Form.Label>
               <Form.Control
-                type="password"
-                placeholder="Enter secret key"
+                type="number"
+                placeholder="Enter otp from authenticator"
                 value={secretKey}
                 onChange={(e) => setSecretKey(e.target.value)}
               />
