@@ -9,7 +9,6 @@ import {
   updateIfValid,
 } from "../../utils/utils";
 import toast from "react-hot-toast";
-import { useNavigate } from "react-router-dom";
 import { AppConfig, AppConfigSchema } from "../../schema/ico/AppConfig";
 import { Round } from "../../schema/ico/Round";
 import { useConnection, useWallet } from "@solana/wallet-adapter-react";
@@ -38,7 +37,6 @@ const AdminICOPage: React.FC = () => {
   const [withdrawAmount, setWithdrawAmount] = useState("0");
   const [tokensInSale, setTokensInSale] = useState(new Decimal("0"));
   const [editingRound, setEditingRound] = useState<Round | null>(null);
-  const navigate = useNavigate();
   const { connection } = useConnection();
   const { publicKey, sendTransaction } = useWallet();
 
@@ -177,12 +175,6 @@ const AdminICOPage: React.FC = () => {
     setOwnerAddress(appConfig.owner.toString());
   }, [appConfig]);
 
-  useEffect(() => {
-    if (!localStorage.getItem("auth-key")) {
-      navigate("/login");
-    }
-    syncData();
-  }, [navigate]);
 
   const handleEditRound = (round: Round) => {
     setEditingRound(round);

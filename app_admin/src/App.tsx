@@ -13,8 +13,6 @@ import Users from "./pages/Game/Users";
 import UsersPage from "./pages/Multilevel/Users";
 import ProtectedPage from "./pages/ProtectedPage";
 function App() {
-  const navigate = useNavigate();
-
   return (
     <>
       <div style={{ display: "flex" }} className="app-wrapper">
@@ -27,7 +25,6 @@ function App() {
           <Routes>
             <Route path="/login" element={<Login />} />
 
-            {/* Wrap all other routes inside ProtectedPage */}
             <Route
               path="/*"
               element={
