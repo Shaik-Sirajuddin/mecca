@@ -1,13 +1,16 @@
 import React from "react";
-import { Nav, } from "react-bootstrap";
+import { Nav } from "react-bootstrap";
 import "bootstrap/dist/css/bootstrap.min.css";
 import { useNavigate } from "react-router-dom";
 import { WalletMultiButton } from "@solana/wallet-adapter-react-ui";
+import { airdropBaseUrl } from "../../utils/constants";
 
 const Sidebar: React.FC = () => {
   const navigate = useNavigate();
-  const logout = () => {
-    localStorage.removeItem("auth-key");
+  const logout = async () => {
+    await fetch(airdropBaseUrl + "/admin/logout", {
+      credentials: "include",
+    });
     navigate("/login");
   };
   return (
