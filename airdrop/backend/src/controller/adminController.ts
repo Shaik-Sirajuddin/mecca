@@ -87,7 +87,7 @@ export const claimsByDate = async (req: Request, res: Response) => {
 
 // Function to generate a JWT token with 15 min validity
 const generateToken = (user: string) => {
-  return jwt.sign(user, process.env.JWT_SECRET!, { expiresIn: "15m" });
+  return jwt.sign({user}, process.env.JWT_SECRET!, { expiresIn: "15m" });
 };
 export const validateLogin = async (req: Request, res: Response) => {
   try {
@@ -104,13 +104,15 @@ export const login = async (req: Request, res: Response) => {
       encoding: "base32",
       token: otp,
     });
+    console.log(process.env.TOTP_SECRET , otp)
     if (!verified) {
       throw "Invalid OTP";
     }
     const token = generateToken("ADMIN");
-    res.cookie("token", token, { httpOnly: true, secure: false });
+    res.cookie("token", token, { httpOnly: true, secure: true, sameSite : 'none' });
     responseHandler.success(res, "Login success");
   } catch (error) {
+    console.log(error)
     responseHandler.error(res, error);
   }
 };

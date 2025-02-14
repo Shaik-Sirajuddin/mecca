@@ -8,6 +8,7 @@ export const adminMiddleware = (
   next: NextFunction
 ) => {
   try {
+    console.log(req.cookies)
     const token = req.cookies.token;
     if (!token) {
       res.status(401).json({ message: "Unauthorized" });
@@ -15,7 +16,8 @@ export const adminMiddleware = (
     }
 
     const user = jwt.verify(token, process.env.JWT_SECRET!);
-    if (user !== "ADMIN") {
+    console.log(user)
+    if (!user) {
       throw "Unauthorized User";
     }
     next();
