@@ -14,12 +14,3 @@ server.listen(port, () => {
 makeConnection().then((res) => {
   intializeDB();
 });
-
-function generate_secret_key() {
-  // Generate a secret key
-  const secretKey = speakeasy.generateSecret({ length: 20 });
-
-  return secretKey;
-}
-
-console.log(generate_secret_key())

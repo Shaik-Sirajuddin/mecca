@@ -1,3 +1,4 @@
+import Admin from "../models/Admin";
 import AidropConfig from "../models/AirdropConfig";
 export const intializeDB = async () => {
   try {
@@ -8,6 +9,13 @@ export const intializeDB = async () => {
         minSolAmount: 0.001,
         paused: false,
         endTime: new Date("2025-04-30T23:59:00.000Z"),
+      });
+    }
+    let admin = await Admin.findOne({ where: {} });
+    if (!admin) {
+      await Admin.create({
+        email: "test@gmail.com",
+        password: "",
       });
     }
   } catch (error) {
