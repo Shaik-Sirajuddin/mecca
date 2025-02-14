@@ -98,7 +98,7 @@ const Login: React.FC = () => {
                 <Form.Control
                   type="password"
                   placeholder="Enter Password"
-                  value={totp}
+                  value={password}
                   onChange={(e) => setPassword(e.target.value)}
                 />
               </Form.Group>

@@ -1,6 +1,6 @@
 import "./App.css";
 import "bootstrap/dist/css/bootstrap.min.css";
-import { Route, Routes, useNavigate } from "react-router-dom";
+import { Route, Routes } from "react-router-dom";
 import AirdropAdmin from "./pages/Airdrop/Airdrop";
 import Header from "./components/Header/Header";
 import Sidebar from "./components/SideBar/SideBar";
