@@ -155,9 +155,10 @@ const AdminICOPage: React.FC = () => {
         appConfigPDA,
         "processed"
       );
+      console.log("fetch started");
       const deserializedData = AppConfigSchema.decode(accountInfo?.data);
       setAppConfig(new AppConfig(deserializedData));
-
+      console.log(deserializedData);
       const balance = await getSPlTokenBalance(connection, tokenHoldingAta);
       setTokensInSale(balance);
     } catch (error: unknown) {
@@ -175,7 +176,6 @@ const AdminICOPage: React.FC = () => {
     setOwnerAddress(appConfig.owner.toString());
   }, [appConfig]);
 
-
   const handleEditRound = (round: Round) => {
     setEditingRound(round);
     setEditRoundPrice(calculatePrice(round).toString());
@@ -190,6 +190,10 @@ const AdminICOPage: React.FC = () => {
   const calculatePrice = (round: Round) => {
     return round.round_price.div(Math.pow(10, round.price_decimals));
   };
+  
+  useEffect(() => {
+    syncData();
+  }, []);
 
   return (
     <Container className="py-4">
@@ -213,7 +217,7 @@ const AdminICOPage: React.FC = () => {
         <Col>
           <p>
             <strong>SOL Raised:</strong>{" "}
-            <p className="fs-3"> {formatBalance(appConfig.sol_raised , 9)}</p>
+            <p className="fs-3"> {formatBalance(appConfig.sol_raised, 9)}</p>
           </p>
         </Col>
         <Col>
