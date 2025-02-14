@@ -12,6 +12,8 @@ import Game from "./pages/Game/Game";
 import Users from "./pages/Game/Users";
 import UsersPage from "./pages/Multilevel/Users";
 import ProtectedPage from "./pages/ProtectedPage";
+import ResetPassword from "./pages/ResetPassword";
+import ConfirmResetPassword from "./pages/ConfirmReset";
 function App() {
   return (
     <>
@@ -24,6 +26,8 @@ function App() {
         >
           <Routes>
             <Route path="/login" element={<Login />} />
+            <Route path="/reset-password" element={<ResetPassword />} />
+            <Route path="/confirm-reset" element={<ConfirmResetPassword />} />
 
             <Route
               path="/*"
