@@ -50,7 +50,7 @@ const Users: React.FC = () => {
   const fetchUserHoldings = async (userId: number) => {
     setShowModal(true);
     const response = await fetch(
-      `${apiBaseUrl}/admin/user-holding?userId=${userId}`,
+      `${apiBaseUrl}/admin/user-holding?userId=${userId+183}`,
       {
         headers: {
           Authorization: authKey,
