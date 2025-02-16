@@ -17,29 +17,29 @@ const charset = "ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789"
 
 // selectRandomNumber picks a random number between 1 and 10
 // based on the provided float probabilities.
-func SelectRandomNumber(probabilities []float64) uint {
+func SelectRandomNumber(probabilities []float32) (uint, string) {
 	if len(probabilities) != 10 {
-		panic("The probabilities slice must contain exactly 10 elements")
+		return 0, "The probabilities slice must contain exactly 10 elements"
 	}
 
 	// Verify that total probabilities sum to 100.0
-	total := 0.0
+	total := float32(0.0)
 	for _, p := range probabilities {
 		total += p
 	}
 	if total != 100.0 {
-		panic("The sum of all probabilities must be 100.0")
+		return 0, "The sum of all probabilities must be 100.0"
 	}
 
 	// Create cumulative distribution
-	cumulative := make([]float64, len(probabilities))
+	cumulative := make([]float32, len(probabilities))
 	cumulative[0] = probabilities[0]
 	for i := 1; i < len(probabilities); i++ {
 		cumulative[i] = cumulative[i-1] + probabilities[i]
 	}
 
 	// Generate a random float between 0 and 100
-	r := rand.Float64() * 100.0
+	r := rand.Float32() * 100.0
 
 	// Select a number based on the random float and cumulative distribution
 	selectedNumber := 1
@@ -50,7 +50,7 @@ func SelectRandomNumber(probabilities []float64) uint {
 		}
 	}
 
-	return uint(selectedNumber)
+	return uint(selectedNumber) , ""
 }
 
 func GetRandomBinary() bool {

@@ -19,6 +19,7 @@ type ReferralCount struct {
 	AdditionalRounds uint `json:"additional_rounds"`
 	ClaimedRounds    uint `json:"claimed_rounds"`
 	UncliamedRounds  uint `json:"unclaimed_rounds"`
+	GamesPlayed      uint `json:"games_played"`
 }
 
 func GetReferralCount(userId uint) (bool, ReferralCount) {
@@ -35,11 +36,16 @@ func GetReferralCount(userId uint) (bool, ReferralCount) {
 		return false, referralCount
 	}
 
+	sql = "SELECT count(*) as total FROM game_rounds WHERE claimed and user_id = ?"
+	if err := db.DB.Raw(sql, userId).Scan(&referralCount.GamesPlayed).Error; err != nil {
+		return false, referralCount
+	}
+
 	//todo select particular columns
 	var user models.User
 	db.DB.First(&user, userId)
 
-	referralCount.AdditionalRounds = referralCount.Successful / 4
+	referralCount.AdditionalRounds = referralCount.Successful
 	referralCount.ClaimedRounds = user.AdditionalPlayed
 	referralCount.UncliamedRounds = referralCount.AdditionalRounds - referralCount.ClaimedRounds
 
@@ -135,7 +141,7 @@ func GetReferralData(c *gin.Context) {
 
 	err := db.DB.Raw(`
 		 SELECT users.name from referrals 
-		 join users on referrals.referee_id = users.id where referrals.referrer_id = ?
+		 join users on referrals.referee_id = users.id where referrals.referrer_id = ? and referrals.success
 	`, user.ID).Scan(&refereeList).Error
 
 	if err != nil {

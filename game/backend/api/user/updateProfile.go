@@ -28,17 +28,27 @@ func UpdateProfile(c *gin.Context) {
 	}
 
 	userId := c.GetUint("userId")
+	
+	updateData := make(map[string]interface{})
 
-	result := db.DB.Model(&models.User{}).Where("id = ?", userId).Updates(map[string]interface{}{
-		"name":           body.Name,
-		"wallet_address": body.WalletAddress,
-		"profile_id":     body.ProfileId,
-	})
+	if body.Name != "" {
+		updateData["name"] = body.Name
+	}
+	if body.WalletAddress != "" {
+		updateData["wallet_address"] = body.WalletAddress
+	}
+	if body.ProfileId != 0 {
+		updateData["profile_id"] = body.ProfileId
+	}
 
-	if result.Error != nil {
-		println(result.Error.Error())
-		utils.ResIntenalError(c)
-		return
+	if len(updateData) > 0 {
+		result := db.DB.Model(&models.User{}).Where("id = ?", userId).Updates(updateData)
+
+		if result.Error != nil {
+			println(result.Error.Error())
+			utils.ResIntenalError(c)
+			return
+		}
 	}
 
 	c.IndentedJSON(http.StatusOK, gin.H{

@@ -14,12 +14,13 @@ func GetVariants(c *gin.Context) {
 	var variants []struct {
 		ID          uint            `json:"id"`
 		Value       decimal.Decimal `json:"value"`
-		Probability float32         `json:"probability"`
+		Probability float32 `json:"prob"`
 	}
 
 	if err := db.DB.Model(&models.BelugaVariant{}).
-		Select("id, value, probability").
+		Select("id, value, prob as probability").
 		Find(&variants).Error; err != nil {
+		println(err.Error())
 		utils.ResIntenalError(c)
 		return
 	}

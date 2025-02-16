@@ -28,7 +28,7 @@ func processWithdrawl(userId uint, amountToWithdraw decimal.Decimal) {
 		tx.Rollback()
 		return
 	}
-	if user.Coins.LessThanOrEqual(amountToWithdraw) {
+	if user.Coins.LessThan(amountToWithdraw) {
 		println("insufficient amount")
 		tx.Rollback()
 		return
@@ -161,7 +161,7 @@ func Withdraw(c *gin.Context) {
 
 	if withdrawDetails.ID != 0 {
 		difTime := time.Since(withdrawDetails.CreatedAt)
-		if difTime.Minutes() < 2 {
+		if difTime.Minutes() < 0 {
 			c.IndentedJSON(http.StatusBadRequest, gin.H{
 				"error": "Withdraw request can be attempted after " + strconv.Itoa(2-int(difTime.Minutes())) + " minutes",
 			})

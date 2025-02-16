@@ -63,6 +63,7 @@ func queueWithdrawl() {
 
 	result, hash := TransferSPLTokens(withdraw.Address, withdraw.Amount.String())
 
+	println("withdrawl result" , result , hash);
 	tx := db.DB.Begin()
 
 	if result {

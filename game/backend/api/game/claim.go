@@ -40,12 +40,29 @@ func Claim(c *gin.Context) {
 		return
 	}
 
-	var probabilityList = []float64{
-		36,
-		22.5, 15, 10, 7, 5, 2, 1.5, 0.98, 0.02,
+	var variants []models.BelugaVariant
+	fetchRes := tx.Model(&models.BelugaVariant{}).Order("level ASC").Find(&variants) // Fetch all records from the beluga_variants table
+
+	if fetchRes.Error != nil {
+		utils.ResIntenalError(c)
+		tx.Rollback()
+		return
 	}
 
-	pickedBelugaLevel := utils.SelectRandomNumber(probabilityList)
+	var probabilityList = []float32{}
+
+	for i := range variants {
+		probabilityList = append(probabilityList, float32(variants[i].Prob))
+		println(variants[i].Prob)
+	}
+
+	pickedBelugaLevel, err := utils.SelectRandomNumber(probabilityList)
+
+	if err != "" {
+		println(err)
+		tx.Rollback()
+		return
+	}
 
 	now := time.Now()
 	gameRound.Claimed = true

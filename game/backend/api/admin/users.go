@@ -26,6 +26,8 @@ func Users(c *gin.Context) {
 	// Get pagination parameters
 	page, _ := strconv.Atoi(c.DefaultQuery("page", "1"))
 	limit, _ := strconv.Atoi(c.DefaultQuery("limit", "10"))
+	key := (c.DefaultQuery("key", ""))
+	key = key + "%"
 	if page < 1 {
 		page = 1
 	}
@@ -33,20 +35,40 @@ func Users(c *gin.Context) {
 
 	// Slice to store results
 	var usersHoldings []UserResponseItem
+	println("key")
+	println("{}", key)
 
 	// Query to fetch users and their holdings
 	if err := db.DB.Raw(`
-		SELECT u.id, u.telegram_id, u.name, u.wallet_address, u.coins, u.claimed_coins ,
-			COALESCE(SUM(bv.value * bh.quantity), 0) AS holding_value,
-			COALESCE(COUNT(r.referrer_id), 0) AS total_referrals
+		SELECT (u.id - 183) as id, u.telegram_id, u.name, u.wallet_address, u.coins, u.claimed_coins,
+			COALESCE(uh.holding_value, 0) AS holding_value,
+			COALESCE(ur.total_referrals, 0) AS total_referrals,
+			tr.total_referrals_made
 		FROM users u
-		LEFT JOIN beluga_holdings bh ON u.id = bh.user_id
-		LEFT JOIN beluga_variants bv ON bh.beluga_id = bv.id
-		LEFT JOIN referrals r ON u.id = r.referrer_id
-		GROUP BY u.id
+		LEFT JOIN (
+			-- Compute holding value per user
+			SELECT bh.user_id, SUM(bv.value * bh.quantity) AS holding_value
+			FROM beluga_holdings bh
+			LEFT JOIN beluga_variants bv ON bh.beluga_id = bv.id
+			GROUP BY bh.user_id
+		) uh ON u.id = uh.user_id
+		LEFT JOIN (
+			-- Compute total referrals per user
+			SELECT r.referrer_id AS user_id, COUNT(*) AS total_referrals
+			FROM referrals r
+			GROUP BY r.referrer_id
+		) ur ON u.id = ur.user_id
+		JOIN (
+			-- Compute total referrals made by all users (moved from CROSS JOIN to a separate subquery)
+			SELECT COUNT(*) AS total_referrals_made FROM referrals
+		) tr
+		WHERE u.name LIKE ? OR u.wallet_address LIKE ?
 		ORDER BY u.id
 		LIMIT ? OFFSET ?;
-	`, limit, offset).Scan(&usersHoldings).Error; err != nil {
+
+
+	`, key, key, limit, offset).Scan(&usersHoldings).Error; err != nil {
+		println(err.Error())
 		utils.ResIntenalError(c)
 		return
 	}

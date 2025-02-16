@@ -152,11 +152,13 @@ func TransferSPLTokens(toAddr string, amount string) (bool, string) {
 	// Create a new WS client (used for confirming transactions)
 	wsClient, err := ws.Connect(context.Background(), cluster.WS)
 	if err != nil {
+		println("ws " , err.Error())
 		return false, ""
 	}
 
 	privateKey, err := solana.PrivateKeyFromSolanaKeygenFile("./key.json")
 	if err != nil {
+		println("Private key" , err.Error())
 		return false, ""
 	}
 
@@ -180,6 +182,7 @@ func TransferSPLTokens(toAddr string, amount string) (bool, string) {
 	balResult, err := rpcClient.GetTokenAccountBalance(context.TODO(), holderATA, rpc.CommitmentConfirmed)
 
 	if err != nil {
+		
 		return false, ""
 	}
 

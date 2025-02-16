@@ -2,6 +2,7 @@ package admin
 
 import (
 	"beluga/api/utils"
+	"beluga/db"
 	"beluga/models"
 	"net/http"
 
@@ -38,25 +39,27 @@ func UpdateVariants(c *gin.Context) {
 
 	var accumlatedProb float32 = 0
 
-	for i := 1; i < len(body.Probability); i++ {
+	for i := 0; i < len(body.Probability); i++ {
 		accumlatedProb += (body.Probability[i])
 	}
 
-	if accumlatedProb != 1 {
+	if accumlatedProb != 100 {
+		println(accumlatedProb)
 		c.IndentedJSON(http.StatusBadRequest, gin.H{
-			"error": "Total Probability must be equal to 1",
+			"error": "Total Probability must be equal to 100",
 		})
 		return
 	}
 
 	//todo : check if length not equal to 10 is accepted
 
-	for i := range 10 {
+	tx = db.DB.Begin()
+	for i := 0; i < 10; i++ {
 		if result := tx.Model(&models.BelugaVariant{}).
 			Where("id = ?", i+1).
 			UpdateColumns(map[string]interface{}{
-				"value":       decimal.NewFromFloat(float64(body.Value[i])),
-				"probability": body.Probability[i],
+				"value": decimal.NewFromFloat32((body.Value[i])),
+				"prob":  body.Probability[i],
 			}).Error; result != nil {
 			tx.Rollback()
 			utils.ResIntenalError(c)
