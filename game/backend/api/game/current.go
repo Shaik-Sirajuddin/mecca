@@ -10,6 +10,8 @@ import (
 	"github.com/gin-gonic/gin"
 )
 
+const dailyClaimLimit = 10
+
 func startOfDay() time.Time {
 	loc, err := time.LoadLocation("Asia/Seoul")
 	if err != nil {
@@ -33,6 +35,17 @@ func startOfDay() time.Time {
 *
 */
 
+func GetGamesLeftToday(userId uint) uint {
+	var claimsToday int64
+	startOfToday := startOfDay()
+	db.DB.Model(&models.GameRound{}).
+		Where("user_id = ? and start_time >= ? and is_additional = false", userId, startOfToday).Count(&claimsToday)
+
+	_, referralsCount := userP.GetReferralCount(userId)
+
+	return uint(dailyClaimLimit) - uint(claimsToday) + referralsCount.UncliamedRounds
+}
+
 func GetWaitTime(userId uint) time.Duration {
 	var gameRound models.GameRound
 	var claimsToday int64
@@ -45,9 +58,7 @@ func GetWaitTime(userId uint) time.Duration {
 
 	_, referralsCount := userP.GetReferralCount(userId)
 
-	userClaimLimit := 10
-
-	if claimsToday >= int64(userClaimLimit) && referralsCount.UncliamedRounds <= 0{
+	if claimsToday >= int64(dailyClaimLimit) && referralsCount.UncliamedRounds <= 0 {
 		waitTime := time.Hour*24 - time.Since(startOfToday)
 		return waitTime
 	}
@@ -90,7 +101,8 @@ func CurrentSlot(c *gin.Context) {
 	//get previous session and total no of sessions today
 	waitTime := GetWaitTime(userId)
 	c.IndentedJSON(http.StatusOK, gin.H{
-		"active":   nil,
-		"waitTime": waitTime.Milliseconds(),
+		"active":         nil,
+		"waitTime":       waitTime.Milliseconds(),
+		"unplayed_today": GetGamesLeftToday(userId),
 	})
 }
