@@ -45,7 +45,7 @@ func GetWaitTime(userId uint) time.Duration {
 
 	_, referralsCount := userP.GetReferralCount(userId)
 
-	userClaimLimit := 30
+	userClaimLimit := 10
 
 	if claimsToday >= int64(userClaimLimit) && referralsCount.UncliamedRounds <= 0{
 		waitTime := time.Hour*24 - time.Since(startOfToday)
@@ -61,7 +61,7 @@ func GetWaitTime(userId uint) time.Duration {
 		return time.Duration(0)
 	}
 
-	waitTime := 3*time.Minute - time.Since(*gameRound.EndTime)
+	waitTime := 1*time.Minute - time.Since(*gameRound.EndTime)
 	// waitTime := time.Duration(0)
 	if waitTime > 0 {
 		return waitTime

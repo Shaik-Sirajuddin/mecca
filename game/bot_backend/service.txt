@@ -1,0 +1,20 @@
+systemctl restart bot_backend.service
+
+
+[Unit]
+Description=Telegram Bot Backend Service
+After=network.target
+
+[Service]
+ExecStart=/bin/bash -c 'source /root/.nvm/nvm.sh && /root/.nvm/versions/node/v22.12.0/bin/pnpm run start'
+WorkingDirectory=/root/mecca/game/bot_backend
+Environment=NODE_ENV=production
+Restart=on-failure
+RestartSec=3s
+User=root
+Group=root
+
+[Install]
+WantedBy=multi-user.target
+
+

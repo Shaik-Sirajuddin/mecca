@@ -5,9 +5,11 @@ const cors = require("cors");
 require("dotenv").config();
 const TOKEN = process.env.BOT_TOKEN;
 
+const botUserName = 'mecca_official_bot'
+
 // let gameUrl = "https://bot.earnwitwat.online/game";
 let gameUrl = "https://meccain.netlify.app/";
-const imageUrl = "https://bot.earnwitwat.online/assets/banner.jpg"; // Replace with your desired size
+const imageUrl = "https://raw.githubusercontent.com/mcret2024/tokendata/refs/heads/main/assets/mecca_official_bot.jpg"; // Replace with your desired size
 
 const port = process.env.PORT || 8040;
 const bot = new TelegramBot(TOKEN, { polling: true });
@@ -112,8 +114,7 @@ bot.setMyCommands([
   { command: "/start", description: "Waken Mecca" },
   { command: "/refcode", description: "Get your invite code" },
   { command: "/refcount", description: "View count of invites" },
-  { command: "/refoverview", description: "Info on your invites" },
-  { command: "/usercount", description: "View count of players" },
+  // { command: "/usercount", description: "View count of players" },
 ]);
 bot.onText(/\/usercount/, async (msg) => {
   try {
@@ -121,7 +122,7 @@ bot.onText(/\/usercount/, async (msg) => {
     let userCount = await fetchUserCount();
     const chatId = msg.chat.id;
     const displayString = `
-       Total Players in Game : 🐋 ${userCount} 🐋
+       Total Players in Game : 🚀 ${userCount} 🚀
       `.trim();
     bot.sendMessage(chatId, displayString);
   } catch (error) {
@@ -142,29 +143,29 @@ bot.onText(/\/refcode/, async (msg) => {
       .sendMessage(
         chatId,
         `
-    🐋 **Invite Friends and Earn Extra Plays!** 🐋
+    🚀 **Invite Friends and Earn Extra Plays!** 🚀
 
     For every 4 friends who play once, you get 1 extra play. 🎮
 
     **How it works:**
     1️⃣ Share your referral link.
-    2️⃣ When your friends play, you earn extra plays. 🐳
+    2️⃣ When your friends play, you earn extra plays. 🚀
 
     Invite more friends and get to play additonal times! 🏆
     ${
       referralCode
-        ? `🔗 **Your Referral Link** :\n https://t.me/meccagame_bot?start=${referralCode}`
+        ? `🔗 *Your Referral Link*:\n https://t.me/${botUserName.replace(/_/g, '\\_')}?start=${referralCode}`
         : "🎮 Try the game to get your unique invite code!"
     }
-    `.trim(),
-        {
-          parse_mode: "Markdown",
-        }
-      )
+            `.trim(),
+            {
+              parse_mode: "Markdown",
+            }
+          )
       .then(() => {
         bot.sendMessage(
           chatId,
-          `**Tap to copy** \n\n \`https://t.me/meccagame_bot?start=${referralCode}\``,
+          `**Tap to copy** \n\n \`https://t.me/${botUserName}?start=${referralCode}\``,
           { parse_mode: "MarkdownV2" }
         );
       });
@@ -186,7 +187,7 @@ bot.onText(/\/refoverview/, async (msg) => {
       .join(", ");
 
     const displayString = `
-      🐋 **Your Referred Friends** 🐋
+      🚀 **Your Referred Friends** 🚀
       You have referred the following users: 
       ${referredUsersWithNames || "No users with names to display."}
       
@@ -213,11 +214,15 @@ bot.onText(/\/refcount/, async (msg) => {
         claimed_round: 0,
       };
     }
+
+    let userCount = await fetchUserCount();
+    
     bot.sendMessage(
       chatId,
       `
-🐋 **Your Referral Stats** 🐋
+🚀 **Your Referral Stats** 🚀
 
+Total Games Played : 🚀 ${referralCount.games_played} 🚀
 You've invited **${referralCount.total}** friends so far! 🎉
 Out of those, **${referralCount.successful}** have played at least one game. 🏅
 
@@ -229,7 +234,7 @@ Thanks to your referrals, you've unlocked
 Claimed Additional Round(s) : ${referralCount.claimed_rounds}
 UnPlayed Additional Round(s) : ${referralCount.unclaimed_rounds}
 
-The more successful invites, the more extra plays you can earn! 🐳
+The more successful invites, the more extra plays you can earn! 🚀
 Keep inviting and get to play additional times! 🏆
 `.trim()
     );
@@ -254,7 +259,7 @@ bot.onText(/\/start(.*)/, async (msg, match) => {
         bot.sendMessage(
           chatId,
           `
-         TAP to WAT !\n\n👉It all starts at your fingertips. Let's go!\n\n🐋 ${userCount} 🐋 Players 
+         TAP to PLAY !\n\n👉It all starts at your fingertips. Let's go!\n\n🚀 ${userCount} 🚀 Players 
          `,
           {
             reply_markup: {
